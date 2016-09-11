@@ -53,6 +53,14 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             //set building to none
             _currBuilding = Building.None;
         }
+
+        if(_currBuilding == Building.None)
+        {
+            //check what is the building selected to be built
+            //check if resource req for selected building is met
+            //builds building
+            //tells GameManager to remove req resources from count
+        }
     }
 
     //Do this when the cursor enters the rect area of this selectable UI object.

@@ -39,7 +39,10 @@ public class Citizen : MonoBehaviour {
 
     public void GoToSlot(GameObject slot)
     {
-        //
+        //called by slot?
+        //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
+        //checks x value, determines if to left or right, then goes to left or right until it reaches the correct slot
+        //when reaches slot, calls the appropriate method in slot/gamemanager to remove tree/build house
     }
 
     void OnTriggerEnter2D(Collider2D other)
