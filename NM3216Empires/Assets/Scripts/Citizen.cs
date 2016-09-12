@@ -4,6 +4,7 @@ using System.Collections;
 public class Citizen : MonoBehaviour {
 
     public bool isBusy = false;
+    public bool isActive = false;
     float tChange = 0;
     public int randomMoveThreshold;
     public float lowerMoveThreshold;
@@ -41,7 +42,24 @@ public class Citizen : MonoBehaviour {
     {
         //called by slot?
         //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
-        //checks x value, determines if to left or right, then goes to left or right until it reaches the correct slot
+        Vector2 slotPos = slot.transform.position;
+        if(slotPos.y > transform.position.y)
+        {
+            //go to nearest ladder
+        }
+        else
+        {
+            //checks x value, determines if to left or right, then goes to left or right until it reaches the correct slot
+            if (slotPos.x > transform.position.x)
+            {
+                //slot is to the right of citizen
+            }else if(slotPos.x < transform.position.x)
+            {
+                //slot is to the left of citizen
+            }
+        }
+        
+        //slot x might be same or around the same as citizen, try to catch this case
         //when reaches slot, calls the appropriate method in slot/gamemanager to remove tree/build house
     }
 

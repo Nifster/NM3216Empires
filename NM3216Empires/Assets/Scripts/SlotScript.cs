@@ -46,6 +46,16 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         if(_currBuilding == Building.Tree)
         {
             //citizens gather tree
+            //get citizen
+            Citizen freeCitizen = PlatformGameManager.instance.GetCitizen();
+            if(freeCitizen != null)
+            {
+                freeCitizen.GoToSlot(this.gameObject);
+            }
+            else
+            {
+                return; //all citizens busy, maybe give a message
+            }
             //tell gamemanager to add to lumber count
             PlatformGameManager.instance.TreeHarvested();
             //destroy the tree
