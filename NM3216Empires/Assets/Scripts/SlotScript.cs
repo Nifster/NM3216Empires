@@ -7,15 +7,15 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 {
     public Image highlight;
 
-    private enum Building
+    public enum Building
     {
         None,
         Tree,
         House
     };
 
-    private Building _currBuilding;
-    private GameObject buildingObj;
+    public Building currBuilding;
+    public GameObject buildingObj;
 
 	// Use this for initialization
 	void Start () {
@@ -24,13 +24,13 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         buildingObj = transform.GetChild(1).gameObject;
         if(buildingObj == null)
         {
-            _currBuilding = Building.None;
+            currBuilding = Building.None;
         }else if (buildingObj.name.Contains("Tree"))
         {
-            _currBuilding = Building.Tree;
+            currBuilding = Building.Tree;
         }else if (buildingObj.name.Contains("House"))
         {
-            _currBuilding = Building.House;
+            currBuilding = Building.House;
         }
 
     }
@@ -43,7 +43,7 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void Clicked()
     {
         Debug.Log("CLICKED");
-        if(_currBuilding == Building.Tree)
+        if(currBuilding == Building.Tree)
         {
             //citizens gather tree
             //get citizen
@@ -57,14 +57,14 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                 return; //all citizens busy, maybe give a message
             }
             //tell gamemanager to add to lumber count
-            PlatformGameManager.instance.TreeHarvested();
+            //PlatformGameManager.instance.TreeHarvested();
             //destroy the tree
-            Destroy(buildingObj);
+            //Destroy(buildingObj);
             //set building to none
-            _currBuilding = Building.None;
+            //_currBuilding = Building.None;
         }
 
-        if(_currBuilding == Building.None)
+        if(currBuilding == Building.None)
         {
             //check what is the building selected to be built
             //check if resource req for selected building is met

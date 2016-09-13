@@ -9,6 +9,14 @@ public class PlatformGameManager : MonoBehaviour {
     private int _citizenCount; 
     public static PlatformGameManager instance;
 
+    public enum BuildingToBuild
+    {
+        House,
+        Barrack
+    }
+
+    public BuildingToBuild selectedBuildingToBuild;
+
     private int _lumberCount;
 
     public Text lumberText;
@@ -72,6 +80,11 @@ public class PlatformGameManager : MonoBehaviour {
             }
         }
         return null;
+    }
+
+    public void PickBuildingToBuild(BuildingToBuild building)
+    {
+        selectedBuildingToBuild = building;
     }
 
 }
