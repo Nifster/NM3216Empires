@@ -42,7 +42,7 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void Clicked()
     {
-        Debug.Log("CLICKED");
+        
         if(currBuilding == Building.Tree)
         {
             //citizens gather tree
@@ -66,7 +66,14 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if(currBuilding == Building.None)
         {
+            Debug.Log("CLICKED");
             //check what is the building selected to be built
+            if (PlatformGameManager.instance.selectedBuildingToBuild == 0)
+            {
+                //build house
+                GameObject newBuilding = Instantiate(PlatformGameManager.instance.housePrefab);
+                newBuilding.transform.SetParent(transform);
+            }
             //check if resource req for selected building is met
             //builds building
             //tells GameManager to remove req resources from count

@@ -9,13 +9,18 @@ public class PlatformGameManager : MonoBehaviour {
     private int _citizenCount; 
     public static PlatformGameManager instance;
 
+    [HeaderAttribute("Buildings")]
+    public GameObject housePrefab;
+    public GameObject schoolPrefab;
+    
     public enum BuildingToBuild
     {
         House,
         Barrack
     }
-
-    public BuildingToBuild selectedBuildingToBuild;
+    [HeaderAttribute("")]
+    public int selectedBuildingToBuild = -1; //-1 by default, meaning unselected
+    //0 for house, 1 for school etc
 
     private int _lumberCount;
 
@@ -82,9 +87,9 @@ public class PlatformGameManager : MonoBehaviour {
         return null;
     }
 
-    public void PickBuildingToBuild(BuildingToBuild building)
+    public void PickBuildingToBuild(int buildingIndex)
     {
-        selectedBuildingToBuild = building;
+        selectedBuildingToBuild = buildingIndex;
     }
 
 }
