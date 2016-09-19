@@ -26,6 +26,23 @@ public class PlatformMapScript : MonoBehaviour
             y = yY;
         }
 
+        public Coord PointToCoord()
+        {
+            Coord newCoord = new Coord(this.x *XOFFSET - Mathf.Floor(map.columns / 2) * XOFFSET, this.y*YOFFSET - YOFFSET);
+            return newCoord;
+        }
+    }
+
+    public class Coord
+    {
+        public float x;
+        public float y;
+
+        public Coord(float xX, float yY)
+        {
+            x = xX;
+            y = yY;
+        }
     }
 
     
@@ -39,10 +56,10 @@ public class PlatformMapScript : MonoBehaviour
         
     }
 
-    public Map map;
+    public static Map map;
     public int mapSize = 5; //no. of platforms per row
-    static int XOFFSET = 90;
-    static int YOFFSET = 120;
+    public static float XOFFSET = 1.75f;
+    public static float YOFFSET = 2.5f;
     public GameObject slotPrefab;
 
     // Use this for initialization
@@ -57,12 +74,11 @@ public class PlatformMapScript : MonoBehaviour
             {
                 Point newPoint = new Point(i, j);
                 map.points.Add(newPoint);
-                Debug.Log(i+ " , "+ j);
-                Debug.Log((i * 90 - 180) + " , " + (j*120 - 120));
                 GameObject newSlot = Instantiate(slotPrefab);
-                newSlot.transform.SetParent(transform.parent);
+                //newSlot.transform.SetParent(transform.parent);
                 newSlot.transform.localPosition = new Vector2(i * XOFFSET - (Mathf.Floor(map.columns/2) * XOFFSET), (j * YOFFSET) - YOFFSET);
-                newSlot.transform.localScale = new Vector3(1, 1, 1);
+                //newSlot.transform.localScale = new Vector3(1, 1, 1);
+                newSlot.GetComponent<SlotScript>().point = new Point(i, j);
             }
         }
 

@@ -41,9 +41,9 @@ public class PlatformGameManager : MonoBehaviour {
         for(int i=0; i<_citizenCount; i++)
         {
             GameObject citizenObj = Instantiate(citizenPrefab);
-            citizenObj.transform.SetParent(GameObject.Find("Map").transform);
-            citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-            citizenObj.transform.localPosition = new Vector3(0, 30,-1); //also temp
+            //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
+            //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
+            citizenObj.transform.localPosition = new Vector3(0, 0.8f,-1); //also temp
             Citizen newCitizen = citizenObj.GetComponent<Citizen>();
             citizenPool.Add(newCitizen);
             newCitizen.isBusy = false;

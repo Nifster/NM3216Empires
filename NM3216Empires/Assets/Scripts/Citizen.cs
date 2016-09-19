@@ -15,17 +15,19 @@ public class Citizen : MonoBehaviour {
     public float workingMoveSpeed;
     float currMoveSpeed;
     bool turnBack = false;
-    bool moveRight;
+    bool moveHorz;
     GameObject goalSlotObj;
+    Rigidbody2D rgBody;
 
     // Use this for initialization
     void Start () {
-	
+        rgBody = this.GetComponent<Rigidbody2D>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
+        
         //if isBusy false, walk around randomly
         if (!isBusy)
         {
@@ -33,23 +35,28 @@ public class Citizen : MonoBehaviour {
             if (Time.time >= tChange)
             {
                 randomX = Random.Range(-randomMoveThreshold, randomMoveThreshold); // with float parameters, a random float
-                //randomY = Random.Range(-randomMoveThreshold, randomMoveThreshold); //  between -2.0 and 2.0 is returned
+                                                                                   //randomY = Random.Range(-randomMoveThreshold, randomMoveThreshold); //  between -2.0 and 2.0 is returned
                                                                                    // set a random interval between 0.5 and 1.5
                 tChange = Time.time + Random.Range(lowerMoveThreshold, higherMoveThreshold);
             }
-            
+
             transform.Translate(new Vector3(randomX, 0, 0) * idleMoveSpeed * Time.deltaTime);
 
-        }else
+        }
+        else
         {
             currMoveSpeed = workingMoveSpeed;
-            if (moveRight)
+            if (moveHorz)
             {
-                transform.Translate(new Vector3(1, 0, 0) * workingMoveSpeed * Time.deltaTime);
-            }
-            else
-            {
-                transform.Translate(new Vector3(-1, 0, 0) * workingMoveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position,
+                        new Vector3(goalSlotObj.GetComponent<SlotScript>().point.PointToCoord().x, transform.position.y, transform.position.z),
+                        workingMoveSpeed * Time.deltaTime);
+                if(transform.position.x == goalSlotObj.GetComponent<SlotScript>().point.PointToCoord().x)
+                {
+                    Debug.Log("REACHED");
+                    StartCoroutine(Harvest(1, goalSlotObj));
+                    //call harvest action here
+                }
             }
         }
     }
@@ -67,17 +74,8 @@ public class Citizen : MonoBehaviour {
         }
         else
         {
-            //checks x value, determines if to left or right, then goes to left or right until it reaches the correct slot
-            if (slotPos.x > transform.position.x)
-            {
-                //slot is to the right of citizen
-                moveRight = true;
-                              
-            }else if(slotPos.x < transform.position.x)
-            {
-                //slot is to the left of citizen
-                moveRight = false;
-            }
+            moveHorz = true;
+            
         }
         
         //slot x might be same or around the same as citizen, try to catch this case
@@ -95,7 +93,7 @@ public class Citizen : MonoBehaviour {
 
         if (other.gameObject.Equals(goalSlotObj)){
             
-            StartCoroutine(Harvest(1,goalSlotObj));
+            //StartCoroutine(Harvest(1,goalSlotObj));
             
         }
     }
@@ -109,11 +107,12 @@ public class Citizen : MonoBehaviour {
     IEnumerator Harvest(float secs,GameObject slotObj)
     {
         float oldMoveSpeed = workingMoveSpeed;
-        yield return new WaitForSeconds(secs);
-        workingMoveSpeed = 0;
+        //yield return new WaitForSeconds(secs);
+        //workingMoveSpeed = 0;
         yield return new WaitForSeconds(5);
-        workingMoveSpeed = oldMoveSpeed;
+        //workingMoveSpeed = oldMoveSpeed;
         isBusy = false;
+        moveHorz = false;
         //Get slot building enum type
         SlotScript slot = slotObj.GetComponent<SlotScript>();
         SlotScript.Building slotBuildingType = slot.currBuilding;

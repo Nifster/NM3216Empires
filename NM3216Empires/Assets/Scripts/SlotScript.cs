@@ -3,9 +3,9 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class SlotScript : MonoBehaviour
 {
-    public Image highlight;
+    public SpriteRenderer highlight;
 
     public enum Building
     {
@@ -16,11 +16,14 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public Building currBuilding;
     public GameObject buildingObj;
+    
+    public PlatformMapScript.Point point;
+    public PlatformMapScript.Coord coord;
 
 	// Use this for initialization
 	void Start () {
-
-        highlight = transform.GetChild(0).GetComponent<Image>();
+        
+        highlight = transform.GetChild(0).GetComponent<SpriteRenderer>();
         buildingObj = transform.GetChild(1).gameObject;
         if(buildingObj == null)
         {
@@ -40,13 +43,14 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 	
 	}
 
-    public void Clicked()
+    public void OnMouseDown()
     {
         
         if(currBuilding == Building.Tree)
         {
             //citizens gather tree
             //get citizen
+            Debug.Log("CLICKED");
             Citizen freeCitizen = PlatformGameManager.instance.GetCitizen();
             if(freeCitizen != null)
             {
@@ -83,14 +87,14 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     }
 
     //Do this when the cursor enters the rect area of this selectable UI object.
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnMouseEnter()
     {
         Color translucent = highlight.color;
-        translucent.a = 0.5f;
+        translucent.a = 1.0f;
         highlight.color = translucent;
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void OnMouseExit()
     {
         Color transparent = highlight.color;
         transparent.a = 0;
