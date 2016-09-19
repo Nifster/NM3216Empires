@@ -73,6 +73,8 @@ public class SlotScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                 //build house
                 GameObject newBuilding = Instantiate(PlatformGameManager.instance.housePrefab);
                 newBuilding.transform.SetParent(transform);
+                newBuilding.transform.localScale = transform.localScale;
+                newBuilding.transform.localPosition = new Vector3(0,40,0);
             }
             //check if resource req for selected building is met
             //builds building
