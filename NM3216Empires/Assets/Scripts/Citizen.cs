@@ -27,7 +27,7 @@ public class Citizen : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        
+        Debug.Log(isBusy);
         //if isBusy false, walk around randomly
         if (!isBusy)
         {
@@ -106,13 +106,10 @@ public class Citizen : MonoBehaviour {
     /// <returns></returns>
     IEnumerator Harvest(float secs,GameObject slotObj)
     {
-        float oldMoveSpeed = workingMoveSpeed;
-        //yield return new WaitForSeconds(secs);
-        //workingMoveSpeed = 0;
-        yield return new WaitForSeconds(5);
-        //workingMoveSpeed = oldMoveSpeed;
-        isBusy = false;
         moveHorz = false;
+        yield return new WaitForSeconds(5);
+        isBusy = false;
+        
         //Get slot building enum type
         SlotScript slot = slotObj.GetComponent<SlotScript>();
         SlotScript.Building slotBuildingType = slot.currBuilding;
@@ -126,6 +123,7 @@ public class Citizen : MonoBehaviour {
             //set building to none
             slot.currBuilding = SlotScript.Building.None;
         }
+        
     }
 
     

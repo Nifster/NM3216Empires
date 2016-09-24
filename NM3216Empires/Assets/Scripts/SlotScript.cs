@@ -11,7 +11,8 @@ public class SlotScript : MonoBehaviour
     {
         None,
         Tree,
-        House
+        House,
+        Ladder
     };
 
     public Building currBuilding;
@@ -34,6 +35,9 @@ public class SlotScript : MonoBehaviour
         }else if (buildingObj.name.Contains("House"))
         {
             currBuilding = Building.House;
+        }else if (buildingObj.name.Contains("Ladder"))
+        {
+            currBuilding = Building.Ladder;
         }
 
     }

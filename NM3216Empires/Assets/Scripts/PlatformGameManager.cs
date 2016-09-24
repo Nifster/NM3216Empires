@@ -12,11 +12,13 @@ public class PlatformGameManager : MonoBehaviour {
     [HeaderAttribute("Buildings")]
     public GameObject housePrefab;
     public GameObject schoolPrefab;
+    public GameObject ladderPrefab;
     
     public enum BuildingToBuild
     {
         House,
-        Barrack
+        Barrack,
+        Ladder
     }
     [HeaderAttribute("")]
     public int selectedBuildingToBuild = -1; //-1 by default, meaning unselected
