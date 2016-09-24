@@ -70,9 +70,16 @@ public class PlatformGameManager : MonoBehaviour {
         //update lumber text
     }
 
-    public void AddCitizen()
+    public void AddCitizen(Vector3 pos)
     {
-
+        GameObject citizenObj = Instantiate(citizenPrefab);
+        //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
+        //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
+        citizenObj.transform.localPosition = new Vector3(pos.x,pos.y+0.8f,pos.z-1); //also temp
+        Citizen newCitizen = citizenObj.GetComponent<Citizen>();
+        citizenPool.Add(newCitizen);
+        newCitizen.isBusy = false;
+        _citizenCount++;
     }
 
     public Citizen GetCitizen()

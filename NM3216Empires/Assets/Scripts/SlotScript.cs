@@ -81,12 +81,26 @@ public class SlotScript : MonoBehaviour
                 //build house
                 GameObject newBuilding = Instantiate(PlatformGameManager.instance.housePrefab);
                 newBuilding.transform.SetParent(transform);
-                newBuilding.transform.localScale = transform.localScale;
-                newBuilding.transform.localPosition = new Vector3(0,40,0);
+                newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
+                newBuilding.transform.localPosition = new Vector3(0,0.8f,0);
+                //add citizen at spot
+                PlatformGameManager.instance.AddCitizen(transform.position);
+            }else if(PlatformGameManager.instance.selectedBuildingToBuild == 1)
+            {
+                //barrack
+            }else if(PlatformGameManager.instance.selectedBuildingToBuild == 2)
+            {
+                //ladder
+                GameObject newBuilding = Instantiate(PlatformGameManager.instance.ladderPrefab);
+                newBuilding.transform.SetParent(transform);
+                //newBuilding.transform.localScale = transform.localScale;
+                newBuilding.transform.localPosition = new Vector3(0, 1.6f, 0);
             }
             //check if resource req for selected building is met
             //builds building
             //tells GameManager to remove req resources from count
+            //reset building selected
+            PlatformGameManager.instance.selectedBuildingToBuild = -1;
         }
     }
 
