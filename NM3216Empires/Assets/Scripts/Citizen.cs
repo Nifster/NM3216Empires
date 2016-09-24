@@ -26,8 +26,7 @@ public class Citizen : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-        Debug.Log(isBusy);
+        
         //if isBusy false, walk around randomly
         if (!isBusy)
         {
@@ -119,11 +118,30 @@ public class Citizen : MonoBehaviour {
             //tell gamemanager to add to lumber count
             PlatformGameManager.instance.TreeHarvested();
             //Minus tree health, destroy if last health
-            Destroy(buildingObj);
-            //set building to none
-            slot.currBuilding = SlotScript.Building.None;
+            slot.treeHealth--;
+            if(slot.treeHealth == 0)
+            {
+                Destroy(buildingObj);
+                //set building to none
+                slot.currBuilding = SlotScript.Building.None;
+            }
+            
         }
-        
+        if (slotBuildingType == SlotScript.Building.Rock)
+        {
+            //tell gamemanager to add to lumber count
+            PlatformGameManager.instance.RockHarvested();
+            //Minus tree health, destroy if last health
+            slot.rockHealth--;
+            if (slot.rockHealth == 0)
+            {
+                Destroy(buildingObj);
+                //set building to none
+                slot.currBuilding = SlotScript.Building.None;
+            }
+
+        }
+
     }
 
     

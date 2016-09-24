@@ -12,20 +12,28 @@ public class SlotScript : MonoBehaviour
         None,
         Tree,
         House,
-        Ladder
+        Ladder,
+        Rock
     };
 
     public Building currBuilding;
-    public GameObject buildingObj;
+    public GameObject buildingObj = null;
     
     public PlatformMapScript.Point point;
     public PlatformMapScript.Coord coord;
+    public int treeHealth = 10;
+    public int rockHealth = 10;
 
 	// Use this for initialization
 	void Start () {
         
         highlight = transform.GetChild(0).GetComponent<SpriteRenderer>();
-        buildingObj = transform.GetChild(1).gameObject;
+        //find size of childindex?
+        if(transform.childCount > 1)
+        {
+            buildingObj = transform.GetChild(1).gameObject;
+        }
+        
         if(buildingObj == null)
         {
             currBuilding = Building.None;
@@ -38,6 +46,9 @@ public class SlotScript : MonoBehaviour
         }else if (buildingObj.name.Contains("Ladder"))
         {
             currBuilding = Building.Ladder;
+        }else if (buildingObj.name.Contains("Rock"))
+        {
+            currBuilding = Building.Rock;
         }
 
     }
@@ -50,13 +61,17 @@ public class SlotScript : MonoBehaviour
     public void OnMouseDown()
     {
         
-        if(currBuilding == Building.Tree)
+        if (currBuilding == Building.None)
         {
-            //citizens gather tree
-            //get citizen
+            Debug.Log("CLICKED");
+            //check what is the building selected to be built
+            PlatformGameManager.instance.BuildSelected(this.gameObject);
+
+        }else
+        {
             Debug.Log("CLICKED");
             Citizen freeCitizen = PlatformGameManager.instance.GetCitizen();
-            if(freeCitizen != null)
+            if (freeCitizen != null)
             {
                 freeCitizen.GoToSlot(this.gameObject);
             }
@@ -64,43 +79,6 @@ public class SlotScript : MonoBehaviour
             {
                 return; //all citizens busy, maybe give a message
             }
-            //tell gamemanager to add to lumber count
-            //PlatformGameManager.instance.TreeHarvested();
-            //destroy the tree
-            //Destroy(buildingObj);
-            //set building to none
-            //_currBuilding = Building.None;
-        }
-
-        if(currBuilding == Building.None)
-        {
-            Debug.Log("CLICKED");
-            //check what is the building selected to be built
-            if (PlatformGameManager.instance.selectedBuildingToBuild == 0)
-            {
-                //build house
-                GameObject newBuilding = Instantiate(PlatformGameManager.instance.housePrefab);
-                newBuilding.transform.SetParent(transform);
-                newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
-                newBuilding.transform.localPosition = new Vector3(0,0.8f,0);
-                //add citizen at spot
-                PlatformGameManager.instance.AddCitizen(transform.position);
-            }else if(PlatformGameManager.instance.selectedBuildingToBuild == 1)
-            {
-                //barrack
-            }else if(PlatformGameManager.instance.selectedBuildingToBuild == 2)
-            {
-                //ladder
-                GameObject newBuilding = Instantiate(PlatformGameManager.instance.ladderPrefab);
-                newBuilding.transform.SetParent(transform);
-                //newBuilding.transform.localScale = transform.localScale;
-                newBuilding.transform.localPosition = new Vector3(0, 1.6f, 0);
-            }
-            //check if resource req for selected building is met
-            //builds building
-            //tells GameManager to remove req resources from count
-            //reset building selected
-            PlatformGameManager.instance.selectedBuildingToBuild = -1;
         }
     }
 

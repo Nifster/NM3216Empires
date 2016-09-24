@@ -14,7 +14,14 @@ public class PlatformMapScript : MonoBehaviour
 
     //0 is slot
     //x is platform
+    public GameObject treePrefab;
+    public GameObject rockPrefab;
 
+
+    public List<Point> treePositions;
+    public List<Point> rockPositions;
+
+    [System.Serializable]
     public class Point
     {
         public float x;
@@ -63,7 +70,7 @@ public class PlatformMapScript : MonoBehaviour
     public GameObject slotPrefab;
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
 
         map = new Map();
         map.points = new List<Point>();
@@ -79,6 +86,27 @@ public class PlatformMapScript : MonoBehaviour
                 newSlot.transform.localPosition = new Vector2(i * XOFFSET - (Mathf.Floor(map.columns/2) * XOFFSET), (j * YOFFSET) - YOFFSET);
                 //newSlot.transform.localScale = new Vector3(1, 1, 1);
                 newSlot.GetComponent<SlotScript>().point = new Point(i, j);
+                
+                for(int k=0; k<treePositions.Count; k++)
+                {
+                    if (treePositions[k].x == (newPoint.x) && treePositions[k].y == (newPoint.y))
+                    {
+                        GameObject newBuilding = Instantiate(treePrefab);
+                        newBuilding.transform.SetParent(newSlot.transform);
+                        newBuilding.transform.localScale = new Vector3(0.25f, 0.5f, 0);
+                        newBuilding.transform.localPosition = new Vector3(0, 1.1f, 0);
+                    }
+                }
+                for (int k = 0; k < rockPositions.Count; k++)
+                {
+                    if (rockPositions[k].x == (newPoint.x) && rockPositions[k].y == (newPoint.y))
+                    {
+                        GameObject newBuilding = Instantiate(rockPrefab);
+                        newBuilding.transform.SetParent(newSlot.transform);
+                        newBuilding.transform.localScale = new Vector3(0.8f, 2f, 0);
+                        newBuilding.transform.localPosition = new Vector3(0, 1.05f, 0);
+                    }
+                }
             }
         }
 
