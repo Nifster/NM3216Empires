@@ -56,6 +56,8 @@ public class PlatformGameManager : MonoBehaviour {
 
     [SerializeField]
     private GameObject citizenPrefab;
+
+    public List<SlotScript> ladderSlots;
 	// Use this for initialization
 	void Start () {
         instance = this;
@@ -71,7 +73,7 @@ public class PlatformGameManager : MonoBehaviour {
             GameObject citizenObj = Instantiate(citizenPrefab);
             //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
             //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-            citizenObj.transform.localPosition = new Vector3(0, 0.8f,-1); //also temp
+            citizenObj.transform.localPosition = new Vector3(0, 3.3f,-1); //also temp
             Citizen newCitizen = citizenObj.GetComponent<Citizen>();
             citizenPool.Add(newCitizen);
             newCitizen.isBusy = false;
@@ -168,6 +170,15 @@ public class PlatformGameManager : MonoBehaviour {
             newBuilding.transform.SetParent(slotToBuildIn.transform);
             //newBuilding.transform.localScale = transform.localScale;
             newBuilding.transform.localPosition = new Vector3(0, 1.6f, 0);
+            //save position of ladder for later reference
+            SlotScript slotToBuildInScript = slotToBuildIn.GetComponent<SlotScript>();
+            PlatformMapScript.Point slotPoint = slotToBuildInScript.point;
+            ladderSlots.Add(slotToBuildInScript);
+            ////if slot y is not 2, add the slot on top as well
+            //if(slotToBuildIn.GetComponent<SlotScript>().point.y < 2.0f)
+            //{
+            //    ladderSlots.Add(PlatformMapScript.instance.slotArray[(int)slotPoint.y+1, (int)slotPoint.x].GetComponent<SlotScript>());
+            //}
         }
         //check if resource req for selected building is met
         //builds building

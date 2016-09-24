@@ -16,13 +16,29 @@ public class Citizen : MonoBehaviour {
     float currMoveSpeed;
     bool turnBack = false;
     bool moveHorz;
-    GameObject goalSlotObj;
+    public GameObject goalSlotObj;
     Rigidbody2D rgBody;
+
+    public int pointY;//this is the Point system Y coordinate
+    bool toLadderUp = false;
+    bool toLadderDown = false;
 
     // Use this for initialization
     void Start () {
         rgBody = this.GetComponent<Rigidbody2D>();
-	}
+        /*pointY = (int)((transform.localPosition.y - 0.8f) / 2.5f + 1);*/ //TODO: Bug where citizens at higher Y will go to wrong coords
+        if(transform.localPosition.y == -1.7f)
+        {
+            pointY = 0;
+        }else if(transform.localPosition.y == 0.8f)
+        {
+            pointY = 1;
+        }else if(transform.localPosition.y == 3.3f)
+        {
+            pointY = 2;
+        }
+        Debug.Log(pointY);//this is the Point system Y coordinate (i.e 0,1,or 2)
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -42,41 +58,95 @@ public class Citizen : MonoBehaviour {
             transform.Translate(new Vector3(randomX, 0, 0) * idleMoveSpeed * Time.deltaTime);
 
         }
-        else
-        {
-            currMoveSpeed = workingMoveSpeed;
-            if (moveHorz)
-            {
-                transform.position = Vector3.MoveTowards(transform.position,
-                        new Vector3(goalSlotObj.GetComponent<SlotScript>().point.PointToCoord().x, transform.position.y, transform.position.z),
-                        workingMoveSpeed * Time.deltaTime);
-                if(transform.position.x == goalSlotObj.GetComponent<SlotScript>().point.PointToCoord().x)
-                {
-                    Debug.Log("REACHED");
-                    StartCoroutine(Harvest(1, goalSlotObj));
-                    //call harvest action here
-                }
-            }
-        }
+        
+        
     }
 
-    public void GoToSlot(GameObject slot)
+    public IEnumerator GoToSlot(GameObject slot)
     {
-        isBusy = true;
-        goalSlotObj = slot;
+        Debug.Log("Called");
+        
+        //TODO: Bug where if you have 1 ladder, but you need 2 ladders to reach the goal slot at the top, isBusy never gets reset to false, 
+        //citizen is thus stuck forever
+
+        //TODO: Bug? where if there's more than 1 ladder per level, they cant decide which ladder to go to and become stuck
+
         //called by slot?
         //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
-        Vector2 slotPos = slot.transform.position;
-        if(slotPos.y > transform.position.y)
+        PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
+        if(slotPoint.y  > pointY)
         {
-            //go to nearest ladder
+            
+            toLadderUp = true;
+
+            //go to nearest ladder on same level
+            for(int i =0; i < PlatformGameManager.instance.ladderSlots.Count; i++)
+            {
+                
+                if(pointY == PlatformGameManager.instance.ladderSlots[i].point.y)
+                {
+                    
+                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].gameObject));
+                }
+            }
+
+            Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
+        }
+        else if (slotPoint.y < pointY)
+        {
+            toLadderDown = true;
+            
+
+            //go to nearest ladder on lower level
+            for (int i = 0; i < PlatformGameManager.instance.ladderSlots.Count; i++)
+            {
+
+                if (pointY-1 == PlatformGameManager.instance.ladderSlots[i].point.y)
+                {
+                    
+                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y+1, (int)PlatformGameManager.instance.ladderSlots[i].point.x]));
+                }
+            }
+            Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
         }
         else
         {
-            moveHorz = true;
+            //moveHorz = true;
+            isBusy = true;
+            currMoveSpeed = workingMoveSpeed;
+            while (transform.position.x != slot.GetComponent<SlotScript>().point.PointToCoord().x)
+            {
+                transform.position = Vector3.MoveTowards(transform.position,
+                            new Vector3(slotPoint.PointToCoord().x, transform.position.y, transform.position.z),
+                            workingMoveSpeed * Time.deltaTime);
+                yield return null;
+            }
+            if (toLadderUp)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
+                pointY++;
+                toLadderUp = false;
+                StartCoroutine(GoToSlot(goalSlotObj));
+                
+            }
+            else if (toLadderDown)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y - 2.5f, transform.position.z);
+                pointY--;
+                toLadderDown = false;
+                StartCoroutine(GoToSlot(goalSlotObj));
+                
+            }
+            else
+            {
+
+                StartCoroutine(Harvest(1, slot));
+            }
+
             
         }
         
+
         //slot x might be same or around the same as citizen, try to catch this case
         //when reaches slot, calls the appropriate method in slot/gamemanager to remove tree/build house
     }
@@ -142,6 +212,18 @@ public class Citizen : MonoBehaviour {
 
         }
 
+    }
+
+    IEnumerator MoveTo(GameObject goal)
+    {
+        while(transform.position.x != goal.GetComponent<SlotScript>().point.PointToCoord().x)
+        {
+            transform.position = Vector3.MoveTowards(transform.position,
+                        new Vector3(goal.GetComponent<SlotScript>().point.PointToCoord().x, transform.position.y, transform.position.z),
+                        workingMoveSpeed * Time.deltaTime);
+        }
+        
+        yield return null;
     }
 
     

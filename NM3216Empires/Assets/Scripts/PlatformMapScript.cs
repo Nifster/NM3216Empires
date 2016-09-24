@@ -63,15 +63,18 @@ public class PlatformMapScript : MonoBehaviour
         
     }
 
+    public static PlatformMapScript instance;
     public static Map map;
     public int mapSize = 5; //no. of platforms per row
     public static float XOFFSET = 1.75f;
     public static float YOFFSET = 2.5f;
     public GameObject slotPrefab;
+    public GameObject[,] slotArray;
 
     // Use this for initialization
     void Awake () {
-
+        instance = this;
+        slotArray = new GameObject[3,mapSize];
         map = new Map();
         map.points = new List<Point>();
         map.columns = mapSize;
@@ -86,6 +89,7 @@ public class PlatformMapScript : MonoBehaviour
                 newSlot.transform.localPosition = new Vector2(i * XOFFSET - (Mathf.Floor(map.columns/2) * XOFFSET), (j * YOFFSET) - YOFFSET);
                 //newSlot.transform.localScale = new Vector3(1, 1, 1);
                 newSlot.GetComponent<SlotScript>().point = new Point(i, j);
+                slotArray[j, i] = newSlot;
                 
                 for(int k=0; k<treePositions.Count; k++)
                 {

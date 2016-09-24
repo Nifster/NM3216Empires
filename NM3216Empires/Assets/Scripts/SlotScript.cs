@@ -63,17 +63,16 @@ public class SlotScript : MonoBehaviour
         
         if (currBuilding == Building.None)
         {
-            Debug.Log("CLICKED");
             //check what is the building selected to be built
             PlatformGameManager.instance.BuildSelected(this.gameObject);
 
         }else
         {
-            Debug.Log("CLICKED");
             Citizen freeCitizen = PlatformGameManager.instance.GetCitizen();
             if (freeCitizen != null)
             {
-                freeCitizen.GoToSlot(this.gameObject);
+                StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
+                freeCitizen.goalSlotObj = this.gameObject;
             }
             else
             {
