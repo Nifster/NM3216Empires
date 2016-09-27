@@ -148,6 +148,7 @@ public class PlatformGameManager : MonoBehaviour {
             //check resources
             if(ResourceCheck(House))
             {
+
                 //build house
                 GameObject newBuilding = Instantiate(housePrefab);
                 newBuilding.transform.SetParent(slotToBuildIn.transform);

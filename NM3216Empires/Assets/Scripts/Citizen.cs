@@ -183,35 +183,46 @@ public class Citizen : MonoBehaviour {
         SlotScript slot = slotObj.GetComponent<SlotScript>();
         SlotScript.Building slotBuildingType = slot.currBuilding;
         GameObject buildingObj = slot.buildingObj;
-        if (slotBuildingType == SlotScript.Building.Tree)
+        if(slotBuildingType == SlotScript.Building.None)
         {
-            //tell gamemanager to add to lumber count
-            PlatformGameManager.instance.TreeHarvested();
-            //Minus tree health, destroy if last health
-            slot.treeHealth--;
-            if(slot.treeHealth == 0)
-            {
-                Destroy(buildingObj);
-                //set building to none
-                slot.currBuilding = SlotScript.Building.None;
-            }
-            
+            PlatformGameManager.instance.BuildSelected(slotObj);
         }
-        if (slotBuildingType == SlotScript.Building.Rock)
+        else
         {
-            //tell gamemanager to add to lumber count
-            PlatformGameManager.instance.RockHarvested();
-            //Minus tree health, destroy if last health
-            slot.rockHealth--;
-            if (slot.rockHealth == 0)
+            if (slotBuildingType == SlotScript.Building.Tree)
             {
-                Destroy(buildingObj);
-                //set building to none
-                slot.currBuilding = SlotScript.Building.None;
+                //tell gamemanager to add to lumber count
+                PlatformGameManager.instance.TreeHarvested();
+                //Minus tree health, destroy if last health
+                slot.resourceHealth--;
+                if (slot.resourceHealth == 0)
+                {
+                    Destroy(buildingObj);
+                    slot.DestroyHealth();
+                    //set building to none
+                    slot.currBuilding = SlotScript.Building.None;
+                }
+
+
             }
+            if (slotBuildingType == SlotScript.Building.Rock)
+            {
+                //tell gamemanager to add to lumber count
+                PlatformGameManager.instance.RockHarvested();
+                //Minus tree health, destroy if last health
+                slot.resourceHealth--;
+                if (slot.resourceHealth == 0)
+                {
+                    Destroy(buildingObj);
+                    slot.DestroyHealth();
+                    //set building to none
+                    slot.currBuilding = SlotScript.Building.None;
+                }
 
+            }
+            slot.UpdateResourceValue();
         }
-
+        
     }
 
     IEnumerator MoveTo(GameObject goal)

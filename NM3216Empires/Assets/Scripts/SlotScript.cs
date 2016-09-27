@@ -21,12 +21,15 @@ public class SlotScript : MonoBehaviour
     
     public PlatformMapScript.Point point;
     public PlatformMapScript.Coord coord;
-    public int treeHealth = 10;
-    public int rockHealth = 10;
+    public int resourceHealth = 10;
+    bool hasHealth = false;
+    //public int rockHealth = 10;
+    public GameObject healthSlider;
+    GameObject canvasObj;
 
 	// Use this for initialization
 	void Start () {
-        
+        canvasObj = GameObject.Find("Canvas");
         highlight = transform.GetChild(0).GetComponent<SpriteRenderer>();
         //find size of childindex?
         if(transform.childCount > 1)
@@ -60,15 +63,22 @@ public class SlotScript : MonoBehaviour
 
     public void OnMouseDown()
     {
-        
+        Citizen freeCitizen = PlatformGameManager.instance.GetCitizen();
         if (currBuilding == Building.None)
         {
-            //check what is the building selected to be built
-            PlatformGameManager.instance.BuildSelected(this.gameObject);
+            if(PlatformGameManager.instance.selectedBuildingToBuild != -1)
+            {
+                StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
+                freeCitizen.goalSlotObj = this.gameObject;
+                //check what is the building selected to be built
+            }
 
-        }else
+
+
+        }
+        else
         {
-            Citizen freeCitizen = PlatformGameManager.instance.GetCitizen();
+            
             if (freeCitizen != null)
             {
                 StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
@@ -79,6 +89,27 @@ public class SlotScript : MonoBehaviour
                 return; //all citizens busy, maybe give a message
             }
         }
+    }
+
+    public void UpdateResourceValue()
+    {
+        if(!hasHealth)
+        {
+            healthSlider = Instantiate(healthSlider);
+            healthSlider.transform.SetParent(canvasObj.transform);
+            healthSlider.transform.position = transform.position;
+            healthSlider.transform.localScale = new Vector3(1, 1, 1);
+            hasHealth = true;
+            healthSlider.name += " " + name; 
+            
+        }
+        Slider sliderInfo = healthSlider.GetComponent<Slider>();
+        sliderInfo.value = resourceHealth;
+    }
+
+    public void DestroyHealth()
+    {
+        Destroy(healthSlider);
     }
 
     //Do this when the cursor enters the rect area of this selectable UI object.

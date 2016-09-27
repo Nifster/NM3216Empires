@@ -90,6 +90,7 @@ public class PlatformMapScript : MonoBehaviour
                 //newSlot.transform.localScale = new Vector3(1, 1, 1);
                 newSlot.GetComponent<SlotScript>().point = new Point(i, j);
                 slotArray[j, i] = newSlot;
+                newSlot.name = "Slot" + i + "," + j;
                 
                 for(int k=0; k<treePositions.Count; k++)
                 {
