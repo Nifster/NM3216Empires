@@ -122,18 +122,45 @@ public class PlatformGameManager : MonoBehaviour {
         
     }
 
-    public Citizen GetCitizen()
+    public Citizen GetCitizen(PlatformMapScript.Point slotPoint)
     {
-        
+        float closestX = 10000;
+        bool citizenFound = false;
+        Citizen foundCitizen = null;
         //search through pool for free citizen
         for(int i=0; i<_citizenCount; i++)
         {
             if (!citizenPool[i].isBusy)
-            {
-                return citizenPool[i];
+            {   
+                //y check
+                if(citizenPool[i].pointY == slotPoint.y)
+                {
+                    if (Mathf.Abs(citizenPool[i].pointX - slotPoint.x) < closestX )
+                    {
+                        citizenFound = true;
+                        closestX = Mathf.Abs(citizenPool[i].pointX - slotPoint.x);
+                        foundCitizen = citizenPool[i];
+                        Debug.Log("Same level found");
+                    }
+                    
+                    
+                }
+                
             }
         }
-        return null;
+
+        //if cannot find citizen on same level, get citizen nearest to ladder
+        if (!citizenFound)
+        {
+            for (int i = 0; i < _citizenCount; i++)
+            {
+                if (!citizenPool[i].isBusy)
+                {
+                    foundCitizen = citizenPool[i];
+                }
+            }
+        }
+        return foundCitizen;
     }
 
     public void PickBuildingToBuild(int buildingIndex)

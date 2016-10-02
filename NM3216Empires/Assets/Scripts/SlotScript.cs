@@ -63,7 +63,7 @@ public class SlotScript : MonoBehaviour
 
     public void OnMouseDown()
     {
-        Citizen freeCitizen = PlatformGameManager.instance.GetCitizen();
+        Citizen freeCitizen = PlatformGameManager.instance.GetCitizen(point);
         if (currBuilding == Building.None)
         {
             if(PlatformGameManager.instance.selectedBuildingToBuild != -1)

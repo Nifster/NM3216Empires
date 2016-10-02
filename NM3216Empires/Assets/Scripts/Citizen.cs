@@ -20,6 +20,7 @@ public class Citizen : MonoBehaviour {
     Rigidbody2D rgBody;
 
     public int pointY;//this is the Point system Y coordinate
+    public int pointX;
     bool toLadderUp = false;
     bool toLadderDown = false;
 
@@ -37,7 +38,9 @@ public class Citizen : MonoBehaviour {
         {
             pointY = 2;
         }
-        Debug.Log(pointY);//this is the Point system Y coordinate (i.e 0,1,or 2)
+        pointX = (int)(transform.localPosition.x / 1.75f)+4;
+        Debug.Log("pointX " + pointX);//this is the Point system Y coordinate (i.e 0,1,or 2)
+        Debug.Log("posX " + transform.localPosition.x);
     }
 	
 	// Update is called once per frame
@@ -58,8 +61,11 @@ public class Citizen : MonoBehaviour {
             transform.Translate(new Vector3(randomX, 0, 0) * idleMoveSpeed * Time.deltaTime);
 
         }
-        
-        
+
+        pointX = (int)(transform.localPosition.x / 1.75f) + 4;
+        Debug.Log("pointX " + pointX);
+
+
     }
 
     public IEnumerator GoToSlot(GameObject slot)
