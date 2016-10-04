@@ -23,6 +23,7 @@ public class PlatformGameManager : MonoBehaviour {
         public int lumberCost;
         public int oreCost;
         public int influenceReward;
+        public float timeToBuild;
     }
 
     [HeaderAttribute("House Attributes")]
@@ -40,8 +41,10 @@ public class PlatformGameManager : MonoBehaviour {
     //    Ladder
     //}
     [HeaderAttribute("")]
-    public int selectedBuildingToBuild = -1; //-1 by default, meaning unselected
+    public int selectedBuildingIndexToBuild = -1; //-1 by default, meaning unselected
     //0 for house, 1 for school etc
+
+    public Buildings selectedBuildingToBuild;
 
     private int _lumberCount;
     private int _oreCount;
@@ -126,6 +129,8 @@ public class PlatformGameManager : MonoBehaviour {
     {
         float closestX = 10000;
         bool citizenFound = false;
+        bool ladderFound = false;
+        PlatformMapScript.Point ladderPoint = null;
         Citizen foundCitizen = null;
         //search through pool for free citizen
         for(int i=0; i<_citizenCount; i++)
@@ -143,34 +148,72 @@ public class PlatformGameManager : MonoBehaviour {
                         Debug.Log("Same level found");
                     }
                     
-                    
                 }
-                
+            }
+        }
+        
+        //if cannot find citizen on same level, get citizen nearest to ladder
+        closestX = 10000;
+        if (!citizenFound)
+        {
+            if (!ladderFound)
+            {
+                for (int j = 0; j < ladderSlots.Count; j++)
+                {
+                    if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+                    {
+                        ladderFound = true;
+                        closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
+                        ladderPoint = ladderSlots[j].point;
+                        Debug.Log("Ladder found");
+                    }
+                }
+            }
+            closestX = 10000;
+            if (ladderFound)
+            {
+                //closest ladder found
+                for (int i = 0; i < _citizenCount; i++)
+                {
+                    if (!citizenPool[i].isBusy)
+                    {
+                        
+                        if (Mathf.Abs(ladderPoint.x- citizenPool[i].pointX) < closestX)
+                        {
+                            citizenFound = true;
+                            closestX = Mathf.Abs(ladderPoint.x - citizenPool[i].pointX);
+                            foundCitizen = citizenPool[i];
+                            Debug.Log("Other level found");
+                        }
+
+                    }
+                }
             }
         }
 
-        //if cannot find citizen on same level, get citizen nearest to ladder
-        if (!citizenFound)
-        {
-            for (int i = 0; i < _citizenCount; i++)
-            {
-                if (!citizenPool[i].isBusy)
-                {
-                    foundCitizen = citizenPool[i];
-                }
-            }
-        }
         return foundCitizen;
     }
 
     public void PickBuildingToBuild(int buildingIndex)
     {
-        selectedBuildingToBuild = buildingIndex;
+        selectedBuildingIndexToBuild = buildingIndex;
+        switch (buildingIndex)
+        {
+            case (0):
+                selectedBuildingToBuild = House;
+                break;
+            case (1):
+                selectedBuildingToBuild = Barracks;
+                break;
+            case (2):
+                selectedBuildingToBuild = Ladder;
+                break;
+        }
     }
 
     public void BuildSelected(GameObject slotToBuildIn)
     {
-        if (selectedBuildingToBuild == 0)
+        if (selectedBuildingIndexToBuild == 0)
         {
             //check resources
             if(ResourceCheck(House))
@@ -187,11 +230,11 @@ public class PlatformGameManager : MonoBehaviour {
             }
             
         }
-        else if (selectedBuildingToBuild == 1)
+        else if (selectedBuildingIndexToBuild == 1)
         {
             //barrack
         }
-        else if (selectedBuildingToBuild == 2)
+        else if (selectedBuildingIndexToBuild == 2)
         {
             //ladder
             if (ResourceCheck(Ladder))
@@ -217,7 +260,8 @@ public class PlatformGameManager : MonoBehaviour {
         //builds building
         //tells GameManager to remove req resources from count
         //reset building selected
-        selectedBuildingToBuild = -1;
+        selectedBuildingIndexToBuild = -1;
+        selectedBuildingToBuild = null;
     }
 
     public bool ResourceCheck(Buildings buildingType)

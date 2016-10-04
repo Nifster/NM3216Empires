@@ -63,7 +63,6 @@ public class Citizen : MonoBehaviour {
         }
 
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
-        Debug.Log("pointX " + pointX);
 
 
     }
@@ -96,7 +95,7 @@ public class Citizen : MonoBehaviour {
                 }
             }
 
-            Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
+            //Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
         }
         else if (slotPoint.y < pointY)
         {
@@ -146,7 +145,7 @@ public class Citizen : MonoBehaviour {
             else
             {
 
-                StartCoroutine(Harvest(1, slot));
+                StartCoroutine(Harvest(slot));
             }
 
             
@@ -179,16 +178,26 @@ public class Citizen : MonoBehaviour {
     /// </summary>
     /// <param name="secs"></param>
     /// <returns></returns>
-    IEnumerator Harvest(float secs,GameObject slotObj)
+    IEnumerator Harvest(GameObject slotObj)
     {
         moveHorz = false;
-        yield return new WaitForSeconds(5);
-        isBusy = false;
-        
-        //Get slot building enum type
         SlotScript slot = slotObj.GetComponent<SlotScript>();
         SlotScript.Building slotBuildingType = slot.currBuilding;
         GameObject buildingObj = slot.buildingObj;
+        if(PlatformGameManager.instance.selectedBuildingIndexToBuild >= 0)
+        {
+            //if there's a building to build
+            yield return new WaitForSeconds(PlatformGameManager.instance.selectedBuildingToBuild.timeToBuild); 
+        }
+        else
+        {
+            yield return new WaitForSeconds(5); //default harvest time
+        }
+       
+        isBusy = false;
+        
+        //Get slot building enum type
+        
         if(slotBuildingType == SlotScript.Building.None)
         {
             PlatformGameManager.instance.BuildSelected(slotObj);
