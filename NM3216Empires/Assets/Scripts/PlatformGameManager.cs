@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class PlatformGameManager : MonoBehaviour {
 
     [SerializeField]
-    private int _citizenCount; 
+    private int _citizenCount;
+
+    [SerializeField]
+    private int _soldierCount;
     public static PlatformGameManager instance;
 
     [HeaderAttribute("Buildings")]
@@ -29,6 +32,9 @@ public class PlatformGameManager : MonoBehaviour {
 
     [HeaderAttribute("House Attributes")]
     public int CITIZEN_PER_HOUSE;
+
+    [HeaderAttribute("Barracks Attributes")]
+    public int SOLDIERS_PER_BARRACKS;
 
     public Buildings House;
     public Buildings Barracks;
@@ -57,9 +63,13 @@ public class PlatformGameManager : MonoBehaviour {
     public Text influenceText;
 
     public List<Citizen> citizenPool;
+    public List<Soldier> soldierPool;
 
     [SerializeField]
     private GameObject citizenPrefab;
+
+    [SerializeField]
+    private GameObject soldierPrefab;
 
     public List<SlotScript> ladderSlots;
 	// Use this for initialization
@@ -82,6 +92,20 @@ public class PlatformGameManager : MonoBehaviour {
             citizenPool.Add(newCitizen);
             newCitizen.isBusy = false;
         }
+
+        //initiate soldier pool
+        for (int i = 0; i < _soldierCount; i++)
+        {
+            GameObject soldierObj = Instantiate(soldierPrefab);
+            //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
+            //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
+            soldierObj.transform.localPosition = new Vector3(0, -1.7f, -1); //also temp
+            Soldier newSoldier = soldierObj.GetComponent<Soldier>();
+            soldierPool.Add(newSoldier);
+            newSoldier.isBusy = false;
+        }
+
+
     }
 
     // Update is called once per frame
@@ -124,6 +148,21 @@ public class PlatformGameManager : MonoBehaviour {
             _citizenCount++;
         }
         
+    }
+
+    public void AddSoldier(Vector3 pos)
+    {
+        for (int i = 0; i < SOLDIERS_PER_BARRACKS; i++)
+        {
+            GameObject soldierObj = Instantiate(soldierPrefab);
+            //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
+            //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
+            soldierObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.8f, pos.z - 1); //also temp
+            Soldier newSoldier = soldierObj.GetComponent<Soldier>();
+            soldierPool.Add(newSoldier);
+            newSoldier.isBusy = false;
+            _soldierCount++;
+        }
     }
 
     public Citizen GetCitizen(PlatformMapScript.Point slotPoint)
@@ -236,15 +275,15 @@ public class PlatformGameManager : MonoBehaviour {
             //barrack
             if (ResourceCheck(Barracks))
             {
-                Debug.Log("baa");
 
-                //build house
+                //build barracks
                 GameObject newBuilding = Instantiate(Barracks.prefab);
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 1.05f, 0);
                 //add soldiers at spot
-                
+                AddSoldier(slotToBuildIn.transform.position);
+
                 SpendResources(Barracks);
             }
         }

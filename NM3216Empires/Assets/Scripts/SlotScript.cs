@@ -113,11 +113,15 @@ public class SlotScript : MonoBehaviour
     }
 
     //Do this when the cursor enters the rect area of this selectable UI object.
-    public void OnMouseEnter()
+    public void OnMouseOver()
     {
         Color translucent = highlight.color;
         translucent.a = 1.0f;
         highlight.color = translucent;
+        if (Input.GetMouseButtonDown(1))
+        {
+            //TODO: get free soldier, go to slot
+        }
     }
 
     public void OnMouseExit()
