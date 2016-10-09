@@ -19,6 +19,7 @@ public class PlatformGameManager : MonoBehaviour {
     [System.Serializable]
     public class Buildings
     {
+        public GameObject prefab;
         public int labourCost;
         public int lumberCost;
         public int oreCost;
@@ -220,7 +221,7 @@ public class PlatformGameManager : MonoBehaviour {
             {
 
                 //build house
-                GameObject newBuilding = Instantiate(housePrefab);
+                GameObject newBuilding = Instantiate(House.prefab);
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 0.8f, 0);
@@ -233,13 +234,26 @@ public class PlatformGameManager : MonoBehaviour {
         else if (selectedBuildingIndexToBuild == 1)
         {
             //barrack
+            if (ResourceCheck(Barracks))
+            {
+                Debug.Log("baa");
+
+                //build house
+                GameObject newBuilding = Instantiate(Barracks.prefab);
+                newBuilding.transform.SetParent(slotToBuildIn.transform);
+                newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
+                newBuilding.transform.localPosition = new Vector3(0, 1.05f, 0);
+                //add soldiers at spot
+                
+                SpendResources(Barracks);
+            }
         }
         else if (selectedBuildingIndexToBuild == 2)
         {
             //ladder
             if (ResourceCheck(Ladder))
             {
-                GameObject newBuilding = Instantiate(PlatformGameManager.instance.ladderPrefab);
+                GameObject newBuilding = Instantiate(Ladder.prefab);
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 //newBuilding.transform.localScale = transform.localScale;
                 newBuilding.transform.localPosition = new Vector3(0, 1.6f, 0);

@@ -69,8 +69,7 @@ public class Citizen : MonoBehaviour {
 
     public IEnumerator GoToSlot(GameObject slot)
     {
-        Debug.Log("Called");
-        
+              
         //TODO: Bug where if you have 1 ladder, but you need 2 ladders to reach the goal slot at the top, isBusy never gets reset to false, 
         //citizen is thus stuck forever
 
