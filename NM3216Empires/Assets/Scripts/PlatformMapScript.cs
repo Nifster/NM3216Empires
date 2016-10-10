@@ -16,6 +16,7 @@ public class PlatformMapScript : MonoBehaviour
     //x is platform
     public GameObject treePrefab;
     public GameObject rockPrefab;
+    public GameObject parentObject;
 
 
     public List<Point> treePositions;
@@ -85,7 +86,7 @@ public class PlatformMapScript : MonoBehaviour
                 Point newPoint = new Point(i, j);
                 map.points.Add(newPoint);
                 GameObject newSlot = Instantiate(slotPrefab);
-                //newSlot.transform.SetParent(transform.parent);
+                newSlot.transform.SetParent(parentObject.transform);
                 newSlot.transform.localPosition = new Vector2(i * XOFFSET - (Mathf.Floor(map.columns/2) * XOFFSET), (j * YOFFSET) - YOFFSET);
                 //newSlot.transform.localScale = new Vector3(1, 1, 1);
                 newSlot.GetComponent<SlotScript>().point = new Point(i, j);

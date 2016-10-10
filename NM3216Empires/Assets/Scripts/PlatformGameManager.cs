@@ -28,6 +28,7 @@ public class PlatformGameManager : MonoBehaviour {
         public int labourCost;
         public int lumberCost;
         public int oreCost;
+        public int influenceCost; //only for monuments
         public int influenceReward;
         public float timeToBuild;
     }
@@ -41,6 +42,7 @@ public class PlatformGameManager : MonoBehaviour {
     public Buildings House;
     public Buildings Barracks;
     public Buildings Ladder;
+    public Buildings Pyramid;
 
 
     //public enum BuildingToBuild
@@ -325,6 +327,7 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void BuildSelected(GameObject slotToBuildIn)
     {
+        //TODO: Resource check should be done before citizen goes to slot
         if (selectedBuildingIndexToBuild == 0)
         {
             //check resources
@@ -380,6 +383,18 @@ public class PlatformGameManager : MonoBehaviour {
                 //}
             }
 
+        }else if(selectedBuildingIndexToBuild == 3)
+        {
+            //monument
+            if (ResourceCheck(Pyramid))
+            {
+                GameObject newBuilding = Instantiate(Pyramid.prefab);
+                newBuilding.transform.SetParent(slotToBuildIn.transform);
+                newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
+                newBuilding.transform.localPosition = new Vector3(0, 1.0f, 0);
+                SpendResources(Pyramid);
+                NextEra();
+            }
         }
         //check if resource req for selected building is met
         //builds building
@@ -395,10 +410,13 @@ public class PlatformGameManager : MonoBehaviour {
 
         if(_lumberCount >= buildingType.lumberCost &&
             _citizenCount >= buildingType.labourCost &&
-            _oreCount >= buildingType.oreCost)
+            _oreCount >= buildingType.oreCost &&
+            _influenceCount >= buildingType.influenceCost)
         {
             result = true;
         }
+
+        Debug.Log("Resource check satisfied: " + result);
         return result;
     }
 
@@ -406,8 +424,14 @@ public class PlatformGameManager : MonoBehaviour {
     {
         _lumberCount -= buildingType.lumberCost;
         _oreCount -= buildingType.oreCost;
+        _influenceCount -= buildingType.influenceCost;
         _influenceCount += buildingType.influenceReward;
+        
     }
     
-
+    public void NextEra()
+    {
+        //placeholder
+        Debug.Log("This era is over! Next level!");
+    }
 }
