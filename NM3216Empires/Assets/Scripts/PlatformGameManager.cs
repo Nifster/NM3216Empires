@@ -389,6 +389,7 @@ public class PlatformGameManager : MonoBehaviour {
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 1.0f, 0);
                 SpendResources(Pyramid);
+                NextEra();
             }
         }
         //check if resource req for selected building is met
@@ -424,5 +425,9 @@ public class PlatformGameManager : MonoBehaviour {
         
     }
     
-
+    public void NextEra()
+    {
+        //placeholder
+        Debug.Log("This era is over! Next level!");
+    }
 }
