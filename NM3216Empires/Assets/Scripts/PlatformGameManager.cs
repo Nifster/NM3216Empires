@@ -165,6 +165,74 @@ public class PlatformGameManager : MonoBehaviour {
         }
     }
 
+    public Soldier GetSoldier(PlatformMapScript.Point slotPoint)
+    {
+        float closestX = 10000;
+        bool soldierFound = false;
+        bool ladderFound = false;
+        PlatformMapScript.Point ladderPoint = null;
+        Soldier foundSoldier = null;
+        //search through pool for free citizen
+        for (int i = 0; i < _soldierCount; i++)
+        {
+            if (!soldierPool[i].isBusy)
+            {
+                //y check
+                if (soldierPool[i].pointY == slotPoint.y)
+                {
+                    if (Mathf.Abs(soldierPool[i].pointX - slotPoint.x) < closestX)
+                    {
+                        soldierFound = true;
+                        closestX = Mathf.Abs(soldierPool[i].pointX - slotPoint.x);
+                        foundSoldier = soldierPool[i];
+                        Debug.Log("Same level found");
+                    }
+
+                }
+            }
+        }
+
+        //if cannot find citizen on same level, get citizen nearest to ladder
+        closestX = 10000;
+        if (!soldierFound)
+        {
+            if (!ladderFound)
+            {
+                for (int j = 0; j < ladderSlots.Count; j++)
+                {
+                    if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+                    {
+                        ladderFound = true;
+                        closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
+                        ladderPoint = ladderSlots[j].point;
+                        Debug.Log("Ladder found");
+                    }
+                }
+            }
+            closestX = 10000;
+            if (ladderFound)
+            {
+                //closest ladder found
+                for (int i = 0; i < _soldierCount; i++)
+                {
+                    if (!soldierPool[i].isBusy)
+                    {
+
+                        if (Mathf.Abs(ladderPoint.x - soldierPool[i].pointX) < closestX)
+                        {
+                            soldierFound = true;
+                            closestX = Mathf.Abs(ladderPoint.x - soldierPool[i].pointX);
+                            foundSoldier = soldierPool[i];
+                            Debug.Log("Other level found");
+                        }
+
+                    }
+                }
+            }
+        }
+
+        return foundSoldier;
+    }
     public Citizen GetCitizen(PlatformMapScript.Point slotPoint)
     {
         float closestX = 10000;

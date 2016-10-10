@@ -175,7 +175,8 @@ public class Soldier : MonoBehaviour
     
     IEnumerator Attack(GameObject slotObj)
     {
-
+        yield return new WaitForSeconds(5);
+        isBusy = false;
         yield return null;
     }
 

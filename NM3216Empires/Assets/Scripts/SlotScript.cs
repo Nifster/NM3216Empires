@@ -121,6 +121,9 @@ public class SlotScript : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             //TODO: get free soldier, go to slot
+            Soldier freeSoldier = PlatformGameManager.instance.GetSoldier(point);
+            StartCoroutine(freeSoldier.GoToSlot(this.gameObject));
+            freeSoldier.goalSlotObj = this.gameObject;
         }
     }
 

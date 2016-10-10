@@ -179,7 +179,7 @@ public class Citizen : MonoBehaviour {
     /// <returns></returns>
     IEnumerator Harvest(GameObject slotObj)
     {
-        moveHorz = false;
+        //moveHorz = false;
         SlotScript slot = slotObj.GetComponent<SlotScript>();
         SlotScript.Building slotBuildingType = slot.currBuilding;
         GameObject buildingObj = slot.buildingObj;
