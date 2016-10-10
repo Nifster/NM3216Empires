@@ -12,6 +12,8 @@ public class PlatformGameManager : MonoBehaviour {
     private int _soldierCount;
     public static PlatformGameManager instance;
 
+    public GameObject eventNoticePanel;
+
     [HeaderAttribute("Buildings")]
     public GameObject housePrefab;
     public GameObject schoolPrefab;
@@ -104,6 +106,8 @@ public class PlatformGameManager : MonoBehaviour {
             soldierPool.Add(newSoldier);
             newSoldier.isBusy = false;
         }
+
+        eventNoticePanel.SetActive(false);
 
 
     }
