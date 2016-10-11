@@ -100,7 +100,7 @@ public class PlatformGameManager : MonoBehaviour {
             GameObject citizenObj = Instantiate(citizenPrefab);
             //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
             //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-            citizenObj.transform.localPosition = new Vector3(0, -1.7f,-1); //also temp
+            citizenObj.transform.localPosition = new Vector3(0, -1.9f,-1); //also temp
             Citizen newCitizen = citizenObj.GetComponent<Citizen>();
             citizenPool.Add(newCitizen);
             newCitizen.isBusy = false;
@@ -112,7 +112,7 @@ public class PlatformGameManager : MonoBehaviour {
             GameObject soldierObj = Instantiate(soldierPrefab);
             //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
             //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-            soldierObj.transform.localPosition = new Vector3(0, -1.7f, -1); //also temp
+            soldierObj.transform.localPosition = new Vector3(0, -1.9f, -1); //also temp
             Soldier newSoldier = soldierObj.GetComponent<Soldier>();
             soldierPool.Add(newSoldier);
             newSoldier.isBusy = false;
@@ -166,7 +166,7 @@ public class PlatformGameManager : MonoBehaviour {
             GameObject citizenObj = Instantiate(citizenPrefab);
             //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
             //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-            citizenObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.8f, pos.z - 1); //also temp
+            citizenObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
             Citizen newCitizen = citizenObj.GetComponent<Citizen>();
             citizenPool.Add(newCitizen);
             newCitizen.isBusy = false;
@@ -182,7 +182,7 @@ public class PlatformGameManager : MonoBehaviour {
             GameObject soldierObj = Instantiate(soldierPrefab);
             //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
             //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-            soldierObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.8f, pos.z - 1); //also temp
+            soldierObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
             Soldier newSoldier = soldierObj.GetComponent<Soldier>();
             soldierPool.Add(newSoldier);
             newSoldier.isBusy = false;

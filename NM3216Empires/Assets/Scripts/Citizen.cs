@@ -28,13 +28,13 @@ public class Citizen : MonoBehaviour {
     void Start () {
         rgBody = this.GetComponent<Rigidbody2D>();
         /*pointY = (int)((transform.localPosition.y - 0.8f) / 2.5f + 1);*/ //TODO: Bug where citizens at higher Y will go to wrong coords
-        if(transform.localPosition.y == -1.7f)
+        if(transform.localPosition.y == -1.9f)
         {
             pointY = 0;
-        }else if(transform.localPosition.y == 0.8f)
+        }else if(transform.localPosition.y == 0.6f)
         {
             pointY = 1;
-        }else if(transform.localPosition.y == 3.3f)
+        }else if(transform.localPosition.y == 3.1f)
         {
             pointY = 2;
         }
