@@ -44,6 +44,8 @@ public class PlatformGameManager : MonoBehaviour {
     public Buildings Barracks;
     public Buildings Ladder;
     public Buildings Pyramid;
+    public Buildings Tree;
+    public Buildings Rock;
 
     [HeaderAttribute("Enemy Spawn Checkpoints")]
     public int firstCheckpoint;

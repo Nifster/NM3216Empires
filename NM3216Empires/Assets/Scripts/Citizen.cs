@@ -186,10 +186,12 @@ public class Citizen : MonoBehaviour {
         if(PlatformGameManager.instance.selectedBuildingIndexToBuild >= 0)
         {
             //if there's a building to build
+            slot.UpdateResourceTimerValue(PlatformGameManager.instance.selectedBuildingToBuild);
             yield return new WaitForSeconds(PlatformGameManager.instance.selectedBuildingToBuild.timeToBuild); 
         }
         else
         {
+            slot.UpdateResourceTimerValue(PlatformGameManager.instance.Tree);
             yield return new WaitForSeconds(5); //default harvest time
         }
        

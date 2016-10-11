@@ -23,8 +23,12 @@ public class SlotScript : MonoBehaviour
     public PlatformMapScript.Coord coord;
     public int resourceHealth = 10;
     bool hasHealth = false;
+    bool hasTimer = false;
+    bool resourceTicking = false;
     //public int rockHealth = 10;
     public GameObject healthSlider;
+    public GameObject resourceTimerSliderPrefab;
+    GameObject resourceTimerSlider;
     GameObject canvasObj;
 
 	// Use this for initialization
@@ -72,9 +76,7 @@ public class SlotScript : MonoBehaviour
                 freeCitizen.goalSlotObj = this.gameObject;
                 //check what is the building selected to be built
             }
-
-
-
+            
         }
         else
         {
@@ -105,6 +107,42 @@ public class SlotScript : MonoBehaviour
         }
         Slider sliderInfo = healthSlider.GetComponent<Slider>();
         sliderInfo.value = resourceHealth;
+    }
+
+    public void UpdateResourceTimerValue(PlatformGameManager.Buildings buildingType)
+    {
+        
+        if (!hasTimer)
+        {
+            resourceTimerSlider = Instantiate(resourceTimerSliderPrefab);
+            resourceTimerSlider.transform.SetParent(canvasObj.transform);
+            resourceTimerSlider.transform.position = new Vector2 (transform.position.x, transform.position.y +1.5f);
+            resourceTimerSlider.transform.localScale = new Vector3(1, 1, 1);
+            hasTimer = true;
+            resourceTimerSlider.name += " " + name;
+
+        }
+        Slider sliderInfo = resourceTimerSlider.GetComponent<Slider>();
+        sliderInfo.maxValue = (buildingType.timeToBuild + 1) * 100; //not sure why need +1, possibly 0 index problem
+        sliderInfo.value = (buildingType.timeToBuild + 1) * 100;
+        StartCoroutine(ResourceTimerTickDown(sliderInfo));
+    }
+
+    IEnumerator ResourceTimerTickDown(Slider resourceTimer)
+    {
+        if (!resourceTicking)
+        {
+            resourceTicking = true;
+            while(resourceTimer.value > 0)
+            {
+                Debug.Log(resourceTimer.value);
+                resourceTimer.value -= 100*Time.deltaTime; //need to *100 because slider value cant handle float values well
+                yield return 0;
+            }
+        }
+        resourceTicking = false;
+        Destroy(resourceTimer.gameObject);
+        hasTimer = false;
     }
 
     public void DestroyHealth()
