@@ -83,9 +83,14 @@ public class PlatformGameManager : MonoBehaviour {
     private GameObject enemyPrefab;
 
     public List<SlotScript> ladderSlots;
+
+    void Awake()
+    {
+        instance = this;
+    }
 	// Use this for initialization
 	void Start () {
-        instance = this;
+        
         _lumberCount = 0;
         _oreCount = 0;
         _influenceCount = 0;
