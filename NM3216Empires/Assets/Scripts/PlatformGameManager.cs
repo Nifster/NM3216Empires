@@ -10,6 +10,9 @@ public class PlatformGameManager : MonoBehaviour {
 
     [SerializeField]
     private int _soldierCount;
+
+    private int _enemyCount;
+
     public static PlatformGameManager instance;
 
     public GameObject eventNoticePanel;
@@ -18,6 +21,8 @@ public class PlatformGameManager : MonoBehaviour {
     public GameObject housePrefab;
     public GameObject schoolPrefab;
     public GameObject ladderPrefab;
+
+    public int eraIndex = 0; //0 is egyptian, 1 is roman, etc;
 
     
 
@@ -68,12 +73,16 @@ public class PlatformGameManager : MonoBehaviour {
 
     public List<Citizen> citizenPool;
     public List<Soldier> soldierPool;
+    public List<Enemy> enemyPool;
 
     [SerializeField]
     private GameObject citizenPrefab;
 
     [SerializeField]
     private GameObject soldierPrefab;
+
+    [SerializeField]
+    private GameObject enemyPrefab;
 
     public List<SlotScript> ladderSlots;
 	// Use this for initialization
@@ -107,6 +116,16 @@ public class PlatformGameManager : MonoBehaviour {
             Soldier newSoldier = soldierObj.GetComponent<Soldier>();
             soldierPool.Add(newSoldier);
             newSoldier.isBusy = false;
+        }
+
+        //initialize enemy pool
+        for(int i=0;i<_enemyCount; i++)
+        {
+            GameObject enemyObj = Instantiate(enemyPrefab);
+            enemyObj.transform.localPosition = new Vector3(0, -500, -1); //also temp, offscreen
+            Enemy newEnemy = enemyObj.GetComponent<Enemy>();
+            enemyPool.Add(newEnemy);
+            newEnemy.isBusy = false;
         }
 
         eventNoticePanel.SetActive(false);
@@ -402,6 +421,9 @@ public class PlatformGameManager : MonoBehaviour {
         //reset building selected
         selectedBuildingIndexToBuild = -1;
         selectedBuildingToBuild = null;
+
+        //do a check on influence to see if enemy soldiers should come
+        
     }
 
     public bool ResourceCheck(Buildings buildingType)
@@ -433,5 +455,61 @@ public class PlatformGameManager : MonoBehaviour {
     {
         //placeholder
         Debug.Log("This era is over! Next level!");
+    }
+
+    public void EnemyWaveCheck()
+    {
+        //check era
+        if(eraIndex == 0)
+        {
+            //Egyptian
+            if (_influenceCount == 50)
+            {
+                //spawn 2 enemies
+                SpawnEnemies(2);
+
+            }
+            else if (_influenceCount == 80)
+            {
+                //spawn 2 enemies
+                SpawnEnemies(2);
+            }
+        }
+        
+    }
+
+    public void SpawnEnemies(int enemyCount)
+    {
+        int enemyLeftToSpawn = enemyCount;
+        PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0);
+        //check pool if got enough, if not instantiate
+        for(int i=0; i < enemyCount; i++)
+        {
+            //find non-busy
+            for(int j = 0; j < enemyPool.Count; j++)
+            {
+                if (!enemyPool[j].isBusy)
+                {
+                    enemyPool[j].isBusy = true;
+                    enemyPool[j].transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y-1.7f,-1);
+                    enemyLeftToSpawn--;
+                }
+            }
+        }
+
+        if (enemyLeftToSpawn >= 0)
+        {
+            //if not enough enemy in pool, spawn more
+            for(int i = 0; i < enemyLeftToSpawn; i++)
+            {
+                GameObject enemyObj = Instantiate(enemyPrefab);
+                enemyObj.transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y - 1.7f, -1); //also temp, offscreen
+                Enemy newEnemy = enemyObj.GetComponent<Enemy>();
+                enemyPool.Add(newEnemy);
+                newEnemy.isBusy = true;
+            }
+        }
+
+        //if enemy dies, remember to change isBusy back to false
     }
 }
