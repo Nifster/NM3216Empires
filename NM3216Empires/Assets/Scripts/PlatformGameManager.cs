@@ -17,11 +17,6 @@ public class PlatformGameManager : MonoBehaviour {
 
     public GameObject eventNoticePanel;
 
-    [HeaderAttribute("Buildings")]
-    public GameObject housePrefab;
-    public GameObject schoolPrefab;
-    public GameObject ladderPrefab;
-
     public int eraIndex = 0; //0 is egyptian, 1 is roman, etc;
 
     
@@ -44,12 +39,15 @@ public class PlatformGameManager : MonoBehaviour {
     [HeaderAttribute("Barracks Attributes")]
     public int SOLDIERS_PER_BARRACKS;
 
+    [HeaderAttribute("Building Properties")]
     public Buildings House;
     public Buildings Barracks;
     public Buildings Ladder;
     public Buildings Pyramid;
 
-
+    [HeaderAttribute("Enemy Spawn Checkpoints")]
+    public int firstCheckpoint;
+    public int secondCheckpoint;
     //public enum BuildingToBuild
     //{
     //    House,
@@ -423,7 +421,7 @@ public class PlatformGameManager : MonoBehaviour {
         selectedBuildingToBuild = null;
 
         //do a check on influence to see if enemy soldiers should come
-        
+        EnemyWaveCheck();
     }
 
     public bool ResourceCheck(Buildings buildingType)
@@ -463,13 +461,13 @@ public class PlatformGameManager : MonoBehaviour {
         if(eraIndex == 0)
         {
             //Egyptian
-            if (_influenceCount == 50)
+            if (_influenceCount == firstCheckpoint)
             {
                 //spawn 2 enemies
                 SpawnEnemies(2);
 
             }
-            else if (_influenceCount == 80)
+            else if (_influenceCount == secondCheckpoint)
             {
                 //spawn 2 enemies
                 SpawnEnemies(2);
@@ -491,7 +489,7 @@ public class PlatformGameManager : MonoBehaviour {
                 if (!enemyPool[j].isBusy)
                 {
                     enemyPool[j].isBusy = true;
-                    enemyPool[j].transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y-1.7f,-1);
+                    enemyPool[j].transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f,-1);
                     enemyLeftToSpawn--;
                 }
             }
@@ -503,7 +501,7 @@ public class PlatformGameManager : MonoBehaviour {
             for(int i = 0; i < enemyLeftToSpawn; i++)
             {
                 GameObject enemyObj = Instantiate(enemyPrefab);
-                enemyObj.transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y - 1.7f, -1); //also temp, offscreen
+                enemyObj.transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f, -1); //also temp, offscreen
                 Enemy newEnemy = enemyObj.GetComponent<Enemy>();
                 enemyPool.Add(newEnemy);
                 newEnemy.isBusy = true;
