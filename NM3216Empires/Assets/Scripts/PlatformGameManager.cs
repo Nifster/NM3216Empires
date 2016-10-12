@@ -24,6 +24,7 @@ public class PlatformGameManager : MonoBehaviour {
     [System.Serializable]
     public class Buildings
     {
+        public Sprite buildingSprite;
         public GameObject prefab;
         public int labourCost;
         public int lumberCost;
@@ -60,7 +61,7 @@ public class PlatformGameManager : MonoBehaviour {
     public int selectedBuildingIndexToBuild = -1; //-1 by default, meaning unselected
     //0 for house, 1 for school etc
 
-    public Buildings selectedBuildingToBuild;
+    public Buildings selectedBuildingToBuild = null;
 
     private int _lumberCount;
     private int _oreCount;
@@ -89,6 +90,7 @@ public class PlatformGameManager : MonoBehaviour {
     void Awake()
     {
         instance = this;
+        selectedBuildingToBuild = null;
     }
 	// Use this for initialization
 	void Start () {
@@ -345,6 +347,9 @@ public class PlatformGameManager : MonoBehaviour {
                 break;
             case (2):
                 selectedBuildingToBuild = Ladder;
+                break;
+            case (3):
+                selectedBuildingToBuild = Pyramid;
                 break;
         }
     }

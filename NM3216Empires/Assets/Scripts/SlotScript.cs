@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class SlotScript : MonoBehaviour
 {
     public SpriteRenderer highlight;
+    public GameObject genericBuildingPreview;
 
     public enum Building
     {
@@ -33,6 +34,8 @@ public class SlotScript : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
+        genericBuildingPreview = GameObject.FindGameObjectWithTag("GenericBuildingPreview");
+        genericBuildingPreview.GetComponent<SpriteRenderer>().enabled = false;
         canvasObj = GameObject.Find("Canvas");
         highlight = transform.GetChild(0).GetComponent<SpriteRenderer>();
         //find size of childindex?
@@ -156,10 +159,23 @@ public class SlotScript : MonoBehaviour
         Color translucent = highlight.color;
         translucent.a = 1.0f;
         highlight.color = translucent;
-        if (Input.GetMouseButtonDown(1))
+
+        if(PlatformGameManager.instance.selectedBuildingToBuild != null)
+        {
+            Vector3 hoverPosition;
+            //if there is a building selected to build, make a preview of building on slot
+            genericBuildingPreview.GetComponent<SpriteRenderer>().enabled = true;
+            genericBuildingPreview.GetComponent<SpriteRenderer>().sprite = PlatformGameManager.instance.selectedBuildingToBuild.buildingSprite;
+            //hardcode offset T_T
+            
+            genericBuildingPreview.transform.localPosition = new Vector3(transform.position.x,transform.position.y+0.8f);
+        }
+
+        if (Input.GetMouseButtonDown(1)) //do a check if you have a barracks
         {
             //TODO: get free soldier, go to slot
             Soldier freeSoldier = PlatformGameManager.instance.GetSoldier(point);
+            //do a check if freeSoldier null
             StartCoroutine(freeSoldier.GoToSlot(this.gameObject));
             freeSoldier.goalSlotObj = this.gameObject;
         }
@@ -167,6 +183,7 @@ public class SlotScript : MonoBehaviour
 
     public void OnMouseExit()
     {
+        genericBuildingPreview.GetComponent<SpriteRenderer>().enabled = false;
         Color transparent = highlight.color;
         transparent.a = 0;
         highlight.color = transparent;

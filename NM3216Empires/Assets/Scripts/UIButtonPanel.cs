@@ -38,6 +38,7 @@ public class UIButtonPanel : MonoBehaviour {
         else
         {
             StartCoroutine(MoveFromTo(extendedPos, originalPos, moveTime));
+            PlatformGameManager.instance.selectedBuildingToBuild = null;
             arrowImage.GetComponent<Image>().sprite = leftSprite;
         }
         
