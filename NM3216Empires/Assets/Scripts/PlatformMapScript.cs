@@ -99,8 +99,8 @@ public class PlatformMapScript : MonoBehaviour
                     {
                         GameObject newBuilding = Instantiate(treePrefab);
                         newBuilding.transform.SetParent(newSlot.transform);
-                        newBuilding.transform.localScale = new Vector3(0.25f, 0.5f, 0);
-                        newBuilding.transform.localPosition = new Vector3(0, 1.1f, 0);
+                        newBuilding.transform.localScale = new Vector3(.4f, 1, 0);
+                        newBuilding.transform.localPosition = new Vector3(0, .9f, 0);
                     }
                 }
                 for (int k = 0; k < rockPositions.Count; k++)
@@ -109,8 +109,8 @@ public class PlatformMapScript : MonoBehaviour
                     {
                         GameObject newBuilding = Instantiate(rockPrefab);
                         newBuilding.transform.SetParent(newSlot.transform);
-                        newBuilding.transform.localScale = new Vector3(0.8f, 2f, 0);
-                        newBuilding.transform.localPosition = new Vector3(0, 1.05f, 0);
+                        newBuilding.transform.localScale = new Vector3(0.4f, 1f, 0);
+                        newBuilding.transform.localPosition = new Vector3(0, .8f, 0);
                     }
                 }
             }
