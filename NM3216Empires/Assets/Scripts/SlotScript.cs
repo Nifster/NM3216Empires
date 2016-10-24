@@ -70,30 +70,34 @@ public class SlotScript : MonoBehaviour
 
     public void OnMouseDown()
     {
-        Citizen freeCitizen = PlatformGameManager.instance.GetCitizen(point);
-        if (currBuilding == Building.None)
+        if (!PlatformGameManager.instance.isPaused)
         {
-            if(PlatformGameManager.instance.selectedBuildingIndexToBuild != -1)
+            Citizen freeCitizen = PlatformGameManager.instance.GetCitizen(point);
+            if (currBuilding == Building.None)
             {
-                StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
-                freeCitizen.goalSlotObj = this.gameObject;
-                //check what is the building selected to be built
-            }
-            
-        }
-        else
-        {
-            
-            if (freeCitizen != null)
-            {
-                StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
-                freeCitizen.goalSlotObj = this.gameObject;
+                if (PlatformGameManager.instance.selectedBuildingIndexToBuild != -1)
+                {
+                    StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
+                    freeCitizen.goalSlotObj = this.gameObject;
+                    //check what is the building selected to be built
+                }
+
             }
             else
             {
-                return; //all citizens busy, maybe give a message
+
+                if (freeCitizen != null)
+                {
+                    StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
+                    freeCitizen.goalSlotObj = this.gameObject;
+                }
+                else
+                {
+                    return; //all citizens busy, maybe give a message
+                }
             }
         }
+        
     }
 
     public void UpdateResourceValue()
@@ -156,29 +160,33 @@ public class SlotScript : MonoBehaviour
     //Do this when the cursor enters the rect area of this selectable UI object.
     public void OnMouseOver()
     {
-        Color translucent = highlight.color;
-        translucent.a = 1.0f;
-        highlight.color = translucent;
-
-        if(PlatformGameManager.instance.selectedBuildingToBuild != null)
+        if (!PlatformGameManager.instance.isPaused)
         {
-            Vector3 hoverPosition;
-            //if there is a building selected to build, make a preview of building on slot
-            genericBuildingPreview.GetComponent<SpriteRenderer>().enabled = true;
-            genericBuildingPreview.GetComponent<SpriteRenderer>().sprite = PlatformGameManager.instance.selectedBuildingToBuild.buildingSprite;
-            //hardcode offset T_T
-            
-            genericBuildingPreview.transform.localPosition = new Vector3(transform.position.x,transform.position.y+0.8f);
-        }
+            Color translucent = highlight.color;
+            translucent.a = 1.0f;
+            highlight.color = translucent;
 
-        if (Input.GetMouseButtonDown(1)) //do a check if you have a barracks
-        {
-            //TODO: get free soldier, go to slot
-            Soldier freeSoldier = PlatformGameManager.instance.GetSoldier(point);
-            //do a check if freeSoldier null
-            StartCoroutine(freeSoldier.GoToSlot(this.gameObject));
-            freeSoldier.goalSlotObj = this.gameObject;
+            if (PlatformGameManager.instance.selectedBuildingToBuild != null)
+            {
+                Vector3 hoverPosition;
+                //if there is a building selected to build, make a preview of building on slot
+                genericBuildingPreview.GetComponent<SpriteRenderer>().enabled = true;
+                genericBuildingPreview.GetComponent<SpriteRenderer>().sprite = PlatformGameManager.instance.selectedBuildingToBuild.buildingSprite;
+                //hardcode offset T_T
+
+                genericBuildingPreview.transform.localPosition = new Vector3(transform.position.x, transform.position.y + 0.8f);
+            }
+
+            if (Input.GetMouseButtonDown(1)) //do a check if you have a barracks
+            {
+                //TODO: get free soldier, go to slot
+                Soldier freeSoldier = PlatformGameManager.instance.GetSoldier(point);
+                //do a check if freeSoldier null
+                StartCoroutine(freeSoldier.GoToSlot(this.gameObject));
+                freeSoldier.goalSlotObj = this.gameObject;
+            }
         }
+        
     }
 
     public void OnMouseExit()

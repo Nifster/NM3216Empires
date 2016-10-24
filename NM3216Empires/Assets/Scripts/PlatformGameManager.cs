@@ -2,8 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlatformGameManager : MonoBehaviour {
+
+    public bool isPaused = false;
+    public GameObject pausePanel;
 
     [SerializeField]
     private int _citizenCount;
@@ -98,11 +102,11 @@ public class PlatformGameManager : MonoBehaviour {
         _lumberCount = 0;
         _oreCount = 0;
         _influenceCount = 0;
-
+        pausePanel.SetActive(false);
         //need to initialise the map, with coords
 
         //initialize citizen pool
-        for(int i=0; i<_citizenCount; i++)
+        for (int i=0; i<_citizenCount; i++)
         {
             GameObject citizenObj = Instantiate(citizenPrefab);
             //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
@@ -146,6 +150,39 @@ public class PlatformGameManager : MonoBehaviour {
         citizenText.text = _citizenCount.ToString();
         oreText.text = _oreCount.ToString();
         influenceText.text = _influenceCount.ToString();
+
+        //pause check
+        if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        {
+            isPaused = !isPaused;
+        }
+
+        if (isPaused)
+        {
+            Time.timeScale = 0;
+            pausePanel.SetActive(true);
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+    }
+
+    public void ResumeButton()
+    {
+        isPaused = false;
+        Time.timeScale = 1;
+        pausePanel.SetActive(false);
+    }
+
+    public void QuitButton()
+    {
+        Application.Quit();
+    }
+
+    public void MenuButton()
+    {
+        SceneManager.LoadScene("Menu");
     }
 
     public void HouseBuilt()
