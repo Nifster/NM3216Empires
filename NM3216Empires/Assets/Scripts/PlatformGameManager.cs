@@ -25,6 +25,8 @@ public class PlatformGameManager : MonoBehaviour {
 
     public int eraIndex = 0; //0 is egyptian, 1 is roman, etc;
 
+    public bool demolishMode = false;
+
     
 
     [System.Serializable]
@@ -169,6 +171,8 @@ public class PlatformGameManager : MonoBehaviour {
             Time.timeScale = 1;
             pausePanel.SetActive(false);
         }
+
+        
     }
 
     public void ResumeButton()
@@ -434,6 +438,7 @@ public class PlatformGameManager : MonoBehaviour {
 
                 //build house
                 GameObject newBuilding = Instantiate(House.prefab);
+                slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.House;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 0.8f, 0);
@@ -452,6 +457,7 @@ public class PlatformGameManager : MonoBehaviour {
                 //build barracks
                 GameObject newBuilding = Instantiate(Barracks.prefab);
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
+                slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.Barracks;
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 1.05f, 0);
                 //add soldiers at spot
@@ -471,6 +477,7 @@ public class PlatformGameManager : MonoBehaviour {
                 newBuilding.transform.localPosition = new Vector3(0, 1.6f, 0);
                 //save position of ladder for later reference
                 SlotScript slotToBuildInScript = slotToBuildIn.GetComponent<SlotScript>();
+                slotToBuildInScript.currBuilding = SlotScript.Building.Ladder;
                 PlatformMapScript.Point slotPoint = slotToBuildInScript.point;
                 ladderSlots.Add(slotToBuildInScript);
                 SpendResources(Ladder);
@@ -627,5 +634,14 @@ public class PlatformGameManager : MonoBehaviour {
         _citizenCount = citizenCount;
     }
 
-    
+    public void DemolishButton()
+    {
+        demolishMode = !demolishMode;
+        Debug.Log("demolishMode: " + demolishMode);
+    }
+
+    public void DemolishBuilding(GameObject slotToBuildIn)
+    {
+
+    }
 }

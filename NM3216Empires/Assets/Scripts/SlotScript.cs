@@ -14,7 +14,8 @@ public class SlotScript : MonoBehaviour
         Tree,
         House,
         Ladder,
-        Rock
+        Rock,
+        Barracks
     };
 
     public Building currBuilding;
@@ -85,16 +86,19 @@ public class SlotScript : MonoBehaviour
             }
             else
             {
-
-                if (freeCitizen != null)
+                if(currBuilding == Building.Tree || currBuilding == Building.Rock || PlatformGameManager.instance.demolishMode)
                 {
-                    StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
-                    freeCitizen.goalSlotObj = this.gameObject;
+                    if (freeCitizen != null)
+                    {
+                        StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
+                        freeCitizen.goalSlotObj = this.gameObject;
+                    }
+                    else
+                    {
+                        return; //all citizens busy, maybe give a message
+                    }
                 }
-                else
-                {
-                    return; //all citizens busy, maybe give a message
-                }
+                
             }
         }
         

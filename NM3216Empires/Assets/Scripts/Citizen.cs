@@ -208,8 +208,17 @@ public class Citizen : MonoBehaviour {
         }
         else
         {
-            slot.UpdateResourceTimerValue(PlatformGameManager.instance.Tree);
-            yield return new WaitForSeconds(5); //default harvest time
+            if(slotBuildingType == SlotScript.Building.Tree || slotBuildingType == SlotScript.Building.Rock)
+            {
+                slot.UpdateResourceTimerValue(PlatformGameManager.instance.Tree);
+                yield return new WaitForSeconds(5); //default harvest time
+            }
+            else if (PlatformGameManager.instance.demolishMode)
+            {
+                slot.UpdateResourceTimerValue(PlatformGameManager.instance.Tree);
+                yield return new WaitForSeconds(5); //default harvest time
+            }
+            
         }
        
         isBusy = false;
@@ -222,38 +231,47 @@ public class Citizen : MonoBehaviour {
         }
         else
         {
-            if (slotBuildingType == SlotScript.Building.Tree)
+            if (PlatformGameManager.instance.demolishMode)
             {
-                //tell gamemanager to add to lumber count
-                PlatformGameManager.instance.TreeHarvested();
-                //Minus tree health, destroy if last health
-                slot.resourceHealth--;
-                if (slot.resourceHealth == 0)
-                {
-                    Destroy(buildingObj);
-                    slot.DestroyHealth();
-                    //set building to none
-                    slot.currBuilding = SlotScript.Building.None;
-                }
-
-
+                //if in demolish mode, start demolishing the target building
+                Debug.Log("Demolishing");
             }
-            if (slotBuildingType == SlotScript.Building.Rock)
+            else
             {
-                //tell gamemanager to add to lumber count
-                PlatformGameManager.instance.RockHarvested();
-                //Minus tree health, destroy if last health
-                slot.resourceHealth--;
-                if (slot.resourceHealth == 0)
+                if (slotBuildingType == SlotScript.Building.Tree)
                 {
-                    Destroy(buildingObj);
-                    slot.DestroyHealth();
-                    //set building to none
-                    slot.currBuilding = SlotScript.Building.None;
-                }
+                    //tell gamemanager to add to lumber count
+                    PlatformGameManager.instance.TreeHarvested();
+                    //Minus tree health, destroy if last health
+                    slot.resourceHealth--;
+                    if (slot.resourceHealth == 0)
+                    {
+                        Destroy(buildingObj);
+                        slot.DestroyHealth();
+                        //set building to none
+                        slot.currBuilding = SlotScript.Building.None;
+                    }
 
+
+                }
+                if (slotBuildingType == SlotScript.Building.Rock)
+                {
+                    //tell gamemanager to add to lumber count
+                    PlatformGameManager.instance.RockHarvested();
+                    //Minus tree health, destroy if last health
+                    slot.resourceHealth--;
+                    if (slot.resourceHealth == 0)
+                    {
+                        Destroy(buildingObj);
+                        slot.DestroyHealth();
+                        //set building to none
+                        slot.currBuilding = SlotScript.Building.None;
+                    }
+
+                }
+                slot.UpdateResourceValue();
             }
-            slot.UpdateResourceValue();
+            
         }
         
     }
