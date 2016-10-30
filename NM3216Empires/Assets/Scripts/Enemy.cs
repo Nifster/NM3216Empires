@@ -11,6 +11,6 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    //find nearest citizens/buildings and gradually remove health from them 
 	}
 }

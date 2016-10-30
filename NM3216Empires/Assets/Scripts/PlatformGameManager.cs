@@ -8,6 +8,8 @@ public class PlatformGameManager : MonoBehaviour {
 
     public bool isPaused = false;
     public GameObject pausePanel;
+    public List<Sprite> eraBackgrounds;
+    public GameObject backgroundObj;
 
     [SerializeField]
     private int _citizenCount;
@@ -165,6 +167,7 @@ public class PlatformGameManager : MonoBehaviour {
         else
         {
             Time.timeScale = 1;
+            pausePanel.SetActive(false);
         }
     }
 
@@ -205,17 +208,46 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void AddCitizen(Vector3 pos)
     {
-        for(int i=0; i< CITIZEN_PER_HOUSE; i++)
+        
+
+        //check pool, if got inactive set active, if not instantiate
+
+        _citizenCount += CITIZEN_PER_HOUSE;
+        if (citizenPool.Count < _citizenCount)
         {
-            GameObject citizenObj = Instantiate(citizenPrefab);
-            //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
-            //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-            citizenObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
-            Citizen newCitizen = citizenObj.GetComponent<Citizen>();
-            citizenPool.Add(newCitizen);
-            newCitizen.isBusy = false;
-            _citizenCount++;
+            for (int i = 0; i < CITIZEN_PER_HOUSE; i++)
+            {
+                GameObject citizenObj = Instantiate(citizenPrefab);
+                //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
+                //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
+                citizenObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
+                Citizen newCitizen = citizenObj.GetComponent<Citizen>();
+                citizenPool.Add(newCitizen);
+                newCitizen.isBusy = false;
+                
+            }
         }
+        else
+        {
+            //for each new citizen
+            //if there is an inactive citizen in the pool
+            //set it to active, and reset its position
+            for (int j = 0; j < CITIZEN_PER_HOUSE; j++)
+            {
+                for (int i = 0; i < citizenPool.Count; i++)
+                {
+                    if (!citizenPool[i].gameObject.activeSelf)
+                    {
+                        citizenPool[i].gameObject.SetActive(true);
+                        citizenPool[i].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
+                        citizenPool[i].ResetPointPosition();
+                        citizenPool[i].isBusy = false;
+                    }
+                }
+            }
+        }
+        
+        
         
     }
 
@@ -500,8 +532,24 @@ public class PlatformGameManager : MonoBehaviour {
     
     public void NextEra()
     {
-        //placeholder
-        Debug.Log("This era is over! Next level!");
+        eraIndex++;
+        backgroundObj.GetComponent<SpriteRenderer>().sprite = eraBackgrounds[eraIndex];
+        //reset resources value
+        ResetResources();
+        //set new background
+        //set citizen prefabs
+        //have a dialog box saying "Welcome to the new era!"
+        
+    }
+
+    void ResetResources()
+    {
+        //all these values are PlaceHolder
+        _lumberCount = 0;
+        _oreCount = 0;
+        _influenceCount = 0;
+        InitializeCitizens(2);
+
     }
 
     public void EnemyWaveCheck()
@@ -558,6 +606,25 @@ public class PlatformGameManager : MonoBehaviour {
         }
 
         //if enemy dies, remember to change isBusy back to false
+    }
+
+    void InitializeCitizens(int citizenCount)
+    {
+        //go through the pool, set all inactive
+        //set new amount of citizens as active
+        //reset position to bottom row
+        for(int i=0; i < citizenPool.Count; i++)
+        {
+            citizenPool[i].gameObject.SetActive(false);
+        }
+        for (int i = 0; i < citizenCount; i++)
+        {
+            citizenPool[i].gameObject.SetActive(true);
+            citizenPool[i].transform.localPosition = new Vector3(0, -1.9f, -1); //also temp
+            citizenPool[i].ResetPointPosition();
+            citizenPool[i].isBusy = false;
+        }
+        _citizenCount = citizenCount;
     }
 
     

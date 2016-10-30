@@ -142,7 +142,6 @@ public class SlotScript : MonoBehaviour
             resourceTicking = true;
             while(resourceTimer.value > 0)
             {
-                Debug.Log(resourceTimer.value);
                 resourceTimer.value -= 100*Time.deltaTime; //need to *100 because slider value cant handle float values well
                 yield return 0;
             }

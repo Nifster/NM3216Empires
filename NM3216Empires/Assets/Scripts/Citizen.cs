@@ -42,6 +42,23 @@ public class Citizen : MonoBehaviour {
         Debug.Log("pointX " + pointX);//this is the Point system Y coordinate (i.e 0,1,or 2)
         Debug.Log("posX " + transform.localPosition.x);
     }
+
+    public void ResetPointPosition()
+    {
+        if (transform.localPosition.y == -1.9f)
+        {
+            pointY = 0;
+        }
+        else if (transform.localPosition.y == 0.6f)
+        {
+            pointY = 1;
+        }
+        else if (transform.localPosition.y == 3.1f)
+        {
+            pointY = 2;
+        }
+        pointX = (int)(transform.localPosition.x / 1.75f) + 4;
+    }
 	
 	// Update is called once per frame
 	void Update () {
