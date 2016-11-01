@@ -24,6 +24,9 @@ public class Enemy : MonoBehaviour {
     bool toLadderUp = false;
     bool toLadderDown = false;
 
+    public int timeToKillCitizen;
+    public int timeToDestroyBuilding;
+
     int turnAroundCount = 1;
 
     // Use this for initialization
@@ -176,7 +179,7 @@ public class Enemy : MonoBehaviour {
             else
             {
 
-                StartCoroutine(Attack(slot));
+                //StartCoroutine(Attack(slot));
             }
 
 
@@ -217,25 +220,47 @@ public class Enemy : MonoBehaviour {
             toLadderUp = false;
         }
 
-        if (other.gameObject.tag == "Citizen")
+        if (other.gameObject.tag == "Citizen" && !isBusy)
         {
-            //isBusy = true;
-            other.GetComponent<Citizen>().isAttacked = true;
-            StartCoroutine(Attack(other.gameObject));
+            //can only attack one citizen at a time
+            if (!other.GetComponent<Citizen>().isAttacked)
+            {
+                other.GetComponent<Citizen>().isAttacked = true;
+                StartCoroutine(Attack(other.gameObject, true));
+            }
+            
+        }
+
+        if(other.gameObject.tag == "Building" && !isBusy)
+        {
+            if (!other.GetComponent<Building>().isAttacked)
+            {
+                other.GetComponent<Building>().isAttacked = true;
+                StartCoroutine(Attack(other.gameObject, false));
+            }
+                
         }
 
 
     }
 
 
-    IEnumerator Attack(GameObject victim)
+    IEnumerator Attack(GameObject victim, bool isCitizen)
     {
         isBusy = true;
-        yield return new WaitForSeconds(5);
-        Destroy(victim);
-        Debug.Log("Bam");
+        if (isCitizen)
+        {
+            yield return new WaitForSeconds(timeToKillCitizen);
+            PlatformGameManager.instance.KillCitizen(victim);
+        }
+        else
+        {
+            yield return new WaitForSeconds(timeToDestroyBuilding);
+            Destroy(victim); //destroy house with no reward //maybe influence goes down?
+        }
+        
+        
         isBusy = false;
-        yield return null;
     }
 
     IEnumerator MoveTo(GameObject goal)

@@ -588,21 +588,21 @@ public class PlatformGameManager : MonoBehaviour {
             if (_influenceCount == firstCheckpoint && !firstEnemyWaveSpawned)
             {
                 //spawn 2 enemies
-                SpawnEnemies(2);
+                StartCoroutine(SpawnEnemies(2));
                 firstEnemyWaveSpawned = true;
 
             }
             else if (_influenceCount == secondCheckpoint && !secondEnemyWaveSpawned)
             {
                 //spawn 2 enemies
-                SpawnEnemies(2);
+                StartCoroutine(SpawnEnemies(2));
                 secondEnemyWaveSpawned = true;
             }
         }
         
     }
 
-    public void SpawnEnemies(int enemyCount)
+    public IEnumerator SpawnEnemies(int enemyCount)
     {
         int enemyLeftToSpawn = enemyCount;
         PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0);
@@ -617,8 +617,10 @@ public class PlatformGameManager : MonoBehaviour {
                     enemyPool[j].isActive = true;
                     enemyPool[j].transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f,-1);
                     enemyLeftToSpawn--;
+                    yield return new WaitForSeconds(1);
                 }
             }
+            
         }
 
         if (enemyLeftToSpawn >= 0)
@@ -631,6 +633,7 @@ public class PlatformGameManager : MonoBehaviour {
                 Enemy newEnemy = enemyObj.GetComponent<Enemy>();
                 enemyPool.Add(newEnemy);
                 newEnemy.isActive = true;
+                yield return new WaitForSeconds(1);
             }
         }
 
@@ -660,6 +663,12 @@ public class PlatformGameManager : MonoBehaviour {
     {
         demolishMode = !demolishMode;
         Debug.Log("demolishMode: " + demolishMode);
+    }
+
+    public void KillCitizen(GameObject citizen)
+    {
+        citizen.SetActive(false);
+        _citizenCount--;
     }
 
 }
