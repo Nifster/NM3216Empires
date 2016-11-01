@@ -231,10 +231,16 @@ public class Citizen : MonoBehaviour {
         }
         else
         {
-            if (PlatformGameManager.instance.demolishMode)
+            if (PlatformGameManager.instance.demolishMode && (slotBuildingType != SlotScript.Building.Tree && slotBuildingType != SlotScript.Building.Rock))
             {
                 //if in demolish mode, start demolishing the target building
                 Debug.Log("Demolishing");
+                slot.GetComponent<SlotScript>().currBuilding = SlotScript.Building.None;
+                Destroy(slot.buildingObj);
+                //give demolishing rewards
+                PlatformGameManager.instance.BuildingDemolishedAddReward();
+                //turn off demolishmode
+                PlatformGameManager.instance.demolishMode = false;
             }
             else
             {

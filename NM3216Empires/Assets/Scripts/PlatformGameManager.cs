@@ -95,6 +95,14 @@ public class PlatformGameManager : MonoBehaviour {
 
     public List<SlotScript> ladderSlots;
 
+    [HeaderAttribute("Harvest Reward")]
+    public int lumberHarvestReward;
+    public int oreHarvestReward;
+
+    [HeaderAttribute("Demolish Reward")]
+    public int lumberDemolishReward;
+    public int oreDemolishReward;
+
     void Awake()
     {
         instance = this;
@@ -200,14 +208,20 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void TreeHarvested()
     {
-        _lumberCount++;
+        _lumberCount += lumberHarvestReward;
         //update lumber text
     }
 
     public void RockHarvested()
     {
-        _oreCount++;
+        _oreCount += oreHarvestReward;
         //update lumber text
+    }
+
+    public void BuildingDemolishedAddReward()
+    {
+        _lumberCount += lumberDemolishReward;
+        _oreCount += oreDemolishReward;
     }
 
     public void AddCitizen(Vector3 pos)
@@ -439,6 +453,7 @@ public class PlatformGameManager : MonoBehaviour {
                 //build house
                 GameObject newBuilding = Instantiate(House.prefab);
                 slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.House;
+                slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 0.8f, 0);
@@ -458,6 +473,7 @@ public class PlatformGameManager : MonoBehaviour {
                 GameObject newBuilding = Instantiate(Barracks.prefab);
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.Barracks;
+                slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 1.05f, 0);
                 //add soldiers at spot
@@ -477,6 +493,7 @@ public class PlatformGameManager : MonoBehaviour {
                 newBuilding.transform.localPosition = new Vector3(0, 1.6f, 0);
                 //save position of ladder for later reference
                 SlotScript slotToBuildInScript = slotToBuildIn.GetComponent<SlotScript>();
+                slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 slotToBuildInScript.currBuilding = SlotScript.Building.Ladder;
                 PlatformMapScript.Point slotPoint = slotToBuildInScript.point;
                 ladderSlots.Add(slotToBuildInScript);
@@ -497,6 +514,7 @@ public class PlatformGameManager : MonoBehaviour {
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 1.0f, 0);
+                slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 SpendResources(Pyramid);
                 NextEra();
             }
@@ -640,8 +658,4 @@ public class PlatformGameManager : MonoBehaviour {
         Debug.Log("demolishMode: " + demolishMode);
     }
 
-    public void DemolishBuilding(GameObject slotToBuildIn)
-    {
-
-    }
 }
