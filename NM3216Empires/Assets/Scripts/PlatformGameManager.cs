@@ -605,12 +605,12 @@ public class PlatformGameManager : MonoBehaviour {
         //check pool if got enough, if not instantiate
         for(int i=0; i < enemyCount; i++)
         {
-            //find non-busy
+            //find non-active
             for(int j = 0; j < enemyPool.Count; j++)
             {
-                if (!enemyPool[j].isBusy)
+                if (!enemyPool[j].isActive)
                 {
-                    enemyPool[j].isBusy = true;
+                    enemyPool[j].isActive = true;
                     enemyPool[j].transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f,-1);
                     enemyLeftToSpawn--;
                 }
@@ -626,11 +626,11 @@ public class PlatformGameManager : MonoBehaviour {
                 enemyObj.transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f, -1); //also temp, offscreen
                 Enemy newEnemy = enemyObj.GetComponent<Enemy>();
                 enemyPool.Add(newEnemy);
-                newEnemy.isBusy = true;
+                newEnemy.isActive = true;
             }
         }
 
-        //if enemy dies, remember to change isBusy back to false
+        //if enemy dies, remember to change isActive back to false
     }
 
     void InitializeCitizens(int citizenCount)
