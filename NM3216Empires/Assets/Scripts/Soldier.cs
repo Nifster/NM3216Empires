@@ -17,7 +17,7 @@ public class Soldier : MonoBehaviour
     float currMoveSpeed;
     bool turnBack = false;
     bool moveHorz;
-    public GameObject goalSlotObj;
+    public PlatformMapScript.Point goalPoint;
     Rigidbody2D rgBody;
 
     public int pointY;//this is the Point system Y coordinate
@@ -72,7 +72,7 @@ public class Soldier : MonoBehaviour
 
     }
 
-    public IEnumerator GoToSlot(GameObject slot)
+    public IEnumerator GoToSlot(PlatformMapScript.Point slotPoint)
     {
 
         //TODO: Bug where if you have 1 ladder, but you need 2 ladders to reach the goal slot at the top, isBusy never gets reset to false, 
@@ -82,7 +82,7 @@ public class Soldier : MonoBehaviour
 
         //called by slot?
         //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
-        PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
+        //PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
         if (slotPoint.y > pointY)
         {
 
@@ -95,7 +95,7 @@ public class Soldier : MonoBehaviour
                 if (pointY == PlatformGameManager.instance.ladderSlots[i].point.y)
                 {
 
-                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].gameObject));
+                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].point));
                 }
             }
 
@@ -113,7 +113,7 @@ public class Soldier : MonoBehaviour
                 if (pointY - 1 == PlatformGameManager.instance.ladderSlots[i].point.y)
                 {
 
-                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y + 1, (int)PlatformGameManager.instance.ladderSlots[i].point.x]));
+                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y + 1, (int)PlatformGameManager.instance.ladderSlots[i].point.x].GetComponent<SlotScript>().point));
                 }
             }
             Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
@@ -123,7 +123,7 @@ public class Soldier : MonoBehaviour
             //moveHorz = true;
             isBusy = true;
             currMoveSpeed = workingMoveSpeed;
-            while (transform.position.x != slot.GetComponent<SlotScript>().point.PointToCoord().x)
+            while (transform.position.x != slotPoint.PointToCoord().x)
             {
                 transform.position = Vector3.MoveTowards(transform.position,
                             new Vector3(slotPoint.PointToCoord().x, transform.position.y, transform.position.z),
@@ -135,7 +135,7 @@ public class Soldier : MonoBehaviour
                 transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
                 pointY++;
                 toLadderUp = false;
-                StartCoroutine(GoToSlot(goalSlotObj));
+                StartCoroutine(GoToSlot(goalPoint));
 
             }
             else if (toLadderDown)
@@ -143,13 +143,13 @@ public class Soldier : MonoBehaviour
                 transform.position = new Vector3(transform.position.x, transform.position.y - 2.5f, transform.position.z);
                 pointY--;
                 toLadderDown = false;
-                StartCoroutine(GoToSlot(goalSlotObj));
+                StartCoroutine(GoToSlot(goalPoint));
 
             }
             else
             {
 
-                StartCoroutine(Attack(slot));
+                //StartCoroutine(Attack(slot)); //have to reset to not busy
             }
 
 

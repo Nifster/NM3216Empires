@@ -180,14 +180,7 @@ public class SlotScript : MonoBehaviour
                 genericBuildingPreview.transform.localPosition = new Vector3(transform.position.x, transform.position.y + 0.8f);
             }
 
-            if (Input.GetMouseButtonDown(1)) //do a check if you have a barracks
-            {
-                //TODO: get free soldier, go to slot
-                Soldier freeSoldier = PlatformGameManager.instance.GetSoldier(point);
-                //do a check if freeSoldier null
-                StartCoroutine(freeSoldier.GoToSlot(this.gameObject));
-                freeSoldier.goalSlotObj = this.gameObject;
-            }
+            
         }
         
     }

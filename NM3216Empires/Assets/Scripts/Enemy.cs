@@ -77,15 +77,6 @@ public class Enemy : MonoBehaviour {
         if (!isBusy)
         {
             currMoveSpeed = idleMoveSpeed;
-            //if (Time.time >= tChange)
-            //{
-            //    randomX = Random.Range(-randomMoveThreshold, randomMoveThreshold); // with float parameters, a random float
-            //                                                                       //randomY = Random.Range(-randomMoveThreshold, randomMoveThreshold); //  between -2.0 and 2.0 is returned
-            //                                                                       // set a random interval between 0.5 and 1.5
-            //    tChange = Time.time + Random.Range(lowerMoveThreshold, higherMoveThreshold);
-            //}
-
-            //transform.Translate(new Vector3(randomX, 0, 0) * idleMoveSpeed * Time.deltaTime);
 
             //find nearest citizen / building, call gotoslot, change to busy, attack the building/citizen until destroyed, change busy back
             //to false
@@ -97,12 +88,21 @@ public class Enemy : MonoBehaviour {
 
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
 
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("Enemy clicked");
+            //get nearest soldier, gotoslot
+            PlatformMapScript.Point currPoint = new PlatformMapScript.Point(pointX, pointY);
+            Soldier selectedSoldier = PlatformGameManager.instance.GetSoldier(currPoint);
+            StartCoroutine(selectedSoldier.GoToSlot(currPoint));
+            selectedSoldier.goalPoint = currPoint;
+        }
         
 
 
     }
 
-    public IEnumerator GoToSlot(GameObject slot)
+    public IEnumerator GoToSlot(PlatformMapScript.Point slotPoint)
     {
 
         //TODO: Bug where if you have 1 ladder, but you need 2 ladders to reach the goal slot at the top, isBusy never gets reset to false, 
@@ -112,7 +112,7 @@ public class Enemy : MonoBehaviour {
 
         //called by slot?
         //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
-        PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
+        //PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
         if (slotPoint.y > pointY)
         {
 
@@ -125,7 +125,7 @@ public class Enemy : MonoBehaviour {
                 if (pointY == PlatformGameManager.instance.ladderSlots[i].point.y)
                 {
 
-                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].gameObject));
+                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].point));
                 }
             }
 
@@ -143,7 +143,7 @@ public class Enemy : MonoBehaviour {
                 if (pointY - 1 == PlatformGameManager.instance.ladderSlots[i].point.y)
                 {
 
-                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y + 1, (int)PlatformGameManager.instance.ladderSlots[i].point.x]));
+                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y + 1, (int)PlatformGameManager.instance.ladderSlots[i].point.x].GetComponent<SlotScript>().point));
                 }
             }
             Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
@@ -153,7 +153,7 @@ public class Enemy : MonoBehaviour {
             //moveHorz = true;
             isBusy = true;
             currMoveSpeed = workingMoveSpeed;
-            while (transform.position.x != slot.GetComponent<SlotScript>().point.PointToCoord().x)
+            while (transform.position.x != slotPoint.PointToCoord().x)
             {
                 transform.position = Vector3.MoveTowards(transform.position,
                             new Vector3(slotPoint.PointToCoord().x, transform.position.y, transform.position.z),
@@ -165,7 +165,7 @@ public class Enemy : MonoBehaviour {
                 transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
                 pointY++;
                 toLadderUp = false;
-                StartCoroutine(GoToSlot(goalSlotObj));
+                StartCoroutine(GoToSlot(goalSlotObj.GetComponent<SlotScript>().point));
 
             }
             else if (toLadderDown)
@@ -173,7 +173,7 @@ public class Enemy : MonoBehaviour {
                 transform.position = new Vector3(transform.position.x, transform.position.y - 2.5f, transform.position.z);
                 pointY--;
                 toLadderDown = false;
-                StartCoroutine(GoToSlot(goalSlotObj));
+                StartCoroutine(GoToSlot(goalSlotObj.GetComponent<SlotScript>().point));
 
             }
             else
@@ -275,4 +275,5 @@ public class Enemy : MonoBehaviour {
         yield return null;
     }
 
+    
 }
