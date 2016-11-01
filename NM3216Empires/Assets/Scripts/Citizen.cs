@@ -18,6 +18,7 @@ public class Citizen : MonoBehaviour {
     bool moveHorz;
     public GameObject goalSlotObj;
     Rigidbody2D rgBody;
+    public bool isAttacked = false;
 
     public int pointY;//this is the Point system Y coordinate
     public int pointX;
@@ -39,8 +40,6 @@ public class Citizen : MonoBehaviour {
             pointY = 2;
         }
         pointX = (int)(transform.localPosition.x / 1.75f)+4;
-        Debug.Log("pointX " + pointX);//this is the Point system Y coordinate (i.e 0,1,or 2)
-        Debug.Log("posX " + transform.localPosition.x);
     }
 
     public void ResetPointPosition()
@@ -77,6 +76,13 @@ public class Citizen : MonoBehaviour {
 
             transform.Translate(new Vector3(randomX, 0, 0) * idleMoveSpeed * Time.deltaTime);
 
+        }
+
+        if (isAttacked)
+        {
+            isBusy = true;
+            currMoveSpeed = 0;
+            Debug.Log("Attacked");
         }
 
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
@@ -176,7 +182,6 @@ public class Citizen : MonoBehaviour {
     {
         if(other.gameObject.tag == "Blocked")
         {
-            Debug.Log("Blocked");
             //turnBack = true;
             randomX = -randomX;
         }

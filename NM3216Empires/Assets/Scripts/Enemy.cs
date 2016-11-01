@@ -24,6 +24,8 @@ public class Enemy : MonoBehaviour {
     bool toLadderUp = false;
     bool toLadderDown = false;
 
+    int turnAroundCount = 1;
+
     // Use this for initialization
     // Use this for initialization
     void Start()
@@ -199,15 +201,39 @@ public class Enemy : MonoBehaviour {
             {
                 directionX = Vector3.right;
             }
+            turnAroundCount++;
+            if(turnAroundCount >= 2)
+            {
+                toLadderUp = true;
+                turnAroundCount = 0;
+            }
+        }
+
+        if(other.gameObject.tag == "Ladder" && toLadderUp)
+        {
+            //move enemy up by one level
+            transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
+            pointY++;
+            toLadderUp = false;
+        }
+
+        if (other.gameObject.tag == "Citizen")
+        {
+            //isBusy = true;
+            other.GetComponent<Citizen>().isAttacked = true;
+            StartCoroutine(Attack(other.gameObject));
         }
 
 
     }
 
 
-    IEnumerator Attack(GameObject slotObj)
+    IEnumerator Attack(GameObject victim)
     {
+        isBusy = true;
         yield return new WaitForSeconds(5);
+        Destroy(victim);
+        Debug.Log("Bam");
         isBusy = false;
         yield return null;
     }

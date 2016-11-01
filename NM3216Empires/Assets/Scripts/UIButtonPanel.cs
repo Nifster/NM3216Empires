@@ -31,7 +31,6 @@ public class UIButtonPanel : MonoBehaviour {
         //Debug.Log("_____" + this.GetComponent<RectTransform>().anchoredPosition);
         if (panelToggle.GetComponent<Toggle>().isOn)
         {
-            Debug.Log("toggled");
             StartCoroutine(MoveFromTo(originalPos, extendedPos, moveTime));
             arrowImage.GetComponent<Image>().sprite = rightSprite;
         }

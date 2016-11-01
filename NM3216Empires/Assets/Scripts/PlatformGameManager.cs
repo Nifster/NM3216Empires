@@ -59,6 +59,8 @@ public class PlatformGameManager : MonoBehaviour {
     [HeaderAttribute("Enemy Spawn Checkpoints")]
     public int firstCheckpoint;
     public int secondCheckpoint;
+    bool firstEnemyWaveSpawned = false;
+    bool secondEnemyWaveSpawned = false;
     //public enum BuildingToBuild
     //{
     //    House,
@@ -583,16 +585,18 @@ public class PlatformGameManager : MonoBehaviour {
         if(eraIndex == 0)
         {
             //Egyptian
-            if (_influenceCount == firstCheckpoint)
+            if (_influenceCount == firstCheckpoint && !firstEnemyWaveSpawned)
             {
                 //spawn 2 enemies
                 SpawnEnemies(2);
+                firstEnemyWaveSpawned = true;
 
             }
-            else if (_influenceCount == secondCheckpoint)
+            else if (_influenceCount == secondCheckpoint && !secondEnemyWaveSpawned)
             {
                 //spawn 2 enemies
                 SpawnEnemies(2);
+                secondEnemyWaveSpawned = true;
             }
         }
         
