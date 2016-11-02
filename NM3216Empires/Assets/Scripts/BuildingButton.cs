@@ -52,7 +52,7 @@ public class BuildingButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         lumberText.text = thisBuilding.lumberCost.ToString();
         oreText.text = thisBuilding.oreCost.ToString();
         influenceCostText.text = thisBuilding.influenceCost.ToString();
-        influenceRewardText.text = thisBuilding.influenceReward.ToString();
+        //influenceRewardText.text = thisBuilding.influenceReward.ToString();
         buildTimeText.text = thisBuilding.timeToBuild.ToString();
         //infoPanel.transform.position = this.transform.position;
     }

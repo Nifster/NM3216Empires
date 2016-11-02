@@ -38,7 +38,6 @@ public class PlatformGameManager : MonoBehaviour {
         public int lumberCost;
         public int oreCost;
         public int influenceCost; //only for monuments
-        public int influenceReward;
         public float timeToBuild;
     }
 
@@ -536,10 +535,10 @@ public class PlatformGameManager : MonoBehaviour {
     {
         bool result = false;
 
-        if(_lumberCount >= buildingType.lumberCost &&
-            _citizenCount >= buildingType.labourCost &&
-            _oreCount >= buildingType.oreCost &&
-            _influenceCount >= buildingType.influenceCost)
+        if(_lumberCount >= -buildingType.lumberCost &&
+            _citizenCount >= -buildingType.labourCost &&
+            _oreCount >= -buildingType.oreCost &&
+            _influenceCount >= -buildingType.influenceCost)
         {
             result = true;
         }
@@ -550,10 +549,10 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void SpendResources(Buildings buildingType)
     {
-        _lumberCount -= buildingType.lumberCost;
-        _oreCount -= buildingType.oreCost;
-        _influenceCount -= buildingType.influenceCost;
-        _influenceCount += buildingType.influenceReward;
+        _lumberCount += buildingType.lumberCost;
+        _oreCount += buildingType.oreCost;
+        _influenceCount += buildingType.influenceCost;
+        //_influenceCount += buildingType.influenceReward;
         
     }
     
