@@ -30,6 +30,8 @@ public class Soldier : MonoBehaviour
     bool toLadderUp = false;
     bool toLadderDown = false;
 
+    Vector3 prevPosition;
+
     // Use this for initialization
     void Start()
     {
@@ -49,11 +51,24 @@ public class Soldier : MonoBehaviour
             pointY = 2;
         }
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
+        prevPosition = this.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (prevPosition.x > this.transform.position.x)
+        {
+            //moving left
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else
+        {
+            //moving right
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        prevPosition = this.transform.position;
 
         //if isBusy false, walk around randomly
         if (!isBusy && isActive)
@@ -230,9 +245,7 @@ public class Soldier : MonoBehaviour
         currHealth--;
         if (currHealth <= 0)
         {
-            isActive = false;
-            currHealth = maxHealth;
-
+            PlatformGameManager.instance.KillSoldier(this);
         }
         isBusy = false;
         isAttacking = false;

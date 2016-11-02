@@ -17,6 +17,8 @@ public class PlatformGameManager : MonoBehaviour {
     [SerializeField]
     private int _soldierCount;
 
+    public int _currSoldierCount;
+
     private int _enemyCount;
 
     public static PlatformGameManager instance;
@@ -80,6 +82,7 @@ public class PlatformGameManager : MonoBehaviour {
     public Text citizenText;
     public Text oreText;
     public Text influenceText;
+    public Text soldierText;
 
     public List<Citizen> citizenPool;
     public List<Soldier> soldierPool;
@@ -167,17 +170,17 @@ public class PlatformGameManager : MonoBehaviour {
     void Update () {
 
         //for testing soldiers and enemies
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    Debug.Log("space");
-        //    StartCoroutine(SpawnEnemies(1));
-        //}
-        //if (Input.GetKeyDown(KeyCode.LeftControl))
-        //{
-        //    PlatformMapScript.Point spawnpoint = new PlatformMapScript.Point(6, 1);
-        //    Vector3 spawnpointvec = new Vector3(spawnpoint.PointToCoord().x,(spawnpoint.PointToCoord().y));
-        //    AddSoldier(spawnpointvec);
-        //}
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("space");
+            StartCoroutine(SpawnEnemies(1));
+        }
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            PlatformMapScript.Point spawnpoint = new PlatformMapScript.Point(6, 0);
+            Vector3 spawnpointvec = new Vector3(spawnpoint.PointToCoord().x, (spawnpoint.PointToCoord().y));
+            AddSoldier(spawnpointvec);
+        }
 
         minutes.text = minutesValue.ToString();
         seconds.text = ((int)secondsValue).ToString();
@@ -197,6 +200,7 @@ public class PlatformGameManager : MonoBehaviour {
         citizenText.text = _citizenCount.ToString();
         oreText.text = _oreCount.ToString();
         influenceText.text = _influenceCount.ToString();
+        soldierText.text = _currSoldierCount.ToString();
 
         //pause check
         if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
@@ -332,6 +336,7 @@ public class PlatformGameManager : MonoBehaviour {
                     soldierPool[j].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
                     //yield return new WaitForSeconds(1);
                     //_soldierCount++;
+                    _currSoldierCount++;
                 }
             }
 
@@ -348,6 +353,7 @@ public class PlatformGameManager : MonoBehaviour {
                 soldierPool.Add(newSoldier);
                 newSoldier.isActive = true;
                 _soldierCount++;
+                _currSoldierCount++;
                 //yield return new WaitForSeconds(1);
             }
         }
@@ -744,6 +750,13 @@ public class PlatformGameManager : MonoBehaviour {
     public void KillEnemy(GameObject enemy)
     {
         enemy.GetComponent<Enemy>().isActive = false;
+    }
+
+    public void KillSoldier(Soldier soldier)
+    {
+        soldier.isActive = false;
+        soldier.currHealth = soldier.maxHealth;
+        _currSoldierCount--;
     }
 
 }

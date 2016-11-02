@@ -28,9 +28,9 @@ public class Enemy : MonoBehaviour {
     public int timeToDestroyBuilding;
 
     int turnAroundCount = 1;
+    
+    Vector3 prevPosition;
 
-    // Use this for initialization
-    // Use this for initialization
     void Start()
     {
         rgBody = this.GetComponent<Rigidbody2D>();
@@ -65,11 +65,23 @@ public class Enemy : MonoBehaviour {
             pointY = 2;
         }
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
+        prevPosition = this.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (prevPosition.x > this.transform.position.x)
+        {
+            //moving left
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            //moving right
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        prevPosition = this.transform.position;
 
         //if isBusy false, walk around randomly
         if (!isBusy && isActive)

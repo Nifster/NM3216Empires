@@ -25,6 +25,8 @@ public class Citizen : MonoBehaviour {
     bool toLadderUp = false;
     bool toLadderDown = false;
 
+    Vector3 prevPosition;
+
     // Use this for initialization
     void Start () {
         rgBody = this.GetComponent<Rigidbody2D>();
@@ -57,11 +59,23 @@ public class Citizen : MonoBehaviour {
             pointY = 2;
         }
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
+        prevPosition = this.transform.position;
     }
 	
 	// Update is called once per frame
 	void Update () {
         
+        if(prevPosition.x > this.transform.position.x)
+        {
+            //moving left
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else
+        {
+            //moving right
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        prevPosition = this.transform.position;
         //if isBusy false, walk around randomly
         if (!isBusy)
         {
