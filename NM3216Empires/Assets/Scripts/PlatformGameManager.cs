@@ -8,8 +8,17 @@ public class PlatformGameManager : MonoBehaviour {
 
     public bool isPaused = false;
     public GameObject pausePanel;
+
+    [HeaderAttribute("Next Era Assets")]
     public List<Sprite> eraBackgrounds;
+    public List<Sprite> eraOverlays;
+    public List<Sprite> citizenSprites;
+    public List<Sprite> soldierSprites;
+    public List<Sprite> kingSprites;
+
     public GameObject backgroundObj;
+    public GameObject overlayObj;
+    public GameObject kingObj;
 
     [SerializeField]
     private int _citizenCount;
@@ -120,7 +129,9 @@ public class PlatformGameManager : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
-        
+
+        soldierPrefab.GetComponent<SpriteRenderer>().sprite = soldierSprites[0];
+        citizenPrefab.GetComponent<SpriteRenderer>().sprite = citizenSprites[0];
         _lumberCount = 0;
         _oreCount = 0;
         _influenceCount = 0;
@@ -180,6 +191,11 @@ public class PlatformGameManager : MonoBehaviour {
             PlatformMapScript.Point spawnpoint = new PlatformMapScript.Point(6, 0);
             Vector3 spawnpointvec = new Vector3(spawnpoint.PointToCoord().x, (spawnpoint.PointToCoord().y));
             AddSoldier(spawnpointvec);
+        }
+
+        //for testing next era
+        if (Input.GetKeyDown(KeyCode.LeftShift)){
+            NextEra();
         }
 
         minutes.text = minutesValue.ToString();
@@ -310,17 +326,6 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void AddSoldier(Vector3 pos)
     {
-        //for (int i = 0; i < SOLDIERS_PER_BARRACKS; i++)
-        //{
-        //    GameObject soldierObj = Instantiate(soldierPrefab);
-        //    //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
-        //    //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-        //    soldierObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
-        //    Soldier newSoldier = soldierObj.GetComponent<Soldier>();
-        //    soldierPool.Add(newSoldier);
-        //    newSoldier.isBusy = false;
-        //    _soldierCount++;
-        //}
 
         int soldiersLeftToSpawn = SOLDIERS_PER_BARRACKS;
         //PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0);
@@ -633,13 +638,32 @@ public class PlatformGameManager : MonoBehaviour {
     
     public void NextEra()
     {
-        eraIndex++;
-        backgroundObj.GetComponent<SpriteRenderer>().sprite = eraBackgrounds[eraIndex];
-        //reset resources value
-        ResetResources();
-        //set new background
-        //set citizen prefabs
-        //have a dialog box saying "Welcome to the new era!"
+        if (eraIndex <= 2)
+        {
+            eraIndex++;
+            //change sprites
+            backgroundObj.GetComponent<SpriteRenderer>().sprite = eraBackgrounds[eraIndex];
+            overlayObj.GetComponent<Image>().sprite = eraOverlays[eraIndex];
+            kingObj.GetComponent<Image>().sprite = kingSprites[eraIndex];
+            soldierPrefab.GetComponent<SpriteRenderer>().sprite = soldierSprites[eraIndex];
+            citizenPrefab.GetComponent<SpriteRenderer>().sprite = citizenSprites[eraIndex];
+            for(int i=0;i<citizenPool.Count; i++)
+            {
+                citizenPool[i].GetComponent<SpriteRenderer>().sprite = citizenSprites[eraIndex];
+            }
+            for (int i = 0; i < soldierPool.Count; i++)
+            {
+                soldierPool[i].GetComponent<SpriteRenderer>().sprite = soldierSprites[eraIndex];
+            }
+            //reset resources value
+            ResetResources();
+            //set new background
+            //set citizen prefabs
+            //have a dialog box saying "Welcome to the new era!"
+        }else if(eraIndex >= 3)
+        {
+            //Grats! You beat the game!
+        }
         
     }
 
