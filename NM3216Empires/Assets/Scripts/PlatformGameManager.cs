@@ -104,6 +104,12 @@ public class PlatformGameManager : MonoBehaviour {
     public int lumberDemolishReward;
     public int oreDemolishReward;
 
+    [HeaderAttribute("Timer")]
+    public Text minutes;
+    public Text seconds;
+    public int minutesValue = 5;
+    float secondsValue;
+
     void Awake()
     {
         instance = this;
@@ -160,17 +166,33 @@ public class PlatformGameManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        //for testing soldiers and enemies
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    Debug.Log("space");
+        //    StartCoroutine(SpawnEnemies(1));
+        //}
+        //if (Input.GetKeyDown(KeyCode.LeftControl))
+        //{
+        //    PlatformMapScript.Point spawnpoint = new PlatformMapScript.Point(6, 1);
+        //    Vector3 spawnpointvec = new Vector3(spawnpoint.PointToCoord().x,(spawnpoint.PointToCoord().y));
+        //    AddSoldier(spawnpointvec);
+        //}
+
+        minutes.text = minutesValue.ToString();
+        seconds.text = ((int)secondsValue).ToString();
+        secondsValue -= Time.deltaTime;
+        if(secondsValue <= 0)
         {
-            Debug.Log("space");
-            StartCoroutine(SpawnEnemies(1));
+            secondsValue = 59;
+            minutesValue--;
+
         }
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if(minutesValue <= 0 && secondsValue <= 00)
         {
-            PlatformMapScript.Point spawnpoint = new PlatformMapScript.Point(6, 1);
-            Vector3 spawnpointvec = new Vector3(spawnpoint.PointToCoord().x,(spawnpoint.PointToCoord().y));
-            AddSoldier(spawnpointvec);
+            Debug.Log("GAME OVER");
         }
+
         lumberText.text = _lumberCount.ToString();
         citizenText.text = _citizenCount.ToString();
         oreText.text = _oreCount.ToString();
