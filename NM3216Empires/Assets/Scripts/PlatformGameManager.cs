@@ -594,7 +594,7 @@ public class PlatformGameManager : MonoBehaviour {
                 GameObject newBuilding = Instantiate(Pyramid.prefab);
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
-                newBuilding.transform.localPosition = new Vector3(0, 1.0f, 0);
+                newBuilding.transform.localPosition = new Vector3(0, 1.2f, 0);
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 SpendResources(Pyramid);
                 NextEra();
@@ -674,6 +674,7 @@ public class PlatformGameManager : MonoBehaviour {
         _oreCount = 0;
         _influenceCount = 0;
         InitializeCitizens(2);
+        //reset timer?
 
     }
 
