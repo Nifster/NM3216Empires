@@ -43,8 +43,6 @@ public class Soldier : MonoBehaviour
             pointY = 2;
         }
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
-        Debug.Log("pointX " + pointX);//this is the Point system Y coordinate (i.e 0,1,or 2)
-        Debug.Log("posX " + transform.localPosition.x);
     }
 
     // Update is called once per frame
@@ -164,7 +162,6 @@ public class Soldier : MonoBehaviour
     {
         if (other.gameObject.tag == "Blocked")
         {
-            Debug.Log("Blocked");
             //turnBack = true;
             randomX = -randomX;
         }

@@ -127,7 +127,7 @@ public class SlotScript : MonoBehaviour
         {
             resourceTimerSlider = Instantiate(resourceTimerSliderPrefab);
             resourceTimerSlider.transform.SetParent(canvasObj.transform);
-            resourceTimerSlider.transform.position = new Vector2 (transform.position.x, transform.position.y +1.5f);
+            resourceTimerSlider.transform.position = new Vector3 (transform.position.x, transform.position.y +1.5f, 0);
             resourceTimerSlider.transform.localScale = new Vector3(1, 1, 1);
             hasTimer = true;
             resourceTimerSlider.name += " " + name;
@@ -166,7 +166,7 @@ public class SlotScript : MonoBehaviour
         if (!PlatformGameManager.instance.isPaused)
         {
             Color translucent = highlight.color;
-            translucent.a = 1.0f;
+            translucent.a = 0.7f;
             highlight.color = translucent;
 
             if (PlatformGameManager.instance.selectedBuildingToBuild != null)

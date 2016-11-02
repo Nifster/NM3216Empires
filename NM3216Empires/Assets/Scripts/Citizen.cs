@@ -82,7 +82,6 @@ public class Citizen : MonoBehaviour {
         {
             isBusy = true;
             currMoveSpeed = 0;
-            Debug.Log("Attacked");
         }
 
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;

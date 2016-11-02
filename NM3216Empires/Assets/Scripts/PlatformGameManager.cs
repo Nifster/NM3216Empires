@@ -373,7 +373,6 @@ public class PlatformGameManager : MonoBehaviour {
                         citizenFound = true;
                         closestX = Mathf.Abs(citizenPool[i].pointX - slotPoint.x);
                         foundCitizen = citizenPool[i];
-                        Debug.Log("Same level found");
                     }
                     
                 }
@@ -457,7 +456,7 @@ public class PlatformGameManager : MonoBehaviour {
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
-                newBuilding.transform.localPosition = new Vector3(0, 0.8f, 0);
+                newBuilding.transform.localPosition = new Vector3(0, 1f, 0);
                 //add citizen at spot
                 AddCitizen(slotToBuildIn.transform.position);
                 SpendResources(House);
@@ -476,7 +475,7 @@ public class PlatformGameManager : MonoBehaviour {
                 slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.Barracks;
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
-                newBuilding.transform.localPosition = new Vector3(0, 1.05f, 0);
+                newBuilding.transform.localPosition = new Vector3(0, 1f, 0);
                 //add soldiers at spot
                 AddSoldier(slotToBuildIn.transform.position);
 
@@ -490,8 +489,8 @@ public class PlatformGameManager : MonoBehaviour {
             {
                 GameObject newBuilding = Instantiate(Ladder.prefab);
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
-                //newBuilding.transform.localScale = transform.localScale;
-                newBuilding.transform.localPosition = new Vector3(0, 1.6f, 0);
+                newBuilding.transform.localScale = new Vector3(0.4f, 1, 1);
+                newBuilding.transform.localPosition = new Vector3(0, 1.3f, 0);
                 //save position of ladder for later reference
                 SlotScript slotToBuildInScript = slotToBuildIn.GetComponent<SlotScript>();
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
@@ -580,18 +579,20 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void EnemyWaveCheck()
     {
+        Debug.Log("INVASION CHECK");
         //check era
-        if(eraIndex == 0)
+        if (eraIndex == 0)
         {
             //Egyptian
-            if (_influenceCount == firstCheckpoint && !firstEnemyWaveSpawned)
+            if (_influenceCount >= firstCheckpoint && !firstEnemyWaveSpawned)
             {
                 //spawn 2 enemies
+                Debug.Log("INVASION");
                 StartCoroutine(SpawnEnemies(2));
                 firstEnemyWaveSpawned = true;
 
             }
-            else if (_influenceCount == secondCheckpoint && !secondEnemyWaveSpawned)
+            else if (_influenceCount >= secondCheckpoint && !secondEnemyWaveSpawned)
             {
                 //spawn 2 enemies
                 StartCoroutine(SpawnEnemies(2));

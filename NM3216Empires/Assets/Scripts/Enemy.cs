@@ -48,8 +48,6 @@ public class Enemy : MonoBehaviour {
             pointY = 2;
         }
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
-        Debug.Log("pointX " + pointX);//this is the Point system Y coordinate (i.e 0,1,or 2)
-        Debug.Log("posX " + transform.localPosition.x);
     }
 
     public void ResetPointPosition()
@@ -94,8 +92,12 @@ public class Enemy : MonoBehaviour {
             //get nearest soldier, gotoslot
             PlatformMapScript.Point currPoint = new PlatformMapScript.Point(pointX, pointY);
             Soldier selectedSoldier = PlatformGameManager.instance.GetSoldier(currPoint);
-            StartCoroutine(selectedSoldier.GoToSlot(currPoint));
-            selectedSoldier.goalPoint = currPoint;
+            if(selectedSoldier != null)
+            {
+                StartCoroutine(selectedSoldier.GoToSlot(currPoint));
+                selectedSoldier.goalPoint = currPoint;
+            }
+            
         }
         
 
