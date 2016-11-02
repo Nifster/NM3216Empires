@@ -72,7 +72,7 @@ public class Enemy : MonoBehaviour {
     {
 
         //if isBusy false, walk around randomly
-        if (!isBusy)
+        if (!isBusy && isActive)
         {
             currMoveSpeed = idleMoveSpeed;
 
@@ -86,22 +86,37 @@ public class Enemy : MonoBehaviour {
 
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
 
+        
+
+        if (!isActive)
+        {
+            //i.e dead or inactive
+            //offscreen and not moving
+            transform.position = new Vector3(1000, 1000);
+            isBusy = false;
+        }
+        
+
+
+    }
+
+    public void OnMouseOver()
+    {
         if (Input.GetMouseButtonDown(1))
         {
             Debug.Log("Enemy clicked");
             //get nearest soldier, gotoslot
             PlatformMapScript.Point currPoint = new PlatformMapScript.Point(pointX, pointY);
             Soldier selectedSoldier = PlatformGameManager.instance.GetSoldier(currPoint);
-            if(selectedSoldier != null)
+            
+            if (selectedSoldier != null)
             {
-                StartCoroutine(selectedSoldier.GoToSlot(currPoint));
+                
+                selectedSoldier.coroutine = StartCoroutine(selectedSoldier.GoToSlot(currPoint));
                 selectedSoldier.goalPoint = currPoint;
             }
-            
+
         }
-        
-
-
     }
 
     public IEnumerator GoToSlot(PlatformMapScript.Point slotPoint)

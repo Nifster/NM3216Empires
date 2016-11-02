@@ -159,6 +159,18 @@ public class PlatformGameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("space");
+            StartCoroutine(SpawnEnemies(1));
+        }
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            PlatformMapScript.Point spawnpoint = new PlatformMapScript.Point(6, 1);
+            Vector3 spawnpointvec = new Vector3(spawnpoint.PointToCoord().x,(spawnpoint.PointToCoord().y));
+            AddSoldier(spawnpointvec);
+        }
         lumberText.text = _lumberCount.ToString();
         citizenText.text = _citizenCount.ToString();
         oreText.text = _oreCount.ToString();
@@ -272,17 +284,53 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void AddSoldier(Vector3 pos)
     {
+        //for (int i = 0; i < SOLDIERS_PER_BARRACKS; i++)
+        //{
+        //    GameObject soldierObj = Instantiate(soldierPrefab);
+        //    //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
+        //    //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
+        //    soldierObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
+        //    Soldier newSoldier = soldierObj.GetComponent<Soldier>();
+        //    soldierPool.Add(newSoldier);
+        //    newSoldier.isBusy = false;
+        //    _soldierCount++;
+        //}
+
+        int soldiersLeftToSpawn = SOLDIERS_PER_BARRACKS;
+        //PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0);
+        //check pool if got enough, if not instantiate
         for (int i = 0; i < SOLDIERS_PER_BARRACKS; i++)
         {
-            GameObject soldierObj = Instantiate(soldierPrefab);
-            //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
-            //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-            soldierObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
-            Soldier newSoldier = soldierObj.GetComponent<Soldier>();
-            soldierPool.Add(newSoldier);
-            newSoldier.isBusy = false;
-            _soldierCount++;
+            //find non-active
+            for (int j = 0; j < _soldierCount; j++)
+            {
+                if (!soldierPool[j].isActive)
+                {
+                    soldierPool[j].isActive = true;
+                    soldierPool[j].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
+                    //yield return new WaitForSeconds(1);
+                    //_soldierCount++;
+                }
+            }
+
         }
+
+        if (soldiersLeftToSpawn >= 0)
+        {
+            //if not enough soldier in pool, spawn more
+            for (int i = 0; i < soldiersLeftToSpawn; i++)
+            {
+                GameObject soldierObj = Instantiate(soldierPrefab);
+                soldierObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
+                Soldier newSoldier = soldierObj.GetComponent<Soldier>();
+                soldierPool.Add(newSoldier);
+                newSoldier.isActive = true;
+                _soldierCount++;
+                //yield return new WaitForSeconds(1);
+            }
+        }
+
+        //if soldier dies, remember to change isActive back to false
     }
 
     public Soldier GetSoldier(PlatformMapScript.Point slotPoint)
@@ -295,7 +343,7 @@ public class PlatformGameManager : MonoBehaviour {
         //search through pool for free citizen
         for (int i = 0; i < _soldierCount; i++)
         {
-            if (!soldierPool[i].isBusy)
+            if (!soldierPool[i].isBusy && soldierPool[i].isActive)
             {
                 //y check
                 if (soldierPool[i].pointY == slotPoint.y)
@@ -335,7 +383,7 @@ public class PlatformGameManager : MonoBehaviour {
                 //closest ladder found
                 for (int i = 0; i < _soldierCount; i++)
                 {
-                    if (!soldierPool[i].isBusy)
+                    if (!soldierPool[i].isBusy && soldierPool[i].isActive)
                     {
 
                         if (Mathf.Abs(ladderPoint.x - soldierPool[i].pointX) < closestX)
@@ -669,6 +717,11 @@ public class PlatformGameManager : MonoBehaviour {
     {
         citizen.SetActive(false);
         _citizenCount--;
+    }
+
+    public void KillEnemy(GameObject enemy)
+    {
+        enemy.GetComponent<Enemy>().isActive = false;
     }
 
 }

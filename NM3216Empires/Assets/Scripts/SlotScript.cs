@@ -76,7 +76,7 @@ public class SlotScript : MonoBehaviour
             Citizen freeCitizen = PlatformGameManager.instance.GetCitizen(point);
             if (currBuilding == Building.None)
             {
-                if (PlatformGameManager.instance.selectedBuildingIndexToBuild != -1)
+                if (PlatformGameManager.instance.selectedBuildingIndexToBuild != -1 && freeCitizen != null)
                 {
                     StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
                     freeCitizen.goalSlotObj = this.gameObject;

@@ -19,6 +19,11 @@ public class Soldier : MonoBehaviour
     bool moveHorz;
     public PlatformMapScript.Point goalPoint;
     Rigidbody2D rgBody;
+    public int maxHealth = 2;
+    public int currHealth;
+    public int timeToKillEnemy = 5;
+    bool isAttacking;
+    public Coroutine coroutine;
 
     public int pointY;//this is the Point system Y coordinate
     public int pointX;
@@ -28,6 +33,7 @@ public class Soldier : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        currHealth = maxHealth;
         rgBody = this.GetComponent<Rigidbody2D>();
         /*pointY = (int)((transform.localPosition.y - 0.8f) / 2.5f + 1);*/ //TODO: Bug where citizens at higher Y will go to wrong coords
         if (transform.localPosition.y == -1.9f)
@@ -50,7 +56,7 @@ public class Soldier : MonoBehaviour
     {
 
         //if isBusy false, walk around randomly
-        if (!isBusy)
+        if (!isBusy && isActive)
         {
             currMoveSpeed = idleMoveSpeed;
             if (Time.time >= tChange)
@@ -67,95 +73,117 @@ public class Soldier : MonoBehaviour
 
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
 
+        if (!isActive)
+        {
+            //i.e dead or inactive
+            //offscreen and not moving
+            transform.position = new Vector3(1000, 1000);
+            isBusy = false;
+        }
+
 
     }
 
     public IEnumerator GoToSlot(PlatformMapScript.Point slotPoint)
     {
-
-        //TODO: Bug where if you have 1 ladder, but you need 2 ladders to reach the goal slot at the top, isBusy never gets reset to false, 
-        //citizen is thus stuck forever
-
-        //TODO: Bug? where if there's more than 1 ladder per level, they cant decide which ladder to go to and become stuck
-
-        //called by slot?
-        //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
-        //PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
-        if (slotPoint.y > pointY)
+        if (!isAttacking)
         {
+            //TODO: Bug where if you have 1 ladder, but you need 2 ladders to reach the goal slot at the top, isBusy never gets reset to false, 
+            //citizen is thus stuck forever
 
-            toLadderUp = true;
+            //TODO: Bug? where if there's more than 1 ladder per level, they cant decide which ladder to go to and become stuck
 
-            //go to nearest ladder on same level
-            for (int i = 0; i < PlatformGameManager.instance.ladderSlots.Count; i++)
+            //called by slot?
+            //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
+            //PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
+            if (slotPoint.y > pointY)
             {
 
-                if (pointY == PlatformGameManager.instance.ladderSlots[i].point.y)
+                toLadderUp = true;
+
+                //go to nearest ladder on same level
+                for (int i = 0; i < PlatformGameManager.instance.ladderSlots.Count; i++)
                 {
 
-                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].point));
+                    if (pointY == PlatformGameManager.instance.ladderSlots[i].point.y)
+                    {
+
+                        StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].point));
+                    }
                 }
+
+                //Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
             }
-
-            //Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
-        }
-        else if (slotPoint.y < pointY)
-        {
-            toLadderDown = true;
-
-
-            //go to nearest ladder on lower level
-            for (int i = 0; i < PlatformGameManager.instance.ladderSlots.Count; i++)
+            else if (slotPoint.y < pointY)
             {
+                toLadderDown = true;
 
-                if (pointY - 1 == PlatformGameManager.instance.ladderSlots[i].point.y)
+
+                //go to nearest ladder on lower level
+                for (int i = 0; i < PlatformGameManager.instance.ladderSlots.Count; i++)
                 {
 
-                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y + 1, (int)PlatformGameManager.instance.ladderSlots[i].point.x].GetComponent<SlotScript>().point));
+                    if (pointY - 1 == PlatformGameManager.instance.ladderSlots[i].point.y)
+                    {
+
+                        StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y + 1, (int)PlatformGameManager.instance.ladderSlots[i].point.x].GetComponent<SlotScript>().point));
+                    }
                 }
-            }
-            Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
-        }
-        else
-        {
-            //moveHorz = true;
-            isBusy = true;
-            currMoveSpeed = workingMoveSpeed;
-            while (transform.position.x != slotPoint.PointToCoord().x)
-            {
-                transform.position = Vector3.MoveTowards(transform.position,
-                            new Vector3(slotPoint.PointToCoord().x, transform.position.y, transform.position.z),
-                            workingMoveSpeed * Time.deltaTime);
-                yield return null;
-            }
-            if (toLadderUp)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
-                pointY++;
-                toLadderUp = false;
-                StartCoroutine(GoToSlot(goalPoint));
-
-            }
-            else if (toLadderDown)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y - 2.5f, transform.position.z);
-                pointY--;
-                toLadderDown = false;
-                StartCoroutine(GoToSlot(goalPoint));
-
+                Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
             }
             else
             {
+                //moveHorz = true;
+                isBusy = true;
+                currMoveSpeed = workingMoveSpeed;
+                while (transform.position.x != slotPoint.PointToCoord().x)
+                {
+                    if (!isAttacking)
+                    {
+                        transform.position = Vector3.MoveTowards(transform.position,
+                                new Vector3(slotPoint.PointToCoord().x, transform.position.y, transform.position.z),
+                                workingMoveSpeed * Time.deltaTime);
+                    }
+                    else
+                    {
+                        yield break;
+                    }
+                    yield return null;
+                }
+                if (toLadderUp)
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
+                    pointY++;
+                    toLadderUp = false;
+                    StartCoroutine(GoToSlot(goalPoint));
 
-                //StartCoroutine(Attack(slot)); //have to reset to not busy
+                }
+                else if (toLadderDown)
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y - 2.5f, transform.position.z);
+                    pointY--;
+                    toLadderDown = false;
+                    StartCoroutine(GoToSlot(goalPoint));
+
+                }
+                else
+                {
+                    isBusy = false;
+                    //StartCoroutine(Attack(slot)); //have to reset to not busy
+                }
+
+
             }
 
 
+            //slot x might be same or around the same as citizen, try to catch this case
+            //when reaches slot, calls the appropriate method in slot/gamemanager to remove tree/build house
         }
-
-
-        //slot x might be same or around the same as citizen, try to catch this case
-        //when reaches slot, calls the appropriate method in slot/gamemanager to remove tree/build house
+        else
+        {
+            Debug.Log("STOP");
+            yield break;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -166,24 +194,65 @@ public class Soldier : MonoBehaviour
             randomX = -randomX;
         }
 
+        if(other.gameObject.tag == "Enemy")
+        {
+            if (!other.GetComponent<Enemy>().isBusy && !isAttacking)
+            {
+                //attack and kill
+                isAttacking = true;
+                //StopAllCoroutines();
+                if(coroutine!= null)
+                {
+                    //StopCoroutine(coroutine);
+                }
+                other.GetComponent<Enemy>().isBusy = true;
+                StartCoroutine(Attack(other.gameObject));
+                //if health is zero, becomes inactive
+                
+            }
+            else if(other.GetComponent<Enemy>().isBusy)
+            {
+                Debug.Log("Enemy busy..");
+            }
+            
+        }
+
        
     }
 
-    
-    IEnumerator Attack(GameObject slotObj)
+
+    IEnumerator Attack(GameObject victim)
     {
-        yield return new WaitForSeconds(5);
+        isBusy = true;
+        yield return new WaitForSeconds(timeToKillEnemy);
+        //set enemy to inactive
+        PlatformGameManager.instance.KillEnemy(victim);
+        currHealth--;
+        if (currHealth <= 0)
+        {
+            isActive = false;
+            currHealth = maxHealth;
+
+        }
         isBusy = false;
-        yield return null;
+        isAttacking = false;
     }
 
     IEnumerator MoveTo(GameObject goal)
     {
         while (transform.position.x != goal.GetComponent<SlotScript>().point.PointToCoord().x)
         {
-            transform.position = Vector3.MoveTowards(transform.position,
-                        new Vector3(goal.GetComponent<SlotScript>().point.PointToCoord().x, transform.position.y, transform.position.z),
-                        workingMoveSpeed * Time.deltaTime);
+            if (!isAttacking)
+            {
+                transform.position = Vector3.MoveTowards(transform.position,
+                            new Vector3(goal.GetComponent<SlotScript>().point.PointToCoord().x, transform.position.y, transform.position.z),
+                            workingMoveSpeed * Time.deltaTime);
+            }
+            else
+            {
+                Debug.Log("WHY");
+                yield break;
+            }
         }
 
         yield return null;
