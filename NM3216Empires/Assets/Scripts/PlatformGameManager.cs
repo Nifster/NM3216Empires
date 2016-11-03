@@ -135,7 +135,8 @@ public class PlatformGameManager : MonoBehaviour {
     [HeaderAttribute("Timer")]
     public Text minutes;
     public Text seconds;
-    public int minutesValue = 5;
+    public int maxMinutes = 5;
+    int minutesValue = 5;
     float secondsValue;
 
     [HeaderAttribute("Speech Info")]
@@ -229,13 +230,17 @@ public class PlatformGameManager : MonoBehaviour {
         minutes.text = minutesValue.ToString();
         seconds.text = ((int)secondsValue).ToString();
         secondsValue -= Time.deltaTime;
+        if((int)secondsValue < 10)
+        {
+            seconds.text = "0" + ((int)secondsValue).ToString();
+        }
         if(secondsValue <= 0)
         {
             secondsValue = 59;
             minutesValue--;
 
         }
-        if(minutesValue <= 0 && secondsValue <= 00)
+        if(minutesValue < 0)
         {
             GameOver();
         }
@@ -587,6 +592,12 @@ public class PlatformGameManager : MonoBehaviour {
             case (3):
                 selectedBuildingToBuild = Pyramid;
                 break;
+            case (4):
+                selectedBuildingToBuild = Townhall;
+                break;
+            case (5):
+                selectedBuildingToBuild = School;
+                break;
         }
     }
 
@@ -606,6 +617,12 @@ public class PlatformGameManager : MonoBehaviour {
                 break;
             case (3):
                 resultBuilding = Pyramid;
+                break;
+            case (4):
+                resultBuilding = Townhall;
+                break;
+            case (5):
+                resultBuilding = School;
                 break;
         }
         return resultBuilding;
@@ -692,6 +709,21 @@ public class PlatformGameManager : MonoBehaviour {
                 NextEra();
             }
         }
+        else if (selectedBuilding == 4)
+        {
+            //monument
+            if (ResourceCheck(Townhall))
+            {
+                GameObject newBuilding = Instantiate(Townhall.prefab);
+                newBuilding.GetComponent<SpriteRenderer>().sprite = Townhall.buildingSprite;
+                newBuilding.transform.SetParent(slotToBuildIn.transform);
+                newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
+                newBuilding.transform.localPosition = new Vector3(0, 1.2f, 0);
+                slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
+                SpendResources(Townhall);
+                //do townhall skills
+            }
+        }
         //check if resource req for selected building is met
         //builds building
         //tells GameManager to remove req resources from count
@@ -743,6 +775,10 @@ public class PlatformGameManager : MonoBehaviour {
             Barracks.buildingSprite = barrackSprites[eraIndex];
             Pyramid.buildingSprite = monumentSprites[eraIndex];
             Pyramid.influenceCost = monumentInfo[eraIndex].influenceCost;
+            Pyramid.labourCost = monumentInfo[eraIndex].labourCost;
+            Pyramid.lumberCost = monumentInfo[eraIndex].lumberCost;
+            Pyramid.oreCost = monumentInfo[eraIndex].oreCost;
+            Pyramid.timeToBuild = monumentInfo[eraIndex].timeToBuild;
             if(eraIndex >= 1)
             {
                 //if 2nd era
@@ -787,6 +823,8 @@ public class PlatformGameManager : MonoBehaviour {
         _influenceCount = 0;
         InitializeCitizens(2);
         //reset timer?
+        minutesValue = maxMinutes;
+        secondsValue = 0;
 
     }
 
