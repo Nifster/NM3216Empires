@@ -975,4 +975,16 @@ public class PlatformGameManager : MonoBehaviour {
         _currSoldierCount--;
     }
 
+    public bool LadderCheck(SlotScript slot)
+    {
+        for(int i = 0; i < ladderSlots.Count; i++)
+        {
+            if(ladderSlots[i].point.y == slot.point.y)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

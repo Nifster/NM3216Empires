@@ -138,7 +138,7 @@ public class Citizen : MonoBehaviour {
                 }
             }
 
-            //Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
+            //Debug.Log("No Ladder! Cannot reach!"); //TODO: this is wrong place to deduce this
         }
         else if (slotPoint.y < pointY)
         {
@@ -155,7 +155,7 @@ public class Citizen : MonoBehaviour {
                     StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y+1, (int)PlatformGameManager.instance.ladderSlots[i].point.x],buildIndex));
                 }
             }
-            Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
+            //Debug.Log("No Ladder! Cannot reach!"); //TODO: this is wrong place to deduce this
         }
         else
         {

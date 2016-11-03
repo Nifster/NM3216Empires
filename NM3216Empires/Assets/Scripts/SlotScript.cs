@@ -85,6 +85,10 @@ public class SlotScript : MonoBehaviour
         {
             PlatformGameManager.instance.ChangeSpeechText("You might run out of ores if you're not careful");
         }
+        if(PlatformGameManager.instance.selectedBuildingToBuild != null && Input.GetMouseButtonDown(1))
+        {
+            PlatformGameManager.instance.selectedBuildingToBuild = null;
+        }
     }
 
     public void OnMouseDown()
@@ -96,12 +100,20 @@ public class SlotScript : MonoBehaviour
             {
                 if (PlatformGameManager.instance.selectedBuildingIndexToBuild != -1 && freeCitizen != null)
                 {
+                    //if ladder, do ladder check
+                    if(PlatformGameManager.instance.selectedBuildingIndexToBuild == 2)
+                    {
+                        if (!PlatformGameManager.instance.LadderCheck(this))
+                        {
+                            PlatformGameManager.instance.ChangeSpeechText("There's already a ladder on that level!");
+                            return;
+                        }
+                    }
                     //do resource check
                     if (PlatformGameManager.instance.ResourceCheck(PlatformGameManager.instance.ChooseBuildingFromIndex(PlatformGameManager.instance.selectedBuildingIndexToBuild)))
                     {
                         StartCoroutine(freeCitizen.GoToSlot(this.gameObject, PlatformGameManager.instance.selectedBuildingIndexToBuild));
                         freeCitizen.goalSlotObj = this.gameObject;
-                        
                         
                     }
                     else
@@ -126,6 +138,7 @@ public class SlotScript : MonoBehaviour
                     }
                     else
                     {
+                        PlatformGameManager.instance.ChangeSpeechText("All your workers are busy!");
                         return; //all citizens busy, maybe give a message
                     }
                 }
