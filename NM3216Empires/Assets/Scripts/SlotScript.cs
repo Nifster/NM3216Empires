@@ -78,7 +78,7 @@ public class SlotScript : MonoBehaviour
             {
                 if (PlatformGameManager.instance.selectedBuildingIndexToBuild != -1 && freeCitizen != null)
                 {
-                    StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
+                    StartCoroutine(freeCitizen.GoToSlot(this.gameObject, PlatformGameManager.instance.selectedBuildingIndexToBuild));
                     freeCitizen.goalSlotObj = this.gameObject;
                     //check what is the building selected to be built
                 }
@@ -90,7 +90,7 @@ public class SlotScript : MonoBehaviour
                 {
                     if (freeCitizen != null)
                     {
-                        StartCoroutine(freeCitizen.GoToSlot(this.gameObject));
+                        StartCoroutine(freeCitizen.GoToSlot(this.gameObject,-1));
                         freeCitizen.goalSlotObj = this.gameObject;
                     }
                     else

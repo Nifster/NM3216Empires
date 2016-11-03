@@ -522,10 +522,31 @@ public class PlatformGameManager : MonoBehaviour {
         }
     }
 
-    public void BuildSelected(GameObject slotToBuildIn)
+    public Buildings ChooseBuildingFromIndex(int buildingIndex)
+    {
+        Buildings resultBuilding = null;
+        switch (buildingIndex)
+        {
+            case (0):
+                resultBuilding = House;
+                break;
+            case (1):
+                resultBuilding = Barracks;
+                break;
+            case (2):
+                resultBuilding = Ladder;
+                break;
+            case (3):
+                resultBuilding = Pyramid;
+                break;
+        }
+        return resultBuilding;
+    }
+
+    public void BuildSelected(GameObject slotToBuildIn, int selectedBuilding)
     {
         //TODO: Resource check should be done before citizen goes to slot
-        if (selectedBuildingIndexToBuild == 0)
+        if (selectedBuilding == 0)
         {
             //check resources
             if(ResourceCheck(House))
@@ -544,7 +565,7 @@ public class PlatformGameManager : MonoBehaviour {
             }
             
         }
-        else if (selectedBuildingIndexToBuild == 1)
+        else if (selectedBuilding == 1)
         {
             //barrack
             if (ResourceCheck(Barracks))
@@ -563,7 +584,7 @@ public class PlatformGameManager : MonoBehaviour {
                 SpendResources(Barracks);
             }
         }
-        else if (selectedBuildingIndexToBuild == 2)
+        else if (selectedBuilding == 2)
         {
             //ladder
             if (ResourceCheck(Ladder))
@@ -586,7 +607,7 @@ public class PlatformGameManager : MonoBehaviour {
                 //}
             }
 
-        }else if(selectedBuildingIndexToBuild == 3)
+        }else if(selectedBuilding == 3)
         {
             //monument
             if (ResourceCheck(Pyramid))
@@ -604,8 +625,8 @@ public class PlatformGameManager : MonoBehaviour {
         //builds building
         //tells GameManager to remove req resources from count
         //reset building selected
-        selectedBuildingIndexToBuild = -1;
-        selectedBuildingToBuild = null;
+        //selectedBuildingIndexToBuild = -1;
+        //selectedBuildingToBuild = null;
 
         //do a check on influence to see if enemy soldiers should come
         EnemyWaveCheck();

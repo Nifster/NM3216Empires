@@ -24,6 +24,7 @@ public class Citizen : MonoBehaviour {
     public int pointX;
     bool toLadderUp = false;
     bool toLadderDown = false;
+    bool buildingSet = false;
 
     Vector3 prevPosition;
 
@@ -103,7 +104,7 @@ public class Citizen : MonoBehaviour {
 
     }
 
-    public IEnumerator GoToSlot(GameObject slot)
+    public IEnumerator GoToSlot(GameObject slot, int buildIndex)
     {
               
         //TODO: Bug where if you have 1 ladder, but you need 2 ladders to reach the goal slot at the top, isBusy never gets reset to false, 
@@ -114,7 +115,14 @@ public class Citizen : MonoBehaviour {
         //called by slot?
         //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
         PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
-        if(slotPoint.y  > pointY)
+
+        if (!buildingSet)
+        {
+            buildIndex = PlatformGameManager.instance.selectedBuildingIndexToBuild;
+            buildingSet = true;
+        }
+        
+        if (slotPoint.y  > pointY)
         {
             
             toLadderUp = true;
@@ -126,7 +134,7 @@ public class Citizen : MonoBehaviour {
                 if(pointY == PlatformGameManager.instance.ladderSlots[i].point.y)
                 {
                     
-                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].gameObject));
+                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].gameObject,buildIndex));
                 }
             }
 
@@ -144,7 +152,7 @@ public class Citizen : MonoBehaviour {
                 if (pointY-1 == PlatformGameManager.instance.ladderSlots[i].point.y)
                 {
                     
-                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y+1, (int)PlatformGameManager.instance.ladderSlots[i].point.x]));
+                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y+1, (int)PlatformGameManager.instance.ladderSlots[i].point.x],buildIndex));
                 }
             }
             Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
@@ -166,7 +174,7 @@ public class Citizen : MonoBehaviour {
                 transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
                 pointY++;
                 toLadderUp = false;
-                StartCoroutine(GoToSlot(goalSlotObj));
+                StartCoroutine(GoToSlot(goalSlotObj,buildIndex));
                 
             }
             else if (toLadderDown)
@@ -174,13 +182,13 @@ public class Citizen : MonoBehaviour {
                 transform.position = new Vector3(transform.position.x, transform.position.y - 2.5f, transform.position.z);
                 pointY--;
                 toLadderDown = false;
-                StartCoroutine(GoToSlot(goalSlotObj));
+                StartCoroutine(GoToSlot(goalSlotObj,buildIndex));
                 
             }
             else
             {
 
-                StartCoroutine(Harvest(slot));
+                StartCoroutine(Harvest(slot,buildIndex));
             }
 
             
@@ -212,17 +220,21 @@ public class Citizen : MonoBehaviour {
     /// </summary>
     /// <param name="secs"></param>
     /// <returns></returns>
-    IEnumerator Harvest(GameObject slotObj)
+    IEnumerator Harvest(GameObject slotObj,int buildIndex)
     {
         //moveHorz = false;
         SlotScript slot = slotObj.GetComponent<SlotScript>();
         SlotScript.Building slotBuildingType = slot.currBuilding;
         GameObject buildingObj = slot.buildingObj;
+        //int currentlyBuildingIndex = -1;
+        PlatformGameManager.Buildings currentlyBuilding = null;
         if(PlatformGameManager.instance.selectedBuildingIndexToBuild >= 0)
         {
             //if there's a building to build
-            slot.UpdateResourceTimerValue(PlatformGameManager.instance.selectedBuildingToBuild);
-            yield return new WaitForSeconds(PlatformGameManager.instance.selectedBuildingToBuild.timeToBuild); 
+            currentlyBuilding = PlatformGameManager.instance.ChooseBuildingFromIndex(buildIndex);
+            slot.UpdateResourceTimerValue(currentlyBuilding);
+            yield return new WaitForSeconds(currentlyBuilding.timeToBuild);
+            
         }
         else
         {
@@ -245,7 +257,9 @@ public class Citizen : MonoBehaviour {
         
         if(slotBuildingType == SlotScript.Building.None)
         {
-            PlatformGameManager.instance.BuildSelected(slotObj);
+            PlatformGameManager.instance.BuildSelected(slotObj, buildIndex);
+            PlatformGameManager.instance.selectedBuildingIndexToBuild = -1;
+            PlatformGameManager.instance.selectedBuildingToBuild = null;
         }
         else
         {
