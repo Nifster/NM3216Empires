@@ -123,7 +123,10 @@ public class PlatformGameManager : MonoBehaviour {
     public Text lumberText;
     public Text citizenText;
     public Text oreText;
-    public Text influenceText;
+    public Text influenceTextOnes;
+    public Text influenceTextTens;
+    public Text influenceTextHuns;
+    public Text influenceTextThous;
     public Text soldierText;
 
     public List<Citizen> citizenPool;
@@ -257,9 +260,9 @@ public class PlatformGameManager : MonoBehaviour {
         {
             _oreCount+=10;
         }
-        if (Input.GetKeyDown(KeyCode.Home))
+        if (Input.GetKey(KeyCode.Home))
         {
-            _influenceCount += 10;
+            _influenceCount += 1;
         }
 
         //for testing next era
@@ -288,7 +291,14 @@ public class PlatformGameManager : MonoBehaviour {
         lumberText.text = _lumberCount.ToString();
         citizenText.text = _citizenCount.ToString();
         oreText.text = _oreCount.ToString();
-        influenceText.text = _influenceCount.ToString();
+        int influenceOnes = (((_influenceCount % 1000) %100)%10);
+        int influenceTens = (int)((_influenceCount % 1000) % 100) / 10;
+        int influenceHuns = (int)(_influenceCount % 1000) / 100;
+        int influenceThous = (int)(_influenceCount / 1000);
+        influenceTextOnes.text = influenceOnes.ToString();
+        influenceTextTens.text = influenceTens.ToString();
+        influenceTextHuns.text = influenceHuns.ToString();
+        influenceTextThous.text = influenceThous.ToString();
         soldierText.text = _currSoldierCount.ToString();
 
         //pause check
