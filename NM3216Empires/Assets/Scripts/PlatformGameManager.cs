@@ -122,6 +122,13 @@ public class PlatformGameManager : MonoBehaviour {
     public int minutesValue = 5;
     float secondsValue;
 
+    [HeaderAttribute("Speech Info")]
+    public GameObject kingSpeechObj;
+    public Text kingSpeechText;
+    float speechTimer;
+    public float maxSpeechTimer;
+    bool showSpeech = false;
+
     void Awake()
     {
         instance = this;
@@ -130,6 +137,8 @@ public class PlatformGameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+        speechTimer = maxSpeechTimer;
+        ChangeSpeechText("Welcome to my Lamb-pire! Build me a monument NOW");
         soldierPrefab.GetComponent<SpriteRenderer>().sprite = soldierSprites[0];
         citizenPrefab.GetComponent<SpriteRenderer>().sprite = citizenSprites[0];
         _lumberCount = 0;
@@ -235,7 +244,28 @@ public class PlatformGameManager : MonoBehaviour {
             pausePanel.SetActive(false);
         }
 
+        if (showSpeech)
+        {
+            kingSpeechObj.SetActive(true);
+            speechTimer -= Time.deltaTime;
+            if(speechTimer <= 0)
+            {
+                showSpeech = false;
+                speechTimer = maxSpeechTimer;
+            }
+        }
+        else
+        {
+            kingSpeechObj.SetActive(false);
+        }
         
+    }
+
+    public void ChangeSpeechText(string content)
+    {
+        showSpeech = true;
+        kingSpeechText.text = content;
+
     }
 
     public void ResumeButton()

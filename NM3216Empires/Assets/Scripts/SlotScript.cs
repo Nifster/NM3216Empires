@@ -78,9 +78,22 @@ public class SlotScript : MonoBehaviour
             {
                 if (PlatformGameManager.instance.selectedBuildingIndexToBuild != -1 && freeCitizen != null)
                 {
-                    StartCoroutine(freeCitizen.GoToSlot(this.gameObject, PlatformGameManager.instance.selectedBuildingIndexToBuild));
-                    freeCitizen.goalSlotObj = this.gameObject;
-                    //check what is the building selected to be built
+                    //do resource check
+                    if (PlatformGameManager.instance.ResourceCheck(PlatformGameManager.instance.ChooseBuildingFromIndex(PlatformGameManager.instance.selectedBuildingIndexToBuild)))
+                    {
+                        StartCoroutine(freeCitizen.GoToSlot(this.gameObject, PlatformGameManager.instance.selectedBuildingIndexToBuild));
+                        freeCitizen.goalSlotObj = this.gameObject;
+                        
+                        
+                    }
+                    else
+                    {
+                        Debug.Log("Not enough resources");
+                        PlatformGameManager.instance.ChangeSpeechText("You don't have enough resources for that building!");
+                    }
+                    //turn off preview after clicked
+                    PlatformGameManager.instance.selectedBuildingToBuild = null;
+
                 }
 
             }
