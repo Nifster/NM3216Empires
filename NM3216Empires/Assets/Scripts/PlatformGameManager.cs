@@ -20,10 +20,13 @@ public class PlatformGameManager : MonoBehaviour {
     public List<Sprite> schoolSprites;
     public List<Sprite> townhallSprites;
     public List<Sprite> monumentSprites;
+    public List<Buildings> monumentInfo;
+    public List<Sprite> monumentIcon;
 
     public GameObject backgroundObj;
     public GameObject overlayObj;
     public GameObject kingObj;
+    public GameObject monumentButtonObj;
 
     [SerializeField]
     private int _citizenCount;
@@ -70,6 +73,8 @@ public class PlatformGameManager : MonoBehaviour {
     public Buildings Pyramid;
     public Buildings Tree;
     public Buildings Rock;
+    public Buildings School;
+    public Buildings Townhall;
 
     [HeaderAttribute("Enemy Spawn Checkpoints")]
     public int firstCheckpoint;
@@ -715,6 +720,8 @@ public class PlatformGameManager : MonoBehaviour {
             House.buildingSprite = houseSprites[eraIndex];
             Barracks.buildingSprite = barrackSprites[eraIndex];
             Pyramid.buildingSprite = monumentSprites[eraIndex];
+            Pyramid = monumentInfo[eraIndex];
+            //monumentButtonObj.GetComponent<SpriteRenderer>().sprite = monumentIcon[eraIndex];
             for(int i=0;i<citizenPool.Count; i++)
             {
                 citizenPool[i].GetComponent<SpriteRenderer>().sprite = citizenSprites[eraIndex];
