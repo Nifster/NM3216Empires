@@ -23,6 +23,7 @@ public class PlatformGameManager : MonoBehaviour {
     public List<Buildings> monumentInfo;
     public List<Sprite> monumentIcon;
     public Sprite activeButtonSprite;
+    public List<AudioClip> bgmClips;
 
     public GameObject backgroundObj;
     public GameObject overlayObj;
@@ -33,6 +34,8 @@ public class PlatformGameManager : MonoBehaviour {
 
     public GameObject gameOverScreen;
     public bool isGameOver;
+
+    [HeaderAttribute("")]
 
     [SerializeField]
     private int _citizenCount;
@@ -153,6 +156,9 @@ public class PlatformGameManager : MonoBehaviour {
     public float maxSpeechTimer;
     bool showSpeech = false;
 
+    [HeaderAttribute("Audio")]
+    public AudioSource bgm;
+
     void Awake()
     {
         instance = this;
@@ -160,6 +166,7 @@ public class PlatformGameManager : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
+        bgm.clip = bgmClips[0];
         gameOverScreen.SetActive(false);
         speechTimer = maxSpeechTimer;
         ChangeSpeechText("Welcome to my Lamb-pire! Build me a monument NOW");
@@ -822,7 +829,9 @@ public class PlatformGameManager : MonoBehaviour {
             Pyramid.lumberCost = monumentInfo[eraIndex].lumberCost;
             Pyramid.oreCost = monumentInfo[eraIndex].oreCost;
             Pyramid.timeToBuild = monumentInfo[eraIndex].timeToBuild;
-            if(eraIndex >= 1)
+            bgm.clip = bgmClips[eraIndex];
+            bgm.Play();
+            if (eraIndex >= 1)
             {
                 //if 2nd era
 
