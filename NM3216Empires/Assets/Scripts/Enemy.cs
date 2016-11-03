@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour {
     public int timeToKillCitizen;
     public int timeToDestroyBuilding;
 
+
     int turnAroundCount = 1;
     
     Vector3 prevPosition;
