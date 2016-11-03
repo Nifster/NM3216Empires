@@ -22,11 +22,17 @@ public class PlatformGameManager : MonoBehaviour {
     public List<Sprite> monumentSprites;
     public List<Buildings> monumentInfo;
     public List<Sprite> monumentIcon;
+    public Sprite activeButtonSprite;
 
     public GameObject backgroundObj;
     public GameObject overlayObj;
     public GameObject kingObj;
     public GameObject monumentButtonObj;
+    public GameObject townhallButtonObj;
+    public GameObject schoolButtonObj;
+
+    public GameObject gameOverScreen;
+    public bool isGameOver;
 
     [SerializeField]
     private int _citizenCount;
@@ -146,7 +152,7 @@ public class PlatformGameManager : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
-
+        gameOverScreen.SetActive(false);
         speechTimer = maxSpeechTimer;
         ChangeSpeechText("Welcome to my Lamb-pire! Build me a monument NOW");
         soldierPrefab.GetComponent<SpriteRenderer>().sprite = soldierSprites[0];
@@ -198,7 +204,10 @@ public class PlatformGameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            GameOver();
+        }
         //for testing soldiers and enemies
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -228,7 +237,7 @@ public class PlatformGameManager : MonoBehaviour {
         }
         if(minutesValue <= 0 && secondsValue <= 00)
         {
-            Debug.Log("GAME OVER");
+            GameOver();
         }
 
         lumberText.text = _lumberCount.ToString();
@@ -277,6 +286,13 @@ public class PlatformGameManager : MonoBehaviour {
         
     }
 
+    public void GameOver()
+    {
+        Debug.Log("GAME OVER");
+        gameOverScreen.SetActive(true);
+        isGameOver = true;
+    }
+
     public void ChangeSpeechText(string content)
     {
         showSpeech = true;
@@ -299,6 +315,12 @@ public class PlatformGameManager : MonoBehaviour {
     public void MenuButton()
     {
         SceneManager.LoadScene("Menu");
+    }
+
+    public void RestartButton()
+    {
+        SceneManager.LoadScene("Platform");
+        isGameOver = false;
     }
 
     public void HouseBuilt()
@@ -720,7 +742,22 @@ public class PlatformGameManager : MonoBehaviour {
             House.buildingSprite = houseSprites[eraIndex];
             Barracks.buildingSprite = barrackSprites[eraIndex];
             Pyramid.buildingSprite = monumentSprites[eraIndex];
-            Pyramid = monumentInfo[eraIndex];
+            Pyramid.influenceCost = monumentInfo[eraIndex].influenceCost;
+            if(eraIndex >= 1)
+            {
+                //if 2nd era
+
+                ChangeSpeechText("Welcome to the new era! We've discovered how to make townhalls!");
+                townhallButtonObj.GetComponent<Button>().interactable = true;
+                townhallButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
+            }
+            if(eraIndex == 2)
+            {
+
+                ChangeSpeechText("Welcome to the new era! We've discovered how to make schools!");
+                schoolButtonObj.GetComponent<Button>().interactable = true;
+                schoolButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
+            }
             //monumentButtonObj.GetComponent<SpriteRenderer>().sprite = monumentIcon[eraIndex];
             for(int i=0;i<citizenPool.Count; i++)
             {

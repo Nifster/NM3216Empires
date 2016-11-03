@@ -184,7 +184,7 @@ public class SlotScript : MonoBehaviour
     //Do this when the cursor enters the rect area of this selectable UI object.
     public void OnMouseOver()
     {
-        if (!PlatformGameManager.instance.isPaused)
+        if (!PlatformGameManager.instance.isPaused && !PlatformGameManager.instance.isGameOver)
         {
             Color translucent = highlight.color;
             translucent.a = 0.7f;

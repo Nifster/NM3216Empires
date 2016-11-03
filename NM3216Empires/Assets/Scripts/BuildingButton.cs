@@ -47,14 +47,17 @@ public class BuildingButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        infoPanel.SetActive(true);
-        labourText.text = thisBuilding.labourCost.ToString();
-        lumberText.text = thisBuilding.lumberCost.ToString();
-        oreText.text = thisBuilding.oreCost.ToString();
-        influenceCostText.text = thisBuilding.influenceCost.ToString();
-        //influenceRewardText.text = thisBuilding.influenceReward.ToString();
-        buildTimeText.text = thisBuilding.timeToBuild.ToString();
-        //infoPanel.transform.position = this.transform.position;
+        if (this.GetComponent<Button>().interactable)
+        {
+            infoPanel.SetActive(true);
+            labourText.text = thisBuilding.labourCost.ToString();
+            lumberText.text = thisBuilding.lumberCost.ToString();
+            oreText.text = thisBuilding.oreCost.ToString();
+            influenceCostText.text = thisBuilding.influenceCost.ToString();
+            //influenceRewardText.text = thisBuilding.influenceReward.ToString();
+            buildTimeText.text = thisBuilding.timeToBuild.ToString();
+            //infoPanel.transform.position = this.transform.position;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
