@@ -15,6 +15,11 @@ public class PlatformGameManager : MonoBehaviour {
     public List<Sprite> citizenSprites;
     public List<Sprite> soldierSprites;
     public List<Sprite> kingSprites;
+    public List<Sprite> houseSprites;
+    public List<Sprite> barrackSprites;
+    public List<Sprite> schoolSprites;
+    public List<Sprite> townhallSprites;
+    public List<Sprite> monumentSprites;
 
     public GameObject backgroundObj;
     public GameObject overlayObj;
@@ -258,6 +263,12 @@ public class PlatformGameManager : MonoBehaviour {
         {
             kingSpeechObj.SetActive(false);
         }
+        
+        if(minutesValue <= 3)
+        {
+            ChangeSpeechText("You're running out of time. WHERE'S MY MONUMENT?!");
+        }
+
         
     }
 
@@ -584,6 +595,7 @@ public class PlatformGameManager : MonoBehaviour {
 
                 //build house
                 GameObject newBuilding = Instantiate(House.prefab);
+                newBuilding.GetComponent<SpriteRenderer>().sprite = House.buildingSprite;
                 slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.House;
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
@@ -603,6 +615,7 @@ public class PlatformGameManager : MonoBehaviour {
 
                 //build barracks
                 GameObject newBuilding = Instantiate(Barracks.prefab);
+                newBuilding.GetComponent<SpriteRenderer>().sprite = Barracks.buildingSprite;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.Barracks;
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
@@ -643,6 +656,7 @@ public class PlatformGameManager : MonoBehaviour {
             if (ResourceCheck(Pyramid))
             {
                 GameObject newBuilding = Instantiate(Pyramid.prefab);
+                newBuilding.GetComponent<SpriteRenderer>().sprite = Pyramid.buildingSprite;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 1.2f, 0);
@@ -698,6 +712,9 @@ public class PlatformGameManager : MonoBehaviour {
             kingObj.GetComponent<Image>().sprite = kingSprites[eraIndex];
             soldierPrefab.GetComponent<SpriteRenderer>().sprite = soldierSprites[eraIndex];
             citizenPrefab.GetComponent<SpriteRenderer>().sprite = citizenSprites[eraIndex];
+            House.buildingSprite = houseSprites[eraIndex];
+            Barracks.buildingSprite = barrackSprites[eraIndex];
+            Pyramid.buildingSprite = monumentSprites[eraIndex];
             for(int i=0;i<citizenPool.Count; i++)
             {
                 citizenPool[i].GetComponent<SpriteRenderer>().sprite = citizenSprites[eraIndex];

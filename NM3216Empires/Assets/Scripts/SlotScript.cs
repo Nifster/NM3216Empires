@@ -67,7 +67,15 @@ public class SlotScript : MonoBehaviour
 	// Update is called once per frame
 	void Update () {
 	
-	}
+        if( currBuilding == Building.Tree && resourceHealth <= 3)
+        {
+            PlatformGameManager.instance.ChangeSpeechText("You might run out of trees if you're not careful");
+        }
+        if (currBuilding == Building.Rock && resourceHealth <= 3)
+        {
+            PlatformGameManager.instance.ChangeSpeechText("You might run out of ores if you're not careful");
+        }
+    }
 
     public void OnMouseDown()
     {
