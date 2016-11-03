@@ -228,7 +228,7 @@ public class Citizen : MonoBehaviour {
         GameObject buildingObj = slot.buildingObj;
         //int currentlyBuildingIndex = -1;
         PlatformGameManager.Buildings currentlyBuilding = null;
-        if(PlatformGameManager.instance.selectedBuildingIndexToBuild >= 0)
+        if(buildIndex >= 0)
         {
             //if there's a building to build
             currentlyBuilding = PlatformGameManager.instance.ChooseBuildingFromIndex(buildIndex);
@@ -266,13 +266,14 @@ public class Citizen : MonoBehaviour {
             if (PlatformGameManager.instance.demolishMode && (slotBuildingType != SlotScript.Building.Tree && slotBuildingType != SlotScript.Building.Rock))
             {
                 //if in demolish mode, start demolishing the target building
-                Debug.Log("Demolishing");
-                slot.GetComponent<SlotScript>().currBuilding = SlotScript.Building.None;
-                Destroy(slot.buildingObj);
-                //give demolishing rewards
-                PlatformGameManager.instance.BuildingDemolishedAddReward();
-                //turn off demolishmode
-                PlatformGameManager.instance.demolishMode = false;
+                //Debug.Log("Demolishing");
+                //slot.GetComponent<SlotScript>().currBuilding = SlotScript.Building.None;
+                //Destroy(slot.buildingObj);
+                ////give demolishing rewards
+                //PlatformGameManager.instance.BuildingDemolishedAddReward();
+                ////turn off demolishmode
+                //PlatformGameManager.instance.demolishMode = false;
+                PlatformGameManager.instance.DemolishBuilding(slot);
             }
             else
             {

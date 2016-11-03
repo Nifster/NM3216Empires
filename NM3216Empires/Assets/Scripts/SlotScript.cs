@@ -15,7 +15,9 @@ public class SlotScript : MonoBehaviour
         House,
         Ladder,
         Rock,
-        Barracks
+        Barracks,
+        Townhall,
+        School
     };
 
     public Building currBuilding;
@@ -60,6 +62,14 @@ public class SlotScript : MonoBehaviour
         }else if (buildingObj.name.Contains("Rock"))
         {
             currBuilding = Building.Rock;
+        }
+        else if (buildingObj.name.Contains("Townhall"))
+        {
+            currBuilding = Building.Townhall;
+        }
+        else if (buildingObj.name.Contains("School"))
+        {
+            currBuilding = Building.School;
         }
 
     }

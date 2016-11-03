@@ -52,6 +52,13 @@ public class PlatformGameManager : MonoBehaviour {
 
     public bool demolishMode = false;
 
+    int houseCount;
+    int barracksCount;
+    int townHallCount;
+    public int oldHouseInfluence;
+    public int oldBarracksInfluence;
+    public int oldTownhallInfluence;
+
     
 
     [System.Serializable]
@@ -221,6 +228,15 @@ public class PlatformGameManager : MonoBehaviour {
             Vector3 spawnpointvec = new Vector3(spawnpoint.PointToCoord().x, (spawnpoint.PointToCoord().y));
             AddSoldier(spawnpointvec);
         }
+        //cheat for adding resources
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            _lumberCount+=10;
+        }
+        if (Input.GetKeyDown(KeyCode.End))
+        {
+            _oreCount+=10;
+        }
 
         //for testing next era
         if (Input.GetKeyDown(KeyCode.LeftShift)){
@@ -283,7 +299,7 @@ public class PlatformGameManager : MonoBehaviour {
             kingSpeechObj.SetActive(false);
         }
         
-        if(minutesValue <= 3)
+        if(minutesValue <= 1)
         {
             ChangeSpeechText("You're running out of time. WHERE'S MY MONUMENT?!");
         }
@@ -648,6 +664,7 @@ public class PlatformGameManager : MonoBehaviour {
                 //add citizen at spot
                 AddCitizen(slotToBuildIn.transform.position);
                 SpendResources(House);
+                houseCount++;
             }
             
         }
@@ -667,7 +684,7 @@ public class PlatformGameManager : MonoBehaviour {
                 newBuilding.transform.localPosition = new Vector3(0, 1f, 0);
                 //add soldiers at spot
                 AddSoldier(slotToBuildIn.transform.position);
-
+                barracksCount++;
                 SpendResources(Barracks);
             }
         }
@@ -721,6 +738,7 @@ public class PlatformGameManager : MonoBehaviour {
                 newBuilding.transform.localPosition = new Vector3(0, 1.2f, 0);
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 SpendResources(Townhall);
+                townHallCount++;
                 //do townhall skills
             }
         }
@@ -733,6 +751,31 @@ public class PlatformGameManager : MonoBehaviour {
 
         //do a check on influence to see if enemy soldiers should come
         EnemyWaveCheck();
+    }
+
+    public void DemolishBuilding(SlotScript slot)
+    {
+        if(slot.currBuilding == SlotScript.Building.House)
+        {
+            houseCount--;
+            //minus influence
+            _influenceCount -= oldHouseInfluence;
+        }else if(slot.currBuilding == SlotScript.Building.Barracks)
+        {
+            barracksCount--;
+            //minus influence
+            _influenceCount -= oldBarracksInfluence;
+        }
+        else if(slot.currBuilding == SlotScript.Building.Townhall)
+        {
+            townHallCount--;
+            //minus influence
+            _influenceCount -= oldTownhallInfluence;
+        }
+        Destroy(slot.buildingObj);
+        BuildingDemolishedAddReward();
+        demolishMode = false;
+        slot.currBuilding = SlotScript.Building.None;
     }
 
     public bool ResourceCheck(Buildings buildingType)
@@ -805,9 +848,7 @@ public class PlatformGameManager : MonoBehaviour {
             }
             //reset resources value
             ResetResources();
-            //set new background
-            //set citizen prefabs
-            //have a dialog box saying "Welcome to the new era!"
+
         }else if(eraIndex >= 3)
         {
             //Grats! You beat the game!
@@ -820,7 +861,7 @@ public class PlatformGameManager : MonoBehaviour {
         //all these values are PlaceHolder
         _lumberCount = 0;
         _oreCount = 0;
-        _influenceCount = 0;
+        _influenceCount = (houseCount * oldHouseInfluence) + (barracksCount*oldBarracksInfluence) + (townHallCount*oldTownhallInfluence);
         InitializeCitizens(2);
         //reset timer?
         minutesValue = maxMinutes;
