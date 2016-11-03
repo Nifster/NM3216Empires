@@ -233,6 +233,8 @@ public class Citizen : MonoBehaviour {
             //if there's a building to build
             currentlyBuilding = PlatformGameManager.instance.ChooseBuildingFromIndex(buildIndex);
             slot.UpdateResourceTimerValue(currentlyBuilding);
+            PlatformGameManager.instance.sfx.clip = PlatformGameManager.instance.buildingSfx;
+            PlatformGameManager.instance.sfx.Play();
             yield return new WaitForSeconds(currentlyBuilding.timeToBuild);
             
         }
@@ -240,11 +242,23 @@ public class Citizen : MonoBehaviour {
         {
             if(slotBuildingType == SlotScript.Building.Tree || slotBuildingType == SlotScript.Building.Rock)
             {
+                if(slotBuildingType == SlotScript.Building.Tree)
+                {
+                    PlatformGameManager.instance.sfx.clip = PlatformGameManager.instance.woodChopSfx;
+                    PlatformGameManager.instance.sfx.Play();
+                }
+                else
+                {
+                    PlatformGameManager.instance.sfx.clip = PlatformGameManager.instance.miningSfx;
+                    PlatformGameManager.instance.sfx.Play();
+                }
                 slot.UpdateResourceTimerValue(PlatformGameManager.instance.Tree);
                 yield return new WaitForSeconds(5); //default harvest time
             }
             else if (PlatformGameManager.instance.demolishMode)
             {
+                PlatformGameManager.instance.sfx.clip = PlatformGameManager.instance.buildingSfx;
+                PlatformGameManager.instance.sfx.Play();
                 slot.UpdateResourceTimerValue(PlatformGameManager.instance.Tree);
                 yield return new WaitForSeconds(5); //default harvest time
             }

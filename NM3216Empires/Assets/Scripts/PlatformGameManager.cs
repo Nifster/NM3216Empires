@@ -62,6 +62,8 @@ public class PlatformGameManager : MonoBehaviour {
     public int oldBarracksInfluence;
     public int oldTownhallInfluence;
 
+    int currEnemyCount;
+
     
 
     [System.Serializable]
@@ -93,10 +95,15 @@ public class PlatformGameManager : MonoBehaviour {
     public Buildings Townhall;
 
     [HeaderAttribute("Enemy Spawn Checkpoints")]
-    public int firstCheckpoint;
-    public int secondCheckpoint;
+    public List<int> firstCheckpoint;
+    public List<int> secondCheckpoint;
+    public List<int> thirdCheckpoint;
+    public List<int> fourthCheckpoint;
+    public List<int> enemyWaveSize;
     bool firstEnemyWaveSpawned = false;
     bool secondEnemyWaveSpawned = false;
+    bool thirdEnemyWaveSpawned = false;
+    bool fourthEnemyWaveSpawned = false;
     //public enum BuildingToBuild
     //{
     //    House,
@@ -158,6 +165,12 @@ public class PlatformGameManager : MonoBehaviour {
 
     [HeaderAttribute("Audio")]
     public AudioSource bgm;
+    public AudioSource sfx;
+    public AudioClip invasionBgm;
+    public AudioClip clickSfx;
+    public AudioClip woodChopSfx;
+    public AudioClip miningSfx;
+    public AudioClip buildingSfx;
 
     void Awake()
     {
@@ -243,6 +256,10 @@ public class PlatformGameManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.End))
         {
             _oreCount+=10;
+        }
+        if (Input.GetKeyDown(KeyCode.Home))
+        {
+            _influenceCount += 10;
         }
 
         //for testing next era
@@ -855,6 +872,10 @@ public class PlatformGameManager : MonoBehaviour {
             {
                 soldierPool[i].GetComponent<SpriteRenderer>().sprite = soldierSprites[eraIndex];
             }
+            firstEnemyWaveSpawned = false;
+            secondEnemyWaveSpawned = false;
+            thirdEnemyWaveSpawned = false;
+            fourthEnemyWaveSpawned = false;
             //reset resources value
             ResetResources();
 
@@ -885,27 +906,103 @@ public class PlatformGameManager : MonoBehaviour {
         if (eraIndex == 0)
         {
             //Egyptian
-            if (_influenceCount >= firstCheckpoint && !firstEnemyWaveSpawned)
+            if (_influenceCount >= firstCheckpoint[0] && !firstEnemyWaveSpawned)
             {
                 //spawn 2 enemies
                 Debug.Log("INVASION");
-                StartCoroutine(SpawnEnemies(2));
+                StartCoroutine(SpawnEnemies(enemyWaveSize[0]));
                 firstEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
 
             }
-            else if (_influenceCount >= secondCheckpoint && !secondEnemyWaveSpawned)
+            else if (_influenceCount >= secondCheckpoint[0] && !secondEnemyWaveSpawned)
             {
                 //spawn 2 enemies
-                StartCoroutine(SpawnEnemies(2));
+                StartCoroutine(SpawnEnemies(enemyWaveSize[0]));
                 secondEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
             }
+            
         }
-        
+        if (eraIndex == 1)
+        {
+            //Roman
+            if (_influenceCount >= firstCheckpoint[1] && !firstEnemyWaveSpawned)
+            {
+                //spawn 2 enemies
+                Debug.Log("INVASION");
+                StartCoroutine(SpawnEnemies(enemyWaveSize[1]));
+                firstEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
+
+            }
+            else if (_influenceCount >= secondCheckpoint[1] && !secondEnemyWaveSpawned)
+            {
+                //spawn 2 enemies
+                StartCoroutine(SpawnEnemies(enemyWaveSize[1]));
+                secondEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
+            }
+            else if (_influenceCount >= thirdCheckpoint[1] && !thirdEnemyWaveSpawned)
+            {
+                //spawn 2 enemies
+                StartCoroutine(SpawnEnemies(enemyWaveSize[1]));
+                thirdEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
+            }
+
+        }
+        if (eraIndex == 2)
+        {
+            //Roman
+            if (_influenceCount >= firstCheckpoint[2] && !firstEnemyWaveSpawned)
+            {
+                //spawn 2 enemies
+                Debug.Log("INVASION");
+                StartCoroutine(SpawnEnemies(enemyWaveSize[2]));
+                firstEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
+
+            }
+            else if (_influenceCount >= secondCheckpoint[2] && !secondEnemyWaveSpawned)
+            {
+                //spawn 2 enemies
+                StartCoroutine(SpawnEnemies(enemyWaveSize[2]));
+                secondEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
+            }
+            else if (_influenceCount >= thirdCheckpoint[2] && !thirdEnemyWaveSpawned)
+            {
+                //spawn 2 enemies
+                StartCoroutine(SpawnEnemies(enemyWaveSize[2]));
+                thirdEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
+            }
+            else if (_influenceCount >= fourthCheckpoint[2] && !fourthEnemyWaveSpawned)
+            {
+                //spawn 2 enemies
+                StartCoroutine(SpawnEnemies(enemyWaveSize[2]));
+                fourthEnemyWaveSpawned = true;
+                PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
+                PlatformGameManager.instance.bgm.Play();
+            }
+
+        }
+
     }
 
     public IEnumerator SpawnEnemies(int enemyCount)
     {
         int enemyLeftToSpawn = enemyCount;
+        currEnemyCount += enemyCount;
         PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0);
         //check pool if got enough, if not instantiate
         for(int i=0; i < enemyCount; i++)
@@ -975,6 +1072,12 @@ public class PlatformGameManager : MonoBehaviour {
     public void KillEnemy(GameObject enemy)
     {
         enemy.GetComponent<Enemy>().isActive = false;
+        currEnemyCount--;
+        if(currEnemyCount <= 0)
+        {
+            PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.bgmClips[eraIndex];
+            PlatformGameManager.instance.bgm.Play();
+        }
     }
 
     public void KillSoldier(Soldier soldier)
