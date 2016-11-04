@@ -29,11 +29,13 @@ public class Enemy : MonoBehaviour {
 
 
     int turnAroundCount = 1;
+    bool reachedTop = false;
     
     Vector3 prevPosition;
 
     void Start()
     {
+        turnAroundCount = 1;
         rgBody = this.GetComponent<Rigidbody2D>();
         /*pointY = (int)((transform.localPosition.y - 0.8f) / 2.5f + 1);*/ //TODO: Bug where citizens at higher Y will go to wrong coords
         if (transform.localPosition.y == -1.9f)
@@ -132,93 +134,7 @@ public class Enemy : MonoBehaviour {
         }
     }
 
-    public IEnumerator GoToSlot(PlatformMapScript.Point slotPoint)
-    {
-
-        //TODO: Bug where if you have 1 ladder, but you need 2 ladders to reach the goal slot at the top, isBusy never gets reset to false, 
-        //citizen is thus stuck forever
-
-        //TODO: Bug? where if there's more than 1 ladder per level, they cant decide which ladder to go to and become stuck
-
-        //called by slot?
-        //checks if y is higher, if true, find the nearest ladder, climbs it, and calls this method again
-        //PlatformMapScript.Point slotPoint = slot.GetComponent<SlotScript>().point;
-        if (slotPoint.y > pointY)
-        {
-
-            toLadderUp = true;
-
-            //go to nearest ladder on same level
-            for (int i = 0; i < PlatformGameManager.instance.ladderSlots.Count; i++)
-            {
-
-                if (pointY == PlatformGameManager.instance.ladderSlots[i].point.y)
-                {
-
-                    StartCoroutine(GoToSlot(PlatformGameManager.instance.ladderSlots[i].point));
-                }
-            }
-
-            //Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
-        }
-        else if (slotPoint.y < pointY)
-        {
-            toLadderDown = true;
-
-
-            //go to nearest ladder on lower level
-            for (int i = 0; i < PlatformGameManager.instance.ladderSlots.Count; i++)
-            {
-
-                if (pointY - 1 == PlatformGameManager.instance.ladderSlots[i].point.y)
-                {
-
-                    StartCoroutine(GoToSlot(PlatformMapScript.instance.slotArray[(int)PlatformGameManager.instance.ladderSlots[i].point.y + 1, (int)PlatformGameManager.instance.ladderSlots[i].point.x].GetComponent<SlotScript>().point));
-                }
-            }
-            Debug.Log("No Ladder! Cannot reach!"); //TODO: prompt
-        }
-        else
-        {
-            //moveHorz = true;
-            isBusy = true;
-            currMoveSpeed = workingMoveSpeed;
-            while (transform.position.x != slotPoint.PointToCoord().x)
-            {
-                transform.position = Vector3.MoveTowards(transform.position,
-                            new Vector3(slotPoint.PointToCoord().x, transform.position.y, transform.position.z),
-                            workingMoveSpeed * Time.deltaTime);
-                yield return null;
-            }
-            if (toLadderUp)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
-                pointY++;
-                toLadderUp = false;
-                StartCoroutine(GoToSlot(goalSlotObj.GetComponent<SlotScript>().point));
-
-            }
-            else if (toLadderDown)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y - 2.5f, transform.position.z);
-                pointY--;
-                toLadderDown = false;
-                StartCoroutine(GoToSlot(goalSlotObj.GetComponent<SlotScript>().point));
-
-            }
-            else
-            {
-
-                //StartCoroutine(Attack(slot));
-            }
-
-
-        }
-
-
-        //slot x might be same or around the same as citizen, try to catch this case
-        //when reaches slot, calls the appropriate method in slot/gamemanager to remove tree/build house
-    }
+    
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -247,6 +163,10 @@ public class Enemy : MonoBehaviour {
             //move enemy up by one level
             transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
             pointY++;
+            if(pointY == 2)
+            {
+                reachedTop = true;
+            }
             toLadderUp = false;
         }
 

@@ -857,7 +857,7 @@ public class PlatformGameManager : MonoBehaviour {
             houseList.Remove(slot);
             //minus influence
             _influenceCount -= House.influenceCost;
-            if (eraIndex > 0)
+            if (eraIndex > 0 && slot.eraBuilt > eraIndex)
             {
                 _influenceCount -= (slot.eraBuilt+1) * House.influenceCost / (eraIndex * 2);
             }
@@ -867,7 +867,7 @@ public class PlatformGameManager : MonoBehaviour {
             barracksList.Remove(slot);
             //minus influence
             _influenceCount -= Barracks.influenceCost;
-            if (eraIndex > 0)
+            if (eraIndex > 0 && slot.eraBuilt > eraIndex)
             {
                 _influenceCount -= (slot.eraBuilt + 1) * Barracks.influenceCost / (eraIndex * 2);
             }
@@ -877,7 +877,7 @@ public class PlatformGameManager : MonoBehaviour {
             townHallList.Remove(slot);
             //minus influence
             _influenceCount -= Townhall.influenceCost;
-            if (eraIndex > 0)
+            if (eraIndex > 0 && slot.eraBuilt > eraIndex)
             {
                 _influenceCount -= (slot.eraBuilt + 1) * Townhall.influenceCost / (eraIndex * 2);
             }
