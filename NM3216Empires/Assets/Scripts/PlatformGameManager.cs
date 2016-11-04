@@ -858,6 +858,7 @@ public class PlatformGameManager : MonoBehaviour {
             Pyramid.timeToBuild = monumentInfo[eraIndex].timeToBuild;
             bgm.clip = bgmClips[eraIndex];
             bgm.Play();
+            
             if (eraIndex >= 1)
             {
                 //if 2nd era
@@ -888,6 +889,15 @@ public class PlatformGameManager : MonoBehaviour {
             fourthEnemyWaveSpawned = false;
             //reset resources value
             ResetResources();
+            //find all the slots with resource on it, call resource regen on the slots
+            for(int i=0; i < PlatformMapScript.instance.slotList.Count; i++)
+            {
+                if(PlatformMapScript.instance.slotList[i].GetComponent<SlotScript>().currBuilding == SlotScript.Building.Tree ||
+                    PlatformMapScript.instance.slotList[i].GetComponent<SlotScript>().currBuilding == SlotScript.Building.Rock)
+                {
+                    PlatformMapScript.instance.slotList[i].GetComponent<SlotScript>().ResourceRegen();
+                }
+            }
 
         }else if(eraIndex >= 3)
         {
@@ -1108,5 +1118,6 @@ public class PlatformGameManager : MonoBehaviour {
         }
         return true;
     }
+
 
 }

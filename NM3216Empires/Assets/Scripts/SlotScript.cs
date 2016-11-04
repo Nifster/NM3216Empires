@@ -26,6 +26,7 @@ public class SlotScript : MonoBehaviour
     public PlatformMapScript.Point point;
     public PlatformMapScript.Coord coord;
     public int resourceHealth = 10;
+    public int maxHealth = 10;
     bool hasHealth = false;
     bool hasTimer = false;
     bool resourceTicking = false;
@@ -165,6 +166,10 @@ public class SlotScript : MonoBehaviour
         }
         Slider sliderInfo = healthSlider.GetComponent<Slider>();
         sliderInfo.value = resourceHealth;
+        if (resourceHealth == maxHealth)
+        {
+            Destroy(healthSlider);
+        }
     }
 
     public void UpdateResourceTimerValue(PlatformGameManager.Buildings buildingType)
@@ -238,5 +243,11 @@ public class SlotScript : MonoBehaviour
         Color transparent = highlight.color;
         transparent.a = 0;
         highlight.color = transparent;
+    }
+
+    public void ResourceRegen()
+    {
+        resourceHealth = maxHealth;
+        UpdateResourceValue();
     }
 }

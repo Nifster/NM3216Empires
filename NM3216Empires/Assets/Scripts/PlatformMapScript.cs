@@ -71,9 +71,11 @@ public class PlatformMapScript : MonoBehaviour
     public static float YOFFSET = 2.5f;
     public GameObject slotPrefab;
     public GameObject[,] slotArray;
+    public List<GameObject> slotList;
 
     // Use this for initialization
     void Awake () {
+        slotList = new List<GameObject>();
         instance = this;
         slotArray = new GameObject[3,mapSize];
         map = new Map();
@@ -91,6 +93,7 @@ public class PlatformMapScript : MonoBehaviour
                 //newSlot.transform.localScale = new Vector3(1, 1, 1);
                 newSlot.GetComponent<SlotScript>().point = new Point(i, j);
                 slotArray[j, i] = newSlot;
+                slotList.Add(newSlot);
                 newSlot.name = "Slot" + i + "," + j;
                 
                 for(int k=0; k<treePositions.Count; k++)
