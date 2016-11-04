@@ -1030,9 +1030,14 @@ public class PlatformGameManager : MonoBehaviour {
             }
         }
         Debug.Log("EraIndex" + era1houseCount);
-        Debug.Log("eracalculation"+ era1houseCount * (House.influenceCost / (eraIndex * 2)));
-        _influenceCount = (era1houseCount * (House.influenceCost / (eraIndex*2))) + (era1barracksCount*oldBarracksInfluence/(eraIndex * 2)) + (era1townHallCount*oldTownhallInfluence / (eraIndex * 2))
-            + (era2houseCount * (House.influenceCost / (eraIndex))) + (era1barracksCount * oldBarracksInfluence / (eraIndex)) + (era1townHallCount * oldTownhallInfluence / (eraIndex));
+        Debug.Log("eracalculation"+ era1townHallCount * Townhall.influenceCost / (eraIndex * 2));
+        int era1HouseValue = (era1houseCount * (House.influenceCost / (eraIndex * 2)));
+        int era2HouseValue = (era2houseCount * (House.influenceCost / (eraIndex)));
+        int era1BarracksValue = (era1barracksCount * Barracks.influenceCost / (eraIndex * 2));
+        int era2BarracksValue = (era2barracksCount * Barracks.influenceCost / (eraIndex));
+        int era1TownHallValue = (era1townHallCount * Townhall.influenceCost / (eraIndex * 2));
+        int era2TownHallValue = (era2townHallCount * Townhall.influenceCost / (eraIndex));
+        _influenceCount = era1HouseValue + era1BarracksValue + era1TownHallValue + era2HouseValue + era2BarracksValue + era2TownHallValue;
         InitializeCitizens(2);
         InitializeSoldiers();
         InitializeEnemies();
