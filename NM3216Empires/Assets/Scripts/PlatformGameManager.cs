@@ -1035,10 +1035,21 @@ public class PlatformGameManager : MonoBehaviour {
             + (era2houseCount * (House.influenceCost / (eraIndex))) + (era1barracksCount * oldBarracksInfluence / (eraIndex)) + (era1townHallCount * oldTownhallInfluence / (eraIndex));
         InitializeCitizens(2);
         InitializeSoldiers();
+        InitializeEnemies();
         //reset timer?
         minutesValue = maxMinutes;
         secondsValue = 0;
 
+    }
+
+    public void InitializeEnemies()
+    {
+        //set enemies to inactive
+        for (int i = 0; i < enemyPool.Count; i++)
+        {
+            enemyPool[i].isActive = false;
+        }
+        currEnemyCount = 0;
     }
     
     public void InitializeSoldiers()
@@ -1204,6 +1215,7 @@ public class PlatformGameManager : MonoBehaviour {
                 {
                     enemyPool[j].isActive = true;
                     enemyPool[j].transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f,-1);
+                    enemyPool[j].ResetPointPosition();
                     enemyLeftToSpawn--;
                     yield return new WaitForSeconds(1);
                 }
