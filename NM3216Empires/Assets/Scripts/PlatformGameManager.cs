@@ -385,11 +385,6 @@ public class PlatformGameManager : MonoBehaviour {
         isGameOver = false;
     }
 
-    public void HouseBuilt()
-    {
-        //if citizenCount > 2?
-        _citizenCount++;
-    }
 
     public void TreeHarvested()
     {
@@ -456,10 +451,13 @@ public class PlatformGameManager : MonoBehaviour {
             //find non-active
             for (int j = 0; j < citizenPool.Count; j++)
             {
-                if (!citizenPool[j].isActive)
+                if (!citizenPool[j].isActive && citizensLeftToSpawn >0)
                 {
                     citizenPool[j].isActive = true;
                     citizenPool[j].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
+                    //reset point
+                    citizenPool[j].ResetPointPosition();
+                    citizenPool[j].isBusy = false;
                     //yield return new WaitForSeconds(1);
                     //_soldierCount++;
                     //_currSoldierCount++;
@@ -470,7 +468,7 @@ public class PlatformGameManager : MonoBehaviour {
 
         }
 
-        if (citizensLeftToSpawn >= 0)
+        if (citizensLeftToSpawn > 0)
         {
             //if not enough soldier in pool, spawn more
             for (int i = 0; i < citizensLeftToSpawn; i++)
@@ -480,6 +478,7 @@ public class PlatformGameManager : MonoBehaviour {
                 Citizen newCitizen = citizenObj.GetComponent<Citizen>();
                 citizenPool.Add(newCitizen);
                 newCitizen.isActive = true;
+                newCitizen.isBusy = false;
                 //_soldierCount++;
                 //_currSoldierCount++;
                 _citizenCount++;
@@ -500,12 +499,13 @@ public class PlatformGameManager : MonoBehaviour {
         for (int i = 0; i < SOLDIERS_PER_BARRACKS; i++)
         {
             //find non-active
-            for (int j = 0; j < _soldierCount; j++)
+            for (int j = 0; j < soldierPool.Count; j++)
             {
-                if (!soldierPool[j].isActive)
+                if (!soldierPool[j].isActive && soldiersLeftToSpawn >0)
                 {
                     soldierPool[j].isActive = true;
                     soldierPool[j].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
+                    soldierPool[j].ResetPointPosition();
                     //yield return new WaitForSeconds(1);
                     //_soldierCount++;
                     soldiersLeftToSpawn--;
@@ -515,7 +515,7 @@ public class PlatformGameManager : MonoBehaviour {
 
         }
 
-        if (soldiersLeftToSpawn >= 0)
+        if (soldiersLeftToSpawn > 0)
         {
             //if not enough soldier in pool, spawn more
             for (int i = 0; i < soldiersLeftToSpawn; i++)
@@ -612,7 +612,7 @@ public class PlatformGameManager : MonoBehaviour {
         //search through pool for free citizen
         for(int i=0; i<_citizenCount; i++)
         {
-            if (!citizenPool[i].isBusy)
+            if (!citizenPool[i].isBusy && citizenPool[i].isActive)
             {   
                 //y check
                 if(citizenPool[i].pointY == slotPoint.y)
@@ -651,7 +651,7 @@ public class PlatformGameManager : MonoBehaviour {
                 //closest ladder found
                 for (int i = 0; i < _citizenCount; i++)
                 {
-                    if (!citizenPool[i].isBusy)
+                    if (!citizenPool[i].isBusy && citizenPool[i].isActive)
                     {
                         
                         if (Mathf.Abs(ladderPoint.x- citizenPool[i].pointX) < closestX)
@@ -960,12 +960,22 @@ public class PlatformGameManager : MonoBehaviour {
         _oreCount = 0;
         _influenceCount = (houseCount * oldHouseInfluence) + (barracksCount*oldBarracksInfluence) + (townHallCount*oldTownhallInfluence);
         InitializeCitizens(2);
+        InitializeSoldiers();
         //reset timer?
         minutesValue = maxMinutes;
         secondsValue = 0;
 
     }
-
+    
+    public void InitializeSoldiers()
+    {
+        //set soldiers to inactive
+        for (int i = 0; i < soldierPool.Count; i++)
+        {
+            soldierPool[i].isActive = false;
+        }
+        _currSoldierCount = 0;
+    }
     public void EnemyComingPrompt()
     {
         if(eraIndex==0 && _influenceCount >= 10 && !promptShown)
@@ -1116,7 +1126,7 @@ public class PlatformGameManager : MonoBehaviour {
             //find non-active
             for(int j = 0; j < enemyPool.Count; j++)
             {
-                if (!enemyPool[j].isActive)
+                if (!enemyPool[j].isActive && enemyLeftToSpawn > 0)
                 {
                     enemyPool[j].isActive = true;
                     enemyPool[j].transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f,-1);
@@ -1127,7 +1137,7 @@ public class PlatformGameManager : MonoBehaviour {
             
         }
 
-        if (enemyLeftToSpawn >= 0)
+        if (enemyLeftToSpawn > 0)
         {
             //if not enough enemy in pool, spawn more
             for(int i = 0; i < enemyLeftToSpawn; i++)
@@ -1159,8 +1169,11 @@ public class PlatformGameManager : MonoBehaviour {
             citizenPool[i].transform.localPosition = new Vector3(0, -1.9f, -1); //also temp
             citizenPool[i].ResetPointPosition();
             citizenPool[i].isBusy = false;
+            Debug.Log("reset citizens " + i);
+            
         }
         _citizenCount = citizenCount;
+
     }
 
     public void DemolishButton()
@@ -1171,8 +1184,9 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void KillCitizen(GameObject citizen)
     {
-        citizen.SetActive(false);
+        citizen.GetComponent<Citizen>().isActive = (false);
         _citizenCount--;
+        Debug.Log("KillCitizen");
     }
 
     public void KillEnemy(GameObject enemy)
@@ -1191,6 +1205,7 @@ public class PlatformGameManager : MonoBehaviour {
         soldier.isActive = false;
         soldier.currHealth = soldier.maxHealth;
         _currSoldierCount--;
+        Debug.Log("Killsoldier");
     }
 
     public bool LadderCheck(SlotScript slot)

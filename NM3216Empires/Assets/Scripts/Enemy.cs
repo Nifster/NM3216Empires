@@ -286,6 +286,8 @@ public class Enemy : MonoBehaviour {
         else
         {
             yield return new WaitForSeconds(timeToDestroyBuilding);
+            GameObject parentSlot = victim.transform.parent.gameObject;
+            parentSlot.GetComponent<SlotScript>().currBuilding = SlotScript.Building.None;
             Destroy(victim); //destroy house with no reward //maybe influence goes down?
         }
         
@@ -293,17 +295,7 @@ public class Enemy : MonoBehaviour {
         isBusy = false;
     }
 
-    IEnumerator MoveTo(GameObject goal)
-    {
-        while (transform.position.x != goal.GetComponent<SlotScript>().point.PointToCoord().x)
-        {
-            transform.position = Vector3.MoveTowards(transform.position,
-                        new Vector3(goal.GetComponent<SlotScript>().point.PointToCoord().x, transform.position.y, transform.position.z),
-                        workingMoveSpeed * Time.deltaTime);
-        }
-
-        yield return null;
-    }
+    
 
     
 }

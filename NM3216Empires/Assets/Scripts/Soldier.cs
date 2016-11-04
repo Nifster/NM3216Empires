@@ -54,6 +54,24 @@ public class Soldier : MonoBehaviour
         prevPosition = this.transform.position;
     }
 
+    public void ResetPointPosition()
+    {
+        if (transform.localPosition.y == -1.9f)
+        {
+            pointY = 0;
+        }
+        else if (transform.localPosition.y == 0.6f)
+        {
+            pointY = 1;
+        }
+        else if (transform.localPosition.y == 3.1f)
+        {
+            pointY = 2;
+        }
+        pointX = (int)(transform.localPosition.x / 1.75f) + 4;
+        prevPosition = this.transform.position;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -92,7 +110,7 @@ public class Soldier : MonoBehaviour
         {
             //i.e dead or inactive
             //offscreen and not moving
-            transform.position = new Vector3(1000, 1000);
+            transform.position = new Vector3(10000, 10000);
             isBusy = false;
         }
 

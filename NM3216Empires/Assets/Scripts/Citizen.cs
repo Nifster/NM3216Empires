@@ -59,6 +59,10 @@ public class Citizen : MonoBehaviour {
         {
             pointY = 2;
         }
+        else
+        {
+            pointY = -1;
+        }
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
         prevPosition = this.transform.position;
     }
@@ -103,7 +107,7 @@ public class Citizen : MonoBehaviour {
         {
             //i.e dead or inactive
             //offscreen and not moving
-            transform.position = new Vector3(1000, 1000);
+            transform.position = new Vector3(5000, 5000);
             isBusy = false;
         }
 
@@ -338,17 +342,6 @@ public class Citizen : MonoBehaviour {
         
     }
 
-    IEnumerator MoveTo(GameObject goal)
-    {
-        while(transform.position.x != goal.GetComponent<SlotScript>().point.PointToCoord().x)
-        {
-            transform.position = Vector3.MoveTowards(transform.position,
-                        new Vector3(goal.GetComponent<SlotScript>().point.PointToCoord().x, transform.position.y, transform.position.z),
-                        workingMoveSpeed * Time.deltaTime);
-        }
-        
-        yield return null;
-    }
 
     
 }
