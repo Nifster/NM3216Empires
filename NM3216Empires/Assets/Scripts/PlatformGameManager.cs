@@ -207,6 +207,7 @@ public class PlatformGameManager : MonoBehaviour {
             Citizen newCitizen = citizenObj.GetComponent<Citizen>();
             citizenPool.Add(newCitizen);
             newCitizen.isBusy = false;
+            newCitizen.isActive = true;
         }
 
         //initiate soldier pool
@@ -410,47 +411,84 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void AddCitizen(Vector3 pos)
     {
-        
 
-        //check pool, if got inactive set active, if not instantiate
+        ////check pool, if got inactive set active, if not instantiate
 
-        _citizenCount += CITIZEN_PER_HOUSE;
-        if (citizenPool.Count < _citizenCount)
+        //_citizenCount += CITIZEN_PER_HOUSE;
+        //if (citizenPool.Count < _citizenCount)
+        //{
+        //    for (int i = 0; i < CITIZEN_PER_HOUSE; i++)
+        //    {
+        //        GameObject citizenObj = Instantiate(citizenPrefab);
+        //        //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
+        //        //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
+        //        citizenObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
+        //        Citizen newCitizen = citizenObj.GetComponent<Citizen>();
+        //        citizenPool.Add(newCitizen);
+        //        newCitizen.isBusy = false;
+
+        //    }
+        //}
+        //else
+        //{
+        //    //for each new citizen
+        //    //if there is an inactive citizen in the pool
+        //    //set it to active, and reset its position
+        //    for (int j = 0; j < CITIZEN_PER_HOUSE; j++)
+        //    {
+        //        for (int i = 0; i < citizenPool.Count; i++)
+        //        {
+        //            if (!citizenPool[i].gameObject.activeSelf)
+        //            {
+        //                citizenPool[i].gameObject.SetActive(true);
+        //                citizenPool[i].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
+        //                citizenPool[i].ResetPointPosition();
+        //                citizenPool[i].isBusy = false;
+        //            }
+        //        }
+        //    }
+        //}
+        int citizensLeftToSpawn = CITIZEN_PER_HOUSE;
+        //PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0);
+        //check pool if got enough, if not instantiate
+        for (int i = 0; i < CITIZEN_PER_HOUSE; i++)
         {
-            for (int i = 0; i < CITIZEN_PER_HOUSE; i++)
+            //find non-active
+            for (int j = 0; j < citizenPool.Count; j++)
             {
-                GameObject citizenObj = Instantiate(citizenPrefab);
-                //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
-                //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-                citizenObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
-                Citizen newCitizen = citizenObj.GetComponent<Citizen>();
-                citizenPool.Add(newCitizen);
-                newCitizen.isBusy = false;
-                
-            }
-        }
-        else
-        {
-            //for each new citizen
-            //if there is an inactive citizen in the pool
-            //set it to active, and reset its position
-            for (int j = 0; j < CITIZEN_PER_HOUSE; j++)
-            {
-                for (int i = 0; i < citizenPool.Count; i++)
+                if (!citizenPool[j].isActive)
                 {
-                    if (!citizenPool[i].gameObject.activeSelf)
-                    {
-                        citizenPool[i].gameObject.SetActive(true);
-                        citizenPool[i].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
-                        citizenPool[i].ResetPointPosition();
-                        citizenPool[i].isBusy = false;
-                    }
+                    citizenPool[j].isActive = true;
+                    citizenPool[j].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
+                    //yield return new WaitForSeconds(1);
+                    //_soldierCount++;
+                    //_currSoldierCount++;
+                    citizensLeftToSpawn--;
+                    _citizenCount++;
                 }
             }
+
         }
-        
-        
-        
+
+        if (citizensLeftToSpawn >= 0)
+        {
+            //if not enough soldier in pool, spawn more
+            for (int i = 0; i < citizensLeftToSpawn; i++)
+            {
+                GameObject citizenObj = Instantiate(citizenPrefab);
+                citizenObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
+                Citizen newCitizen = citizenObj.GetComponent<Citizen>();
+                citizenPool.Add(newCitizen);
+                newCitizen.isActive = true;
+                //_soldierCount++;
+                //_currSoldierCount++;
+                _citizenCount++;
+                //yield return new WaitForSeconds(1);
+            }
+        }
+
+
+
     }
 
     public void AddSoldier(Vector3 pos)
@@ -470,6 +508,7 @@ public class PlatformGameManager : MonoBehaviour {
                     soldierPool[j].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
                     //yield return new WaitForSeconds(1);
                     //_soldierCount++;
+                    soldiersLeftToSpawn--;
                     _currSoldierCount++;
                 }
             }
@@ -1112,11 +1151,11 @@ public class PlatformGameManager : MonoBehaviour {
         //reset position to bottom row
         for(int i=0; i < citizenPool.Count; i++)
         {
-            citizenPool[i].gameObject.SetActive(false);
+            citizenPool[i].isActive = false;
         }
         for (int i = 0; i < citizenCount; i++)
         {
-            citizenPool[i].gameObject.SetActive(true);
+            citizenPool[i].isActive = true;
             citizenPool[i].transform.localPosition = new Vector3(0, -1.9f, -1); //also temp
             citizenPool[i].ResetPointPosition();
             citizenPool[i].isBusy = false;

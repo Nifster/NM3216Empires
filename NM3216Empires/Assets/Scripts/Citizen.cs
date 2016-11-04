@@ -78,7 +78,7 @@ public class Citizen : MonoBehaviour {
         }
         prevPosition = this.transform.position;
         //if isBusy false, walk around randomly
-        if (!isBusy)
+        if (!isBusy && isActive)
         {
             currMoveSpeed = idleMoveSpeed;
             if (Time.time >= tChange)
@@ -97,6 +97,14 @@ public class Citizen : MonoBehaviour {
         {
             isBusy = true;
             currMoveSpeed = 0;
+        }
+
+        if (!isActive)
+        {
+            //i.e dead or inactive
+            //offscreen and not moving
+            transform.position = new Vector3(1000, 1000);
+            isBusy = false;
         }
 
         pointX = (int)(transform.localPosition.x / 1.75f) + 4;
