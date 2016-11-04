@@ -235,6 +235,8 @@ public class PlatformGameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        //cheat codes for editor
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Q))
         {
             GameOver();
@@ -269,7 +271,7 @@ public class PlatformGameManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.LeftShift)){
             NextEra();
         }
-
+#endif
         minutes.text = minutesValue.ToString();
         seconds.text = ((int)secondsValue).ToString();
         secondsValue -= Time.deltaTime;
