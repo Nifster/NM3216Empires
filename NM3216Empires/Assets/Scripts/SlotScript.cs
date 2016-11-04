@@ -21,6 +21,7 @@ public class SlotScript : MonoBehaviour
     };
 
     public Building currBuilding;
+    public int eraBuilt;
     public GameObject buildingObj = null;
     
     public PlatformMapScript.Point point;

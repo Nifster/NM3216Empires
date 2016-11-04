@@ -55,9 +55,16 @@ public class PlatformGameManager : MonoBehaviour {
 
     public bool demolishMode = false;
 
-    int houseCount;
-    int barracksCount;
-    int townHallCount;
+
+    List<SlotScript> houseList;
+    List<SlotScript> barracksList;
+    List<SlotScript> townHallList;
+    int era1houseCount;
+    int era2houseCount;
+    int era1barracksCount;
+    int era2barracksCount;
+    int era1townHallCount;
+    int era2townHallCount;
     public int oldHouseInfluence;
     public int oldBarracksInfluence;
     public int oldTownhallInfluence;
@@ -185,6 +192,9 @@ public class PlatformGameManager : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
+        houseList = new List<SlotScript>();
+        barracksList = new List<SlotScript>();
+        townHallList = new List<SlotScript>();
         bgm.clip = bgmClips[0];
         gameOverScreen.SetActive(false);
         speechTimer = maxSpeechTimer;
@@ -290,6 +300,10 @@ public class PlatformGameManager : MonoBehaviour {
 
         }
         if(minutesValue < 0)
+        {
+            GameOver();
+        }
+        if(_citizenCount <= 0)
         {
             GameOver();
         }
@@ -610,7 +624,7 @@ public class PlatformGameManager : MonoBehaviour {
         PlatformMapScript.Point ladderPoint = null;
         Citizen foundCitizen = null;
         //search through pool for free citizen
-        for(int i=0; i<_citizenCount; i++)
+        for(int i=0; i<citizenPool.Count; i++)
         {
             if (!citizenPool[i].isBusy && citizenPool[i].isActive)
             {   
@@ -736,6 +750,7 @@ public class PlatformGameManager : MonoBehaviour {
                 GameObject newBuilding = Instantiate(House.prefab);
                 newBuilding.GetComponent<SpriteRenderer>().sprite = House.buildingSprite;
                 slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.House;
+                slotToBuildIn.GetComponent<SlotScript>().eraBuilt = eraIndex;
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
@@ -743,7 +758,7 @@ public class PlatformGameManager : MonoBehaviour {
                 //add citizen at spot
                 AddCitizen(slotToBuildIn.transform.position);
                 SpendResources(House);
-                houseCount++;
+                houseList.Add(slotToBuildIn.GetComponent<SlotScript>());
             }
             
         }
@@ -758,12 +773,13 @@ public class PlatformGameManager : MonoBehaviour {
                 newBuilding.GetComponent<SpriteRenderer>().sprite = Barracks.buildingSprite;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
                 slotToBuildIn.GetComponent<SlotScript>().currBuilding = SlotScript.Building.Barracks;
+                slotToBuildIn.GetComponent<SlotScript>().eraBuilt = eraIndex;
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 1f, 0);
                 //add soldiers at spot
                 AddSoldier(slotToBuildIn.transform.position);
-                barracksCount++;
+                barracksList.Add(slotToBuildIn.GetComponent<SlotScript>());
                 SpendResources(Barracks);
             }
         }
@@ -807,17 +823,18 @@ public class PlatformGameManager : MonoBehaviour {
         }
         else if (selectedBuilding == 4)
         {
-            //monument
+            //townhall
             if (ResourceCheck(Townhall))
             {
                 GameObject newBuilding = Instantiate(Townhall.prefab);
                 newBuilding.GetComponent<SpriteRenderer>().sprite = Townhall.buildingSprite;
                 newBuilding.transform.SetParent(slotToBuildIn.transform);
+                slotToBuildIn.GetComponent<SlotScript>().eraBuilt = eraIndex;
                 newBuilding.transform.localScale = new Vector3(0.3f, 0.8f, 0);
                 newBuilding.transform.localPosition = new Vector3(0, 1.2f, 0);
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 SpendResources(Townhall);
-                townHallCount++;
+                townHallList.Add(slotToBuildIn.GetComponent<SlotScript>());
                 //do townhall skills
             }
         }
@@ -833,27 +850,44 @@ public class PlatformGameManager : MonoBehaviour {
         EnemyComingPrompt();
     }
 
-    public void DemolishBuilding(SlotScript slot)
+    public void DemolishBuilding(SlotScript slot,bool isRewarded)
     {
         if(slot.currBuilding == SlotScript.Building.House)
         {
-            houseCount--;
+            houseList.Remove(slot);
             //minus influence
-            _influenceCount -= oldHouseInfluence;
+            _influenceCount -= House.influenceCost;
+            if (eraIndex > 0)
+            {
+                _influenceCount -= (slot.eraBuilt+1) * House.influenceCost / (eraIndex * 2);
+            }
+            
         }else if(slot.currBuilding == SlotScript.Building.Barracks)
         {
-            barracksCount--;
+            barracksList.Remove(slot);
             //minus influence
-            _influenceCount -= oldBarracksInfluence;
+            _influenceCount -= Barracks.influenceCost;
+            if (eraIndex > 0)
+            {
+                _influenceCount -= (slot.eraBuilt + 1) * Barracks.influenceCost / (eraIndex * 2);
+            }
         }
         else if(slot.currBuilding == SlotScript.Building.Townhall)
         {
-            townHallCount--;
+            townHallList.Remove(slot);
             //minus influence
-            _influenceCount -= oldTownhallInfluence;
+            _influenceCount -= Townhall.influenceCost;
+            if (eraIndex > 0)
+            {
+                _influenceCount -= (slot.eraBuilt + 1) * Townhall.influenceCost / (eraIndex * 2);
+            }
         }
         Destroy(slot.buildingObj);
-        BuildingDemolishedAddReward();
+        if (isRewarded)
+        {
+            BuildingDemolishedAddReward();
+        }
+        
         demolishMode = false;
         slot.currBuilding = SlotScript.Building.None;
     }
@@ -958,7 +992,47 @@ public class PlatformGameManager : MonoBehaviour {
         //all these values are PlaceHolder
         _lumberCount = 0;
         _oreCount = 0;
-        _influenceCount = (houseCount * oldHouseInfluence) + (barracksCount*oldBarracksInfluence) + (townHallCount*oldTownhallInfluence);
+        era1houseCount = 0;
+        era2houseCount = 0;
+        era1barracksCount = 0;
+        era2barracksCount = 0;
+        era1townHallCount = 0;
+        era2townHallCount = 0;
+        for (int i= 0; i < houseList.Count; i++){
+            if(houseList[i].eraBuilt == 0)
+            {
+                era1houseCount++;
+            }else if(houseList[i].eraBuilt == 1)
+            {
+                era2houseCount++;
+            }
+        }
+        for (int i = 0; i < barracksList.Count; i++)
+        {
+            if (barracksList[i].eraBuilt == 0)
+            {
+                era1barracksCount++;
+            }
+            else if (barracksList[i].eraBuilt == 1)
+            {
+                era2barracksCount++;
+            }
+        }
+        for (int i = 0; i < townHallList.Count; i++)
+        {
+            if (townHallList[i].eraBuilt == 0)
+            {
+                era1townHallCount++;
+            }
+            else if (townHallList[i].eraBuilt == 1)
+            {
+                era2townHallCount++;
+            }
+        }
+        Debug.Log("EraIndex" + era1houseCount);
+        Debug.Log("eracalculation"+ era1houseCount * (House.influenceCost / (eraIndex * 2)));
+        _influenceCount = (era1houseCount * (House.influenceCost / (eraIndex*2))) + (era1barracksCount*oldBarracksInfluence/(eraIndex * 2)) + (era1townHallCount*oldTownhallInfluence / (eraIndex * 2))
+            + (era2houseCount * (House.influenceCost / (eraIndex))) + (era1barracksCount * oldBarracksInfluence / (eraIndex)) + (era1townHallCount * oldTownhallInfluence / (eraIndex));
         InitializeCitizens(2);
         InitializeSoldiers();
         //reset timer?
@@ -1159,9 +1233,11 @@ public class PlatformGameManager : MonoBehaviour {
         //go through the pool, set all inactive
         //set new amount of citizens as active
         //reset position to bottom row
+        Debug.Log(citizenPool.Count);
         for(int i=0; i < citizenPool.Count; i++)
         {
             citizenPool[i].isActive = false;
+            citizenPool[i].isAttacked = false;
         }
         for (int i = 0; i < citizenCount; i++)
         {
@@ -1184,7 +1260,8 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void KillCitizen(GameObject citizen)
     {
-        citizen.GetComponent<Citizen>().isActive = (false);
+        citizen.GetComponent<Citizen>().isActive = false;
+        citizen.GetComponent<Citizen>().isBusy = false;
         _citizenCount--;
         Debug.Log("KillCitizen");
     }

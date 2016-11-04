@@ -287,8 +287,9 @@ public class Enemy : MonoBehaviour {
         {
             yield return new WaitForSeconds(timeToDestroyBuilding);
             GameObject parentSlot = victim.transform.parent.gameObject;
-            parentSlot.GetComponent<SlotScript>().currBuilding = SlotScript.Building.None;
-            Destroy(victim); //destroy house with no reward //maybe influence goes down?
+            PlatformGameManager.instance.DemolishBuilding(parentSlot.GetComponent<SlotScript>(),false);
+            //parentSlot.GetComponent<SlotScript>().currBuilding = SlotScript.Building.None;
+            //Destroy(victim); //destroy house with no reward //maybe influence goes down?
         }
         
         

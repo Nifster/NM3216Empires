@@ -261,7 +261,6 @@ public class Citizen : MonoBehaviour {
                 }
                 else
                 {
-                    Debug.Log("Mining");
                     PlatformGameManager.instance.sfx.clip = PlatformGameManager.instance.miningSfx;
                     PlatformGameManager.instance.sfx.Play();
                 }
@@ -300,7 +299,7 @@ public class Citizen : MonoBehaviour {
                 //PlatformGameManager.instance.BuildingDemolishedAddReward();
                 ////turn off demolishmode
                 //PlatformGameManager.instance.demolishMode = false;
-                PlatformGameManager.instance.DemolishBuilding(slot);
+                PlatformGameManager.instance.DemolishBuilding(slot,true);
             }
             else
             {
