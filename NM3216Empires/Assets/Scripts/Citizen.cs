@@ -249,6 +249,7 @@ public class Citizen : MonoBehaviour {
                 }
                 else
                 {
+                    Debug.Log("Mining");
                     PlatformGameManager.instance.sfx.clip = PlatformGameManager.instance.miningSfx;
                     PlatformGameManager.instance.sfx.Play();
                 }

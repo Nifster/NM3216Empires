@@ -174,6 +174,7 @@ public class PlatformGameManager : MonoBehaviour {
     public AudioClip woodChopSfx;
     public AudioClip miningSfx;
     public AudioClip buildingSfx;
+    public AudioSource sheepSfx;
 
     void Awake()
     {
@@ -354,6 +355,7 @@ public class PlatformGameManager : MonoBehaviour {
     {
         showSpeech = true;
         kingSpeechText.text = content;
+        sheepSfx.Play();
 
     }
 
