@@ -176,6 +176,8 @@ public class PlatformGameManager : MonoBehaviour {
     public AudioClip buildingSfx;
     public AudioSource sheepSfx;
 
+    bool promptShown = false;
+
     void Awake()
     {
         instance = this;
@@ -789,6 +791,7 @@ public class PlatformGameManager : MonoBehaviour {
 
         //do a check on influence to see if enemy soldiers should come
         EnemyWaveCheck();
+        EnemyComingPrompt();
     }
 
     public void DemolishBuilding(SlotScript slot)
@@ -846,6 +849,7 @@ public class PlatformGameManager : MonoBehaviour {
         if (eraIndex <= 2)
         {
             eraIndex++;
+            maxMinutes++;
             //change sprites
             backgroundObj.GetComponent<SpriteRenderer>().sprite = eraBackgrounds[eraIndex];
             overlayObj.GetComponent<Image>().sprite = eraOverlays[eraIndex];
@@ -923,6 +927,35 @@ public class PlatformGameManager : MonoBehaviour {
 
     }
 
+    public void EnemyComingPrompt()
+    {
+        if(eraIndex==0 && _influenceCount >= 10 && !promptShown)
+        {
+            ChangeSpeechText("How about building a barracks? We may need some defenders against the big bad wolves");
+            promptShown = true;
+        }
+        if(_influenceCount >= firstCheckpoint[eraIndex]-20 && !promptShown)
+        {
+            ChangeSpeechText("I smell the big bad wolves coming!");
+            promptShown = true;
+        }
+        if (_influenceCount >= secondCheckpoint[eraIndex]-20 && !promptShown)
+        {
+            ChangeSpeechText("I smell the big bad wolves coming!");
+            promptShown = true;
+        }
+        if (_influenceCount >= thirdCheckpoint[eraIndex]-20 && !promptShown && eraIndex>=1)
+        {
+            ChangeSpeechText("I smell the big bad wolves coming!");
+            promptShown = true;
+        }
+        if (_influenceCount >= fourthCheckpoint[eraIndex]-20 && !promptShown && eraIndex >=2)
+        {
+            ChangeSpeechText("I smell the big bad wolves coming!");
+            promptShown = true;
+        }
+    }
+
     public void EnemyWaveCheck()
     {
         Debug.Log("INVASION CHECK");
@@ -938,6 +971,8 @@ public class PlatformGameManager : MonoBehaviour {
                 firstEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                //reset the warning prompt
+                promptShown = false;
 
             }
             else if (_influenceCount >= secondCheckpoint[0] && !secondEnemyWaveSpawned)
@@ -947,6 +982,7 @@ public class PlatformGameManager : MonoBehaviour {
                 secondEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                promptShown = false;
             }
             
         }
@@ -961,6 +997,7 @@ public class PlatformGameManager : MonoBehaviour {
                 firstEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                promptShown = false;
 
             }
             else if (_influenceCount >= secondCheckpoint[1] && !secondEnemyWaveSpawned)
@@ -970,6 +1007,7 @@ public class PlatformGameManager : MonoBehaviour {
                 secondEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                promptShown = false;
             }
             else if (_influenceCount >= thirdCheckpoint[1] && !thirdEnemyWaveSpawned)
             {
@@ -978,6 +1016,7 @@ public class PlatformGameManager : MonoBehaviour {
                 thirdEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                promptShown = false;
             }
 
         }
@@ -992,6 +1031,7 @@ public class PlatformGameManager : MonoBehaviour {
                 firstEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                promptShown = false;
 
             }
             else if (_influenceCount >= secondCheckpoint[2] && !secondEnemyWaveSpawned)
@@ -1001,6 +1041,7 @@ public class PlatformGameManager : MonoBehaviour {
                 secondEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                promptShown = false;
             }
             else if (_influenceCount >= thirdCheckpoint[2] && !thirdEnemyWaveSpawned)
             {
@@ -1009,6 +1050,7 @@ public class PlatformGameManager : MonoBehaviour {
                 thirdEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                promptShown = false;
             }
             else if (_influenceCount >= fourthCheckpoint[2] && !fourthEnemyWaveSpawned)
             {
@@ -1017,6 +1059,7 @@ public class PlatformGameManager : MonoBehaviour {
                 fourthEnemyWaveSpawned = true;
                 PlatformGameManager.instance.bgm.clip = PlatformGameManager.instance.invasionBgm;
                 PlatformGameManager.instance.bgm.Play();
+                promptShown = false;
             }
 
         }

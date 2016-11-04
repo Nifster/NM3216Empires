@@ -31,7 +31,8 @@ public class SlotScript : MonoBehaviour
     bool hasTimer = false;
     bool resourceTicking = false;
     //public int rockHealth = 10;
-    public GameObject healthSlider;
+    public GameObject healthSliderPrefab;
+    public GameObject healthSliderObj;
     public GameObject resourceTimerSliderPrefab;
     GameObject resourceTimerSlider;
     GameObject canvasObj;
@@ -156,19 +157,21 @@ public class SlotScript : MonoBehaviour
     {
         if(!hasHealth)
         {
-            healthSlider = Instantiate(healthSlider);
-            healthSlider.transform.SetParent(canvasObj.transform);
-            healthSlider.transform.position = transform.position;
-            healthSlider.transform.localScale = new Vector3(1, 1, 1);
+            healthSliderObj = Instantiate(healthSliderPrefab);
+            healthSliderObj.transform.SetParent(canvasObj.transform);
+            healthSliderObj.transform.position = transform.position;
+            healthSliderObj.transform.localScale = new Vector3(1, 1, 1);
             hasHealth = true;
-            healthSlider.name += " " + name; 
+            healthSliderObj.name += " " + name; 
             
         }
-        Slider sliderInfo = healthSlider.GetComponent<Slider>();
+        Slider sliderInfo = healthSliderObj.GetComponent<Slider>();
         sliderInfo.value = resourceHealth;
         if (resourceHealth == maxHealth)
         {
-            Destroy(healthSlider);
+            //healthSlider.SetActive(false);
+            Destroy(healthSliderObj);
+            hasHealth = false;
         }
     }
 
@@ -209,7 +212,7 @@ public class SlotScript : MonoBehaviour
 
     public void DestroyHealth()
     {
-        Destroy(healthSlider);
+        Destroy(healthSliderObj);
     }
 
     //Do this when the cursor enters the rect area of this selectable UI object.
