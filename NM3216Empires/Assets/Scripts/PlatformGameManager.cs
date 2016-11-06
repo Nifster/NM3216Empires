@@ -185,6 +185,15 @@ public class PlatformGameManager : MonoBehaviour {
 
     bool promptShown = false;
 
+    [HeaderAttribute("Cutscenes")]
+    public GameObject firstCutscenePanel;
+    public List<Sprite> firstCutsceneSprites;
+    public GameObject secondCutscenePanel;
+    public List<Sprite> secondCutsceneSprites;
+    public GameObject victoryPanel;
+    int cutsceneIndex;
+    public bool isCutscene = false;
+
     void Awake()
     {
         instance = this;
@@ -192,6 +201,7 @@ public class PlatformGameManager : MonoBehaviour {
     }
 	// Use this for initialization
 	void Start () {
+        cutsceneIndex = 0;
         houseList = new List<SlotScript>();
         barracksList = new List<SlotScript>();
         townHallList = new List<SlotScript>();
@@ -283,7 +293,8 @@ public class PlatformGameManager : MonoBehaviour {
 
         //for testing next era
         if (Input.GetKeyDown(KeyCode.LeftShift)){
-            NextEra();
+            //NextEra();
+            TriggerCutscenes();
         }
 #endif
         minutes.text = minutesValue.ToString();
@@ -818,7 +829,8 @@ public class PlatformGameManager : MonoBehaviour {
                 newBuilding.transform.localPosition = new Vector3(0, 1.2f, 0);
                 slotToBuildIn.GetComponent<SlotScript>().buildingObj = newBuilding;
                 SpendResources(Pyramid);
-                NextEra();
+                //NextEra();
+                TriggerCutscenes();
             }
         }
         else if (selectedBuilding == 4)
@@ -983,6 +995,7 @@ public class PlatformGameManager : MonoBehaviour {
         }else if(eraIndex >= 3)
         {
             //Grats! You beat the game!
+            victoryPanel.SetActive(true);
         }
         
     }
@@ -1312,6 +1325,38 @@ public class PlatformGameManager : MonoBehaviour {
             }
         }
         return true;
+    }
+
+    public void TriggerCutscenes()
+    {
+        isCutscene = true;
+        firstCutscenePanel.SetActive(true);
+        firstCutscenePanel.GetComponent<Image>().sprite = firstCutsceneSprites[eraIndex];
+        secondCutscenePanel.GetComponent<Image>().sprite = secondCutsceneSprites[eraIndex];
+    }
+
+    //Cutscenes
+    public void FirstCutsceneNextButton()
+    {
+        
+        if (eraIndex == 2)
+        {
+            victoryPanel.SetActive(true);
+        }
+        else
+        {
+            secondCutscenePanel.SetActive(true);
+            firstCutscenePanel.SetActive(false);
+        }
+        
+    }
+
+    public void SecondCutsceneNextButton()
+    {
+        secondCutscenePanel.SetActive(false);
+        cutsceneIndex++;
+        NextEra();
+        isCutscene = false;
     }
 
 

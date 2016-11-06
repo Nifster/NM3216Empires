@@ -96,7 +96,7 @@ public class SlotScript : MonoBehaviour
 
     public void OnMouseDown()
     {
-        if (!PlatformGameManager.instance.isPaused)
+        if (!PlatformGameManager.instance.isPaused &&!PlatformGameManager.instance.isGameOver && !PlatformGameManager.instance.isCutscene)
         {
             Citizen freeCitizen = PlatformGameManager.instance.GetCitizen(point);
             if (currBuilding == Building.None)
@@ -219,7 +219,7 @@ public class SlotScript : MonoBehaviour
     //Do this when the cursor enters the rect area of this selectable UI object.
     public void OnMouseOver()
     {
-        if (!PlatformGameManager.instance.isPaused && !PlatformGameManager.instance.isGameOver)
+        if (!PlatformGameManager.instance.isPaused && !PlatformGameManager.instance.isGameOver && !PlatformGameManager.instance.isCutscene)
         {
             Color translucent = highlight.color;
             translucent.a = 0.7f;
