@@ -868,30 +868,42 @@ public class PlatformGameManager : MonoBehaviour {
         {
             houseList.Remove(slot);
             //minus influence
-            _influenceCount -= House.influenceCost;
-            if (eraIndex > 0 && slot.eraBuilt > eraIndex)
+            
+            if (eraIndex > 0 && slot.eraBuilt < eraIndex)
             {
-                _influenceCount -= (slot.eraBuilt+1) * House.influenceCost / (eraIndex * 2);
+                _influenceCount -=  ((slot.eraBuilt+1) * House.influenceCost) / (eraIndex * 2);
+            }
+            else
+            {
+                _influenceCount -= House.influenceCost;
             }
             
         }else if(slot.currBuilding == SlotScript.Building.Barracks)
         {
             barracksList.Remove(slot);
             //minus influence
-            _influenceCount -= Barracks.influenceCost;
-            if (eraIndex > 0 && slot.eraBuilt > eraIndex)
+            
+            if (eraIndex > 0 && slot.eraBuilt < eraIndex)
             {
-                _influenceCount -= (slot.eraBuilt + 1) * Barracks.influenceCost / (eraIndex * 2);
+                _influenceCount -= ((slot.eraBuilt + 1) * Barracks.influenceCost) / (eraIndex * 2);
+            }
+            else
+            {
+                _influenceCount -= Barracks.influenceCost;
             }
         }
         else if(slot.currBuilding == SlotScript.Building.Townhall)
         {
             townHallList.Remove(slot);
             //minus influence
-            _influenceCount -= Townhall.influenceCost;
-            if (eraIndex > 0 && slot.eraBuilt > eraIndex)
+            
+            if (eraIndex > 0 && slot.eraBuilt < eraIndex)
             {
-                _influenceCount -= (slot.eraBuilt + 1) * Townhall.influenceCost / (eraIndex * 2);
+                _influenceCount -= ((slot.eraBuilt + 1) * Townhall.influenceCost) / (eraIndex * 2);
+            }
+            else
+            {
+                _influenceCount -= Townhall.influenceCost;
             }
         }
         Destroy(slot.buildingObj);
@@ -1046,10 +1058,10 @@ public class PlatformGameManager : MonoBehaviour {
         Debug.Log("eracalculation"+ era1townHallCount * Townhall.influenceCost / (eraIndex * 2));
         int era1HouseValue = (era1houseCount * (House.influenceCost / (eraIndex * 2)));
         int era2HouseValue = (era2houseCount * (House.influenceCost / (eraIndex)));
-        int era1BarracksValue = (era1barracksCount * Barracks.influenceCost / (eraIndex * 2));
-        int era2BarracksValue = (era2barracksCount * Barracks.influenceCost / (eraIndex));
-        int era1TownHallValue = (era1townHallCount * Townhall.influenceCost / (eraIndex * 2));
-        int era2TownHallValue = (era2townHallCount * Townhall.influenceCost / (eraIndex));
+        int era1BarracksValue = (era1barracksCount * (Barracks.influenceCost / (eraIndex * 2)));
+        int era2BarracksValue = (era2barracksCount * (Barracks.influenceCost / (eraIndex)));
+        int era1TownHallValue = (era1townHallCount * (Townhall.influenceCost / (eraIndex * 2)));
+        int era2TownHallValue = (era2townHallCount * (Townhall.influenceCost / (eraIndex)));
         _influenceCount = era1HouseValue + era1BarracksValue + era1TownHallValue + era2HouseValue + era2BarracksValue + era2TownHallValue;
         InitializeCitizens(2);
         InitializeSoldiers();
