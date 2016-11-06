@@ -79,19 +79,11 @@ public class SlotScript : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-	
-        if( currBuilding == Building.Tree && resourceHealth <= 3)
-        {
-            PlatformGameManager.instance.ChangeSpeechText("You might run out of trees if you're not careful");
-        }
-        if (currBuilding == Building.Rock && resourceHealth <= 3)
-        {
-            PlatformGameManager.instance.ChangeSpeechText("You might run out of ores if you're not careful");
-        }
-        if(PlatformGameManager.instance.selectedBuildingToBuild != null && Input.GetMouseButtonDown(1))
+        if (PlatformGameManager.instance.selectedBuildingToBuild != null && Input.GetMouseButtonDown(1))
         {
             PlatformGameManager.instance.selectedBuildingToBuild = null;
         }
+
     }
 
     public void OnMouseDown()
@@ -138,12 +130,22 @@ public class SlotScript : MonoBehaviour
                     {
                         StartCoroutine(freeCitizen.GoToSlot(this.gameObject,-1));
                         freeCitizen.goalSlotObj = this.gameObject;
+                        if (currBuilding == Building.Tree && resourceHealth <= 3)
+                        {
+                            PlatformGameManager.instance.ChangeSpeechText("You might run out of trees if you're not careful");
+                        }
+                        if (currBuilding == Building.Rock && resourceHealth <= 3)
+                        {
+                            PlatformGameManager.instance.ChangeSpeechText("You might run out of ores if you're not careful");
+                        }
+                        
                     }
                     else
                     {
                         PlatformGameManager.instance.ChangeSpeechText("All your workers are busy!");
                         return; //all citizens busy, maybe give a message
                     }
+
                 }
                 
             }

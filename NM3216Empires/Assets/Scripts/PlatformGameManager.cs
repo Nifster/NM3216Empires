@@ -968,16 +968,18 @@ public class PlatformGameManager : MonoBehaviour {
             {
                 //if 2nd era
 
-                ChangeSpeechText("Welcome to the new era! We've discovered how to make townhalls!");
-                townhallButtonObj.GetComponent<Button>().interactable = true;
-                townhallButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
+                //ChangeSpeechText("Welcome to the new era! We've discovered how to make townhalls!");
+                ChangeSpeechText("Welcome to the new era!");
+                //townhallButtonObj.GetComponent<Button>().interactable = true;
+                //townhallButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
             }
             if(eraIndex == 2)
             {
 
-                ChangeSpeechText("Welcome to the new era! We've discovered how to make schools!");
-                schoolButtonObj.GetComponent<Button>().interactable = true;
-                schoolButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
+                //ChangeSpeechText("Welcome to the new era! We've discovered how to make schools!");
+                ChangeSpeechText("Welcome to the new era!");
+                //schoolButtonObj.GetComponent<Button>().interactable = true;
+                //schoolButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
             }
             //monumentButtonObj.GetComponent<SpriteRenderer>().sprite = monumentIcon[eraIndex];
             for(int i=0;i<citizenPool.Count; i++)
