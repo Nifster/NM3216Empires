@@ -93,7 +93,13 @@ public class Citizen : MonoBehaviour {
                 tChange = Time.time + Random.Range(lowerMoveThreshold, higherMoveThreshold);
             }
 
-            transform.Translate(new Vector3(randomX, 0, 0) * idleMoveSpeed * Time.deltaTime);
+            //if x less than point 8,0 and more than point 0,0
+            if(randomX < new PlatformMapScript.Point(8,0).PointToCoord().x && randomX > new PlatformMapScript.Point(0, 0).PointToCoord().x)
+            {
+                Debug.Log(randomX);
+
+                transform.Translate(new Vector3(randomX, 0, 0) * idleMoveSpeed * Time.deltaTime);
+            }
 
         }
 
