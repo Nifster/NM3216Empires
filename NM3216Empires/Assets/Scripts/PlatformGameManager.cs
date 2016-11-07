@@ -617,6 +617,7 @@ public class PlatformGameManager : MonoBehaviour {
                         citizenFound = true;
                         closestX = Mathf.Abs(citizenPool[i].pointX - slotPoint.x);
                         foundCitizen = citizenPool[i];
+                        return foundCitizen;
                     }
                     
                 }
@@ -659,7 +660,6 @@ public class PlatformGameManager : MonoBehaviour {
                             citizenFound = true;
                             closestX = Mathf.Abs(ladderPoint.x - citizenPool[i].pointX);
                             foundCitizen = citizenPool[i];
-                            Debug.Log("Other level found");
                         }
 
                     }
