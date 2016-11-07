@@ -963,7 +963,7 @@ public class PlatformGameManager : MonoBehaviour {
             {
 
                 //ChangeSpeechText("Welcome to the new era! We've discovered how to make schools!");
-                ChangeSpeechText("Welcome to the new era! You know the drill. Monument please!");
+                ChangeSpeechText("Welcome to the new era! You know the drill! Monument please!");
                 //schoolButtonObj.GetComponent<Button>().interactable = true;
                 //schoolButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
             }
