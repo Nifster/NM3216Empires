@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour {
     public int randomMoveThreshold;
     public float lowerMoveThreshold;
     public float higherMoveThreshold;
-    private Vector3 directionX = Vector3.left;
+    public Vector3 directionX = Vector3.left;
     private int randomY;
     public float idleMoveSpeed;
     public float workingMoveSpeed;

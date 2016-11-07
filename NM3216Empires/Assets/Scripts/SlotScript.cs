@@ -104,7 +104,7 @@ public class SlotScript : MonoBehaviour
                     //if ladder, do ladder check
                     if(PlatformGameManager.instance.selectedBuildingIndexToBuild == 2)
                     {
-                        if (!PlatformGameManager.instance.LadderCheck(this))
+                        if (PlatformGameManager.instance.HasLadderCheck(this.point.y))
                         {
                             PlatformGameManager.instance.ChangeSpeechText("There's already a ladder on that level!");
                             return;

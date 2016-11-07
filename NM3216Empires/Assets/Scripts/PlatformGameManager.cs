@@ -1220,11 +1220,36 @@ public class PlatformGameManager : MonoBehaviour {
 
     public IEnumerator SpawnEnemies(int enemyCount)
     {
+        bool isGoingRight;
         int enemyLeftToSpawn = enemyCount;
         currEnemyCount += enemyCount;
-        PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0);
+        PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0); 
+        if (Random.value > 0.5f)
+        {
+            spawnPoint.x = new PlatformMapScript.Point(8, 0).x;
+            isGoingRight = false;
+        }
+        else
+        {
+            spawnPoint.x = new PlatformMapScript.Point(0, 0).x;
+            isGoingRight = true;
+        }
+        //int randomiserY = Random.Range(0, 3);
+        //if (randomiserY == 0)
+        //{
+        //    spawnPoint.y = new PlatformMapScript.Point(0, 0).y;
+        //}
+        //else if(randomiserY == 1 && HasLadderCheck(0))
+        //{
+        //    spawnPoint.y = new PlatformMapScript.Point(0, 1).y;
+        //}
+        //else if(randomiserY == 2 && HasLadderCheck(1))
+        //{
+        //    spawnPoint.y = new PlatformMapScript.Point(0, 2).y;
+        //}
+        
         //check pool if got enough, if not instantiate
-        for(int i=0; i < enemyCount; i++)
+        for (int i=0; i < enemyCount; i++)
         {
             //find non-active
             for(int j = 0; j < enemyPool.Count; j++)
@@ -1233,6 +1258,14 @@ public class PlatformGameManager : MonoBehaviour {
                 {
                     enemyPool[j].isActive = true;
                     enemyPool[j].transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f,-1);
+                    if (isGoingRight)
+                    {
+                        enemyPool[j].directionX = Vector3.left;
+                    }
+                    else
+                    {
+                        enemyPool[j].directionX = Vector3.right;
+                    }
                     enemyPool[j].ResetPointPosition();
                     enemyLeftToSpawn--;
                     yield return new WaitForSeconds(1);
@@ -1249,6 +1282,14 @@ public class PlatformGameManager : MonoBehaviour {
                 GameObject enemyObj = Instantiate(enemyPrefab);
                 enemyObj.transform.localPosition = new Vector3(spawnPoint.PointToCoord().x, spawnPoint.PointToCoord().y + 0.6f, -1); //also temp, offscreen
                 Enemy newEnemy = enemyObj.GetComponent<Enemy>();
+                if (isGoingRight)
+                {
+                    newEnemy.directionX = Vector3.left;
+                }
+                else
+                {
+                    newEnemy.directionX = Vector3.right;
+                }
                 enemyPool.Add(newEnemy);
                 newEnemy.isActive = true;
                 yield return new WaitForSeconds(1);
@@ -1316,16 +1357,16 @@ public class PlatformGameManager : MonoBehaviour {
         Debug.Log("Killsoldier");
     }
 
-    public bool LadderCheck(SlotScript slot)
+    public bool HasLadderCheck(float yValue)
     {
         for(int i = 0; i < ladderSlots.Count; i++)
         {
-            if(ladderSlots[i].point.y == slot.point.y)
+            if(ladderSlots[i].point.y == yValue)
             {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public void TriggerCutscenes()
