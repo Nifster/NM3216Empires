@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour {
     public int randomMoveThreshold;
     public float lowerMoveThreshold;
     public float higherMoveThreshold;
-    private Vector3 directionX = Vector3.right;
+    private Vector3 directionX = Vector3.left;
     private int randomY;
     public float idleMoveSpeed;
     public float workingMoveSpeed;
@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour {
     bool moveHorz;
     public GameObject goalSlotObj;
     Rigidbody2D rgBody;
+    public GameObject dustCloudPrefab;
+    public GameObject dustCloud = null;
 
     public int pointY;//this is the Point system Y coordinate
     public int pointX;
@@ -138,6 +140,15 @@ public class Enemy : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        Vector3 intersectPoint;
+        if (other.transform.position.x < transform.position.x)
+        {
+            intersectPoint = new Vector3(transform.position.x - (Mathf.Abs(this.transform.position.x - other.gameObject.transform.position.x) / 2), this.transform.position.y, 0);
+        }
+        else
+        {
+            intersectPoint = new Vector3((Mathf.Abs(this.transform.position.x - other.gameObject.transform.position.x) / 2) + transform.position.x, this.transform.position.y, 0);
+        }
         if (other.gameObject.tag == "Blocked")
         {
             Debug.Log("Enemy Blocked");
@@ -177,8 +188,8 @@ public class Enemy : MonoBehaviour {
             {
                 other.GetComponent<Citizen>().isAttacked = true;
                 StartCoroutine(Attack(other.gameObject, true));
+                dustCloud = Instantiate(dustCloudPrefab, intersectPoint, transform.rotation) as GameObject;
             }
-            
         }
 
         if(other.gameObject.tag == "Building" && !isBusy)
@@ -187,9 +198,12 @@ public class Enemy : MonoBehaviour {
             {
                 other.GetComponent<Building>().isAttacked = true;
                 StartCoroutine(Attack(other.gameObject, false));
+                dustCloud = Instantiate(dustCloudPrefab, intersectPoint, transform.rotation) as GameObject;
             }
                 
         }
+
+
 
 
     }
@@ -201,11 +215,19 @@ public class Enemy : MonoBehaviour {
         if (isCitizen)
         {
             yield return new WaitForSeconds(timeToKillCitizen);
+            if(dustCloud != null)
+            {
+                Destroy(dustCloud);
+            }
             PlatformGameManager.instance.KillCitizen(victim);
         }
         else
         {
             yield return new WaitForSeconds(timeToDestroyBuilding);
+            if (dustCloud != null)
+            {
+                Destroy(dustCloud);
+            }
             GameObject parentSlot = victim.transform.parent.gameObject;
             PlatformGameManager.instance.DemolishBuilding(parentSlot.GetComponent<SlotScript>(),false);
             //parentSlot.GetComponent<SlotScript>().currBuilding = SlotScript.Building.None;

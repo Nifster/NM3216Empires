@@ -24,6 +24,8 @@ public class Soldier : MonoBehaviour
     public int timeToKillEnemy = 5;
     bool isAttacking;
     public Coroutine coroutine;
+    public GameObject dustCloudPrefab;
+    public GameObject dustCloud;
 
     public int pointY;//this is the Point system Y coordinate
     public int pointX;
@@ -221,6 +223,15 @@ public class Soldier : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        Vector3 intersectPoint;
+        if(other.transform.position.x < transform.position.x)
+        {
+            intersectPoint = new Vector3(transform.position.x - (Mathf.Abs(this.transform.position.x - other.gameObject.transform.position.x) / 2)  , this.transform.position.y, 0);
+        }
+        else
+        {
+            intersectPoint  = new Vector3((Mathf.Abs(this.transform.position.x - other.gameObject.transform.position.x) / 2) + transform.position.x, this.transform.position.y, 0);
+        }
         if (other.gameObject.tag == "Blocked")
         {
             //turnBack = true;
@@ -238,6 +249,7 @@ public class Soldier : MonoBehaviour
                 {
                     //StopCoroutine(coroutine);
                 }
+                dustCloud = Instantiate(dustCloudPrefab, intersectPoint, transform.rotation) as GameObject;
                 other.GetComponent<Enemy>().isBusy = true;
                 StartCoroutine(Attack(other.gameObject));
                 //if health is zero, becomes inactive
@@ -258,6 +270,10 @@ public class Soldier : MonoBehaviour
     {
         isBusy = true;
         yield return new WaitForSeconds(timeToKillEnemy);
+        if (dustCloud != null)
+        {
+            Destroy(dustCloud);
+        }
         //set enemy to inactive
         PlatformGameManager.instance.KillEnemy(victim);
         currHealth--;
