@@ -37,6 +37,7 @@ public class SlotScript : MonoBehaviour
     public GameObject resourceTimerSliderPrefab;
     GameObject resourceTimerSlider;
     GameObject canvasObj;
+    public bool hasWorkerAssigned = false;
 
 	// Use this for initialization
 	void Start () {
@@ -98,7 +99,7 @@ public class SlotScript : MonoBehaviour
             Citizen freeCitizen = PlatformGameManager.instance.GetCitizen(point);
             if (currBuilding == Building.None)
             {
-                if (PlatformGameManager.instance.selectedBuildingIndexToBuild != -1 && freeCitizen != null)
+                if (PlatformGameManager.instance.selectedBuildingIndexToBuild != -1 && freeCitizen != null && !hasWorkerAssigned)
                 {
                     //if ladder, do ladder check
                     if(PlatformGameManager.instance.selectedBuildingIndexToBuild == 2)
@@ -112,6 +113,7 @@ public class SlotScript : MonoBehaviour
                     //do resource check
                     if (PlatformGameManager.instance.ResourceCheck(PlatformGameManager.instance.ChooseBuildingFromIndex(PlatformGameManager.instance.selectedBuildingIndexToBuild)))
                     {
+                        hasWorkerAssigned = true;
                         StartCoroutine(freeCitizen.GoToSlot(this.gameObject, PlatformGameManager.instance.selectedBuildingIndexToBuild));
                         freeCitizen.goalSlotObj = this.gameObject;
                         
@@ -124,6 +126,10 @@ public class SlotScript : MonoBehaviour
                     //turn off preview after clicked
                     PlatformGameManager.instance.selectedBuildingToBuild = null;
 
+                }else if (hasWorkerAssigned)
+                {
+                    PlatformGameManager.instance.ChangeSpeechText("A worker is already assigned to that!");
+                    return;
                 }
 
             }
@@ -131,7 +137,7 @@ public class SlotScript : MonoBehaviour
             {
                 if(currBuilding == Building.Tree || currBuilding == Building.Rock || PlatformGameManager.instance.demolishMode)
                 {
-                    if (freeCitizen != null)
+                    if (freeCitizen != null && !hasWorkerAssigned)
                     {
                         if (PlatformGameManager.instance.demolishMode && currBuilding == Building.Ladder)
                         {
@@ -141,8 +147,10 @@ public class SlotScript : MonoBehaviour
                         }
                         else
                         {
+                            hasWorkerAssigned = true;
                             StartCoroutine(freeCitizen.GoToSlot(this.gameObject, -1));
                             freeCitizen.goalSlotObj = this.gameObject;
+                            
                             if (currBuilding == Building.Tree && resourceHealth <= 3)
                             {
                                 PlatformGameManager.instance.ChangeSpeechText("You might run out of trees if you're not careful");
@@ -156,10 +164,10 @@ public class SlotScript : MonoBehaviour
                         
                         
                     }
-                    else
+                    else if (hasWorkerAssigned)
                     {
-                        PlatformGameManager.instance.ChangeSpeechText("All your workers are busy!");
-                        return; //all citizens busy, maybe give a message
+                        PlatformGameManager.instance.ChangeSpeechText("A worker is already assigned to that!");
+                        return;
                     }
 
                 }

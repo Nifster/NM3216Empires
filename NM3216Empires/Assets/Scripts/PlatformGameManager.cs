@@ -437,42 +437,7 @@ public class PlatformGameManager : MonoBehaviour {
     public void AddCitizen(Vector3 pos)
     {
 
-        ////check pool, if got inactive set active, if not instantiate
-
-        //_citizenCount += CITIZEN_PER_HOUSE;
-        //if (citizenPool.Count < _citizenCount)
-        //{
-        //    for (int i = 0; i < CITIZEN_PER_HOUSE; i++)
-        //    {
-        //        GameObject citizenObj = Instantiate(citizenPrefab);
-        //        //citizenObj.transform.SetParent(GameObject.Find("Map").transform);
-        //        //citizenObj.transform.localScale = new Vector3(30f, 30f); //temp
-        //        citizenObj.transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
-        //        Citizen newCitizen = citizenObj.GetComponent<Citizen>();
-        //        citizenPool.Add(newCitizen);
-        //        newCitizen.isBusy = false;
-
-        //    }
-        //}
-        //else
-        //{
-        //    //for each new citizen
-        //    //if there is an inactive citizen in the pool
-        //    //set it to active, and reset its position
-        //    for (int j = 0; j < CITIZEN_PER_HOUSE; j++)
-        //    {
-        //        for (int i = 0; i < citizenPool.Count; i++)
-        //        {
-        //            if (!citizenPool[i].gameObject.activeSelf)
-        //            {
-        //                citizenPool[i].gameObject.SetActive(true);
-        //                citizenPool[i].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1); //also temp
-        //                citizenPool[i].ResetPointPosition();
-        //                citizenPool[i].isBusy = false;
-        //            }
-        //        }
-        //    }
-        //}
+        
         int citizensLeftToSpawn = CITIZEN_PER_HOUSE;
         //PlatformMapScript.Point spawnPoint = new PlatformMapScript.Point(0, 0);
         //check pool if got enough, if not instantiate
@@ -674,6 +639,11 @@ public class PlatformGameManager : MonoBehaviour {
                         Debug.Log("Ladder found");
                     }
                 }
+                if (!ladderFound)
+                {
+                    ChangeSpeechText("Your workers can't reach there. Maybe build a ladder?");
+                    return null;
+                }
             }
             closestX = 10000;
             if (ladderFound)
@@ -697,7 +667,16 @@ public class PlatformGameManager : MonoBehaviour {
             }
         }
 
-        return foundCitizen;
+        if(foundCitizen == null)
+        {
+            PlatformGameManager.instance.ChangeSpeechText("All your workers are busy!");
+            return null;
+        }
+        else
+        {
+            return foundCitizen;
+        }
+        
     }
 
     public void PickBuildingToBuild(int buildingIndex)

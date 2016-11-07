@@ -242,6 +242,7 @@ public class Citizen : MonoBehaviour {
         SlotScript slot = slotObj.GetComponent<SlotScript>();
         SlotScript.Building slotBuildingType = slot.currBuilding;
         GameObject buildingObj = slot.buildingObj;
+        
         //int currentlyBuildingIndex = -1;
         PlatformGameManager.Buildings currentlyBuilding = null;
         if(buildIndex >= 0)
@@ -342,7 +343,8 @@ public class Citizen : MonoBehaviour {
             }
             
         }
-        
+        slot.hasWorkerAssigned = false;
+
     }
 
 
