@@ -946,6 +946,7 @@ public class PlatformGameManager : MonoBehaviour {
             Pyramid.lumberCost = monumentInfo[eraIndex].lumberCost;
             Pyramid.oreCost = monumentInfo[eraIndex].oreCost;
             Pyramid.timeToBuild = monumentInfo[eraIndex].timeToBuild;
+            monumentButtonObj.GetComponent<Image>().sprite = monumentIcon[eraIndex];
             bgm.clip = bgmClips[eraIndex];
             bgm.Play();
             
