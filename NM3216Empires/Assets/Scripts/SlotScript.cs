@@ -278,5 +278,6 @@ public class SlotScript : MonoBehaviour
     {
         resourceHealth = maxHealth;
         UpdateResourceValue();
+        hasWorkerAssigned = false;
     }
 }

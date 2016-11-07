@@ -955,7 +955,7 @@ public class PlatformGameManager : MonoBehaviour {
                 //if 2nd era
 
                 //ChangeSpeechText("Welcome to the new era! We've discovered how to make townhalls!");
-                ChangeSpeechText("Welcome to the new era!");
+                ChangeSpeechText("Welcome to the new era! Now get working on the new monument!");
                 //townhallButtonObj.GetComponent<Button>().interactable = true;
                 //townhallButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
             }
@@ -963,7 +963,7 @@ public class PlatformGameManager : MonoBehaviour {
             {
 
                 //ChangeSpeechText("Welcome to the new era! We've discovered how to make schools!");
-                ChangeSpeechText("Welcome to the new era!");
+                ChangeSpeechText("Welcome to the new era! You know the drill. Monument please!");
                 //schoolButtonObj.GetComponent<Button>().interactable = true;
                 //schoolButtonObj.GetComponent<Image>().sprite = activeButtonSprite;
             }
