@@ -82,6 +82,11 @@ public class SlotScript : MonoBehaviour
         if (PlatformGameManager.instance.selectedBuildingToBuild != null && Input.GetMouseButtonDown(1))
         {
             PlatformGameManager.instance.selectedBuildingToBuild = null;
+            
+        }
+        if (PlatformGameManager.instance.demolishMode && Input.GetMouseButtonDown(1))
+        {
+            PlatformGameManager.instance.demolishMode = false;
         }
 
     }
@@ -128,16 +133,27 @@ public class SlotScript : MonoBehaviour
                 {
                     if (freeCitizen != null)
                     {
-                        StartCoroutine(freeCitizen.GoToSlot(this.gameObject,-1));
-                        freeCitizen.goalSlotObj = this.gameObject;
-                        if (currBuilding == Building.Tree && resourceHealth <= 3)
+                        if (PlatformGameManager.instance.demolishMode && currBuilding == Building.Ladder)
                         {
-                            PlatformGameManager.instance.ChangeSpeechText("You might run out of trees if you're not careful");
+                            PlatformGameManager.instance.ChangeSpeechText("Why would you want to cut off your access to resources?");
+                            PlatformGameManager.instance.demolishMode = false;
+                            return;
                         }
-                        if (currBuilding == Building.Rock && resourceHealth <= 3)
+                        else
                         {
-                            PlatformGameManager.instance.ChangeSpeechText("You might run out of ores if you're not careful");
+                            StartCoroutine(freeCitizen.GoToSlot(this.gameObject, -1));
+                            freeCitizen.goalSlotObj = this.gameObject;
+                            if (currBuilding == Building.Tree && resourceHealth <= 3)
+                            {
+                                PlatformGameManager.instance.ChangeSpeechText("You might run out of trees if you're not careful");
+                            }
+                            if (currBuilding == Building.Rock && resourceHealth <= 3)
+                            {
+                                PlatformGameManager.instance.ChangeSpeechText("You might run out of ores if you're not careful");
+                            }
                         }
+                        
+                        
                         
                     }
                     else
