@@ -182,6 +182,7 @@ public class PlatformGameManager : MonoBehaviour {
     public AudioClip miningSfx;
     public AudioClip buildingSfx;
     public AudioSource sheepSfx;
+    public AudioSource clickButtonSfx;
 
     bool promptShown = false;
 
@@ -392,20 +393,24 @@ public class PlatformGameManager : MonoBehaviour {
         isPaused = false;
         Time.timeScale = 1;
         pausePanel.SetActive(false);
+        clickButtonSfx.Play();
     }
 
     public void QuitButton()
     {
+        clickButtonSfx.Play();
         Application.Quit();
     }
 
     public void MenuButton()
     {
+        clickButtonSfx.Play();
         SceneManager.LoadScene("Menu");
     }
 
     public void RestartButton()
     {
+        clickButtonSfx.Play();
         SceneManager.LoadScene("Platform");
         isGameOver = false;
     }
@@ -697,6 +702,7 @@ public class PlatformGameManager : MonoBehaviour {
 
     public void PickBuildingToBuild(int buildingIndex)
     {
+        clickButtonSfx.Play();
         selectedBuildingIndexToBuild = buildingIndex;
         switch (buildingIndex)
         {
@@ -1300,6 +1306,7 @@ public class PlatformGameManager : MonoBehaviour {
     {
         demolishMode = !demolishMode;
         Debug.Log("demolishMode: " + demolishMode);
+        clickButtonSfx.Play();
     }
 
     public void KillCitizen(GameObject citizen)
@@ -1362,7 +1369,8 @@ public class PlatformGameManager : MonoBehaviour {
             secondCutscenePanel.SetActive(true);
             firstCutscenePanel.SetActive(false);
         }
-        
+        clickButtonSfx.Play();
+
     }
 
     public void SecondCutsceneNextButton()
@@ -1371,6 +1379,7 @@ public class PlatformGameManager : MonoBehaviour {
         cutsceneIndex++;
         NextEra();
         isCutscene = false;
+        clickButtonSfx.Play();
     }
 
 

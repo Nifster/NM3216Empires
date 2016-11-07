@@ -150,8 +150,7 @@ public class SlotScript : MonoBehaviour
                 
             }
 
-            PlatformGameManager.instance.sfx.clip = PlatformGameManager.instance.clickSfx;
-            PlatformGameManager.instance.sfx.Play();
+            PlatformGameManager.instance.clickButtonSfx.Play();
         }
         
     }

@@ -9,6 +9,7 @@ public class MenuManager : MonoBehaviour {
     public GameObject instructionsPanel;
     public List<Sprite> instructionsPanelSprites;
     public GameObject nextInstructionButton;
+    public AudioSource buttonSfx;
     int instructionsIndex;
 
 	// Use this for initialization
@@ -18,27 +19,32 @@ public class MenuManager : MonoBehaviour {
 	
     public void PlayGame()
     {
+        buttonSfx.Play();
         SceneManager.LoadScene("Platform");
     }
 
     public void QuitGame()
     {
+        buttonSfx.Play();
         Application.Quit();
     }
 
     public void Credits()
     {
+        buttonSfx.Play();
         creditsPanel.SetActive(true);
     }
     
     public void BackFromCredits()
     {
+        buttonSfx.Play();
         creditsPanel.SetActive(false);
     }
 
     public void InstructionsButton()
     {
         //activate instructionsPanel;
+        buttonSfx.Play();
         instructionsPanel.SetActive(true);
     }
 
@@ -62,6 +68,7 @@ public class MenuManager : MonoBehaviour {
             nextInstructionButton.GetComponent<RectTransform>().localPosition = new Vector3(276, -246, 0);
             instructionsPanel.SetActive(false);
         }
-        
+        buttonSfx.Play();
+
     }
 }
