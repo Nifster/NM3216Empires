@@ -13,6 +13,10 @@ public class MenuManager : MonoBehaviour {
     int instructionsIndex;
 
 	// Use this for initialization
+    void Awake()
+    {
+        Screen.SetResolution(800, 600, false);
+    }
 	void Start () {
         creditsPanel.SetActive(false);
 	}

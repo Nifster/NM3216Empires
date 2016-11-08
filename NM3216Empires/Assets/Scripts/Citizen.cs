@@ -45,6 +45,18 @@ public class Citizen : MonoBehaviour {
         pointX = (int)(transform.localPosition.x / 1.75f)+4;
     }
 
+    public void ResetCitizenState()
+    {
+        isBusy = false;
+        ResetPointPosition();
+        currMoveSpeed = idleMoveSpeed;
+    }
+
+    public void DeactivateCitizen()
+    {
+        isActive = false;
+    }
+
     public void ResetPointPosition()
     {
         if (transform.localPosition.y == -1.9f)

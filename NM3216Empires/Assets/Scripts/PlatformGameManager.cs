@@ -451,11 +451,10 @@ public class PlatformGameManager : MonoBehaviour {
                     citizenPool[j].isActive = true;
                     citizenPool[j].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
                     //reset point
-                    citizenPool[j].ResetPointPosition();
-                    citizenPool[j].isBusy = false;
-                    //yield return new WaitForSeconds(1);
-                    //_soldierCount++;
-                    //_currSoldierCount++;
+                    //citizenPool[j].ResetPointPosition();
+                    //citizenPool[j].isBusy = false;
+                    citizenPool[i].ResetCitizenState();
+
                     citizensLeftToSpawn--;
                     _citizenCount++;
                 }
@@ -473,9 +472,8 @@ public class PlatformGameManager : MonoBehaviour {
                 Citizen newCitizen = citizenObj.GetComponent<Citizen>();
                 citizenPool.Add(newCitizen);
                 newCitizen.isActive = true;
-                newCitizen.isBusy = false;
-                //_soldierCount++;
-                //_currSoldierCount++;
+                //newCitizen.isBusy = false;
+                newCitizen.ResetCitizenState();
                 _citizenCount++;
                 //yield return new WaitForSeconds(1);
             }
@@ -1372,6 +1370,7 @@ public class PlatformGameManager : MonoBehaviour {
     public void TriggerCutscenes()
     {
         isCutscene = true;
+        isPaused = true;
         firstCutscenePanel.SetActive(true);
         firstCutscenePanel.GetComponent<Image>().sprite = firstCutsceneSprites[eraIndex];
         secondCutscenePanel.GetComponent<Image>().sprite = secondCutsceneSprites[eraIndex];
@@ -1401,6 +1400,7 @@ public class PlatformGameManager : MonoBehaviour {
         NextEra();
         isCutscene = false;
         clickButtonSfx.Play();
+        isPaused = false;
     }
 
 
