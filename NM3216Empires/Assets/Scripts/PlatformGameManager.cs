@@ -274,7 +274,7 @@ public class PlatformGameManager : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            PlatformMapScript.Point spawnpoint = new PlatformMapScript.Point(6, 0);
+            PlatformMapScript.Point spawnpoint = new PlatformMapScript.Point(6, 2);
             Vector3 spawnpointvec = new Vector3(spawnpoint.PointToCoord().x, (spawnpoint.PointToCoord().y));
             AddSoldier(spawnpointvec);
         }
@@ -558,6 +558,46 @@ public class PlatformGameManager : MonoBehaviour {
         }
 
         //if cannot find citizen on same level, get citizen nearest to ladder
+        //closestX = 10000;
+        //if (!soldierFound)
+        //{
+        //    if (!ladderFound)
+        //    {
+        //        for (int j = 0; j < ladderSlots.Count; j++)
+        //        {
+        //            if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+        //            {
+        //                ladderFound = true;
+        //                closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
+        //                ladderPoint = ladderSlots[j].point;
+        //                Debug.Log("Ladder found");
+        //            }
+        //        }
+        //    }
+        //    closestX = 10000;
+        //    if (ladderFound)
+        //    {
+        //        //closest ladder found
+        //        for (int i = 0; i < _soldierCount; i++)
+        //        {
+        //            if (!soldierPool[i].isBusy && soldierPool[i].isActive)
+        //            {
+
+        //                if (Mathf.Abs(ladderPoint.x - soldierPool[i].pointX) < closestX)
+        //                {
+        //                    soldierFound = true;
+        //                    closestX = Mathf.Abs(ladderPoint.x - soldierPool[i].pointX);
+        //                    foundSoldier = soldierPool[i];
+        //                    Debug.Log("Other level found");
+        //                }
+
+        //            }
+        //        }
+        //    }
+        //}
+
+        //return foundSoldier;
+
         closestX = 10000;
         if (!soldierFound)
         {
@@ -565,14 +605,29 @@ public class PlatformGameManager : MonoBehaviour {
             {
                 for (int j = 0; j < ladderSlots.Count; j++)
                 {
-                    if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+                    if (slotPoint.y > ladderSlots[j].point.y && slotPoint.y == ladderSlots[j].point.y + 1)
                     {
-                        ladderFound = true;
-                        closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
-                        ladderPoint = ladderSlots[j].point;
-                        Debug.Log("Ladder found");
+                        if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+                        {
+                            ladderFound = true;
+                            closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
+                            ladderPoint = ladderSlots[j].point;
+                            Debug.Log("Ladder found :" + ladderPoint.y);
+                        }
+                    }
+                    else if (slotPoint.y == ladderSlots[j].point.y)
+                    {
+                        if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+                        {
+                            ladderFound = true;
+                            closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
+                            ladderPoint = ladderSlots[j].point;
+
+                        }
+
                     }
                 }
+
             }
             closestX = 10000;
             if (ladderFound)
@@ -588,15 +643,28 @@ public class PlatformGameManager : MonoBehaviour {
                             soldierFound = true;
                             closestX = Mathf.Abs(ladderPoint.x - soldierPool[i].pointX);
                             foundSoldier = soldierPool[i];
-                            Debug.Log("Other level found");
                         }
 
                     }
                 }
             }
+            if (!ladderFound)
+            {
+                ChangeSpeechText("Your soldiers can't reach there. Maybe build a ladder?");
+                return null;
+            }
         }
 
-        return foundSoldier;
+        if (foundSoldier == null)
+        {
+            PlatformGameManager.instance.ChangeSpeechText("All your soldiers are busy!");
+            return null;
+        }
+        else
+        {
+            return foundSoldier;
+        }
+
     }
     public Citizen GetCitizen(PlatformMapScript.Point slotPoint)
     {
