@@ -451,9 +451,11 @@ public class PlatformGameManager : MonoBehaviour {
                     citizenPool[j].isActive = true;
                     citizenPool[j].transform.localPosition = new Vector3(pos.x, pos.y + 0.6f, pos.z - 1);
                     //reset point
-                    //citizenPool[j].ResetPointPosition();
-                    //citizenPool[j].isBusy = false;
-                    citizenPool[i].ResetCitizenState();
+                    citizenPool[j].ResetPointPosition();
+                    citizenPool[j].isBusy = false;
+                    citizenPool[j].ResetCitizenMovement();
+                    citizenPool[j].isAttacked = false;
+                    //citizenPool[i].ResetCitizenState();
 
                     citizensLeftToSpawn--;
                     _citizenCount++;
@@ -472,8 +474,9 @@ public class PlatformGameManager : MonoBehaviour {
                 Citizen newCitizen = citizenObj.GetComponent<Citizen>();
                 citizenPool.Add(newCitizen);
                 newCitizen.isActive = true;
-                //newCitizen.isBusy = false;
-                newCitizen.ResetCitizenState();
+                newCitizen.isBusy = false;
+                newCitizen.isAttacked = false;
+                //newCitizen.ResetCitizenState();
                 _citizenCount++;
                 //yield return new WaitForSeconds(1);
             }
@@ -615,7 +618,6 @@ public class PlatformGameManager : MonoBehaviour {
                         citizenFound = true;
                         closestX = Mathf.Abs(citizenPool[i].pointX - slotPoint.x);
                         foundCitizen = citizenPool[i];
-                        return foundCitizen;
                     }
                     
                 }
@@ -623,6 +625,7 @@ public class PlatformGameManager : MonoBehaviour {
         }
         
         //if cannot find citizen on same level, get citizen nearest to ladder
+        //case 1: if point is one level higher than citizen
         closestX = 10000;
         if (!citizenFound)
         {
@@ -630,19 +633,29 @@ public class PlatformGameManager : MonoBehaviour {
             {
                 for (int j = 0; j < ladderSlots.Count; j++)
                 {
-                    if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+                    if (slotPoint.y > ladderSlots[j].point.y && slotPoint.y == ladderSlots[j].point.y + 1)
                     {
-                        ladderFound = true;
-                        closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
-                        ladderPoint = ladderSlots[j].point;
-                        Debug.Log("Ladder found");
+                        if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+                        {
+                            ladderFound = true;
+                            closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
+                            ladderPoint = ladderSlots[j].point;
+                            Debug.Log("Ladder found :" + ladderPoint.y);
+                        }
+                    }
+                    else if (slotPoint.y == ladderSlots[j].point.y)
+                    {
+                        if (Mathf.Abs(slotPoint.x - ladderSlots[j].point.x) < closestX)
+                        {
+                            ladderFound = true;
+                            closestX = Mathf.Abs(slotPoint.x - ladderSlots[j].point.x);
+                            ladderPoint = ladderSlots[j].point;
+
+                        }
+
                     }
                 }
-                if (!ladderFound)
-                {
-                    ChangeSpeechText("Your workers can't reach there. Maybe build a ladder?");
-                    return null;
-                }
+                
             }
             closestX = 10000;
             if (ladderFound)
@@ -662,6 +675,11 @@ public class PlatformGameManager : MonoBehaviour {
 
                     }
                 }
+            }
+            if (!ladderFound)
+            {
+                ChangeSpeechText("Your workers can't reach there. Maybe build a ladder?");
+                return null;
             }
         }
 

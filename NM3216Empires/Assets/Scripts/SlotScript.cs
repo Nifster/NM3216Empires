@@ -23,6 +23,7 @@ public class SlotScript : MonoBehaviour
     public Building currBuilding;
     public int eraBuilt;
     public GameObject buildingObj = null;
+    public GameObject assignedIcon;
     
     public PlatformMapScript.Point point;
     public PlatformMapScript.Coord coord;
@@ -41,14 +42,15 @@ public class SlotScript : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
+        assignedIcon.SetActive(false);
         genericBuildingPreview = GameObject.FindGameObjectWithTag("GenericBuildingPreview");
         genericBuildingPreview.GetComponent<SpriteRenderer>().enabled = false;
         canvasObj = GameObject.Find("Canvas");
         highlight = transform.GetChild(0).GetComponent<SpriteRenderer>();
         //find size of childindex?
-        if(transform.childCount > 1)
+        if(transform.childCount > 2)
         {
-            buildingObj = transform.GetChild(1).gameObject;
+            buildingObj = transform.GetChild(2).gameObject;
         }
         
         if(buildingObj == null)
@@ -89,7 +91,6 @@ public class SlotScript : MonoBehaviour
         {
             PlatformGameManager.instance.demolishMode = false;
         }
-
     }
 
     public void OnMouseDown()
@@ -148,6 +149,7 @@ public class SlotScript : MonoBehaviour
                         else
                         {
                             hasWorkerAssigned = true;
+                            assignedIcon.SetActive(true);
                             StartCoroutine(freeCitizen.GoToSlot(this.gameObject, -1));
                             freeCitizen.goalSlotObj = this.gameObject;
                             
@@ -228,12 +230,18 @@ public class SlotScript : MonoBehaviour
             while(resourceTimer.value > 0)
             {
                 resourceTimer.value -= 100*Time.deltaTime; //need to *100 because slider value cant handle float values well
-                yield return 0;
+                yield return null;
             }
+            resourceTicking = false;
+            Destroy(resourceTimer.gameObject);
+            hasTimer = false;
         }
-        resourceTicking = false;
-        Destroy(resourceTimer.gameObject);
-        hasTimer = false;
+        else
+        {
+            Debug.Log("resource tick");
+            yield return null;
+        }
+        
     }
 
     public void DestroyHealth()

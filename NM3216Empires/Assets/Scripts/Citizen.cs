@@ -45,6 +45,11 @@ public class Citizen : MonoBehaviour {
         pointX = (int)(transform.localPosition.x / 1.75f)+4;
     }
 
+    public void ResetCitizenMovement()
+    {
+        currMoveSpeed = idleMoveSpeed;
+    }
+
     public void ResetCitizenState()
     {
         isBusy = false;
@@ -356,6 +361,7 @@ public class Citizen : MonoBehaviour {
             
         }
         slot.hasWorkerAssigned = false;
+        slot.assignedIcon.SetActive(false);
 
     }
 
